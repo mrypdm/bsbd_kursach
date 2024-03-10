@@ -12,19 +12,19 @@ public class BooksRepository
 {
     public async Task<ICollection<Book>> GetBooksByNameAsync(string title)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Books.Where(m => m.Title == title).ToListAsync().ConfigureAwait(false);
     }
 
     public async Task<ICollection<Book>> GetBooksByAuthorAsync(string author)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Books.Where(m => m.Author == author).ToListAsync().ConfigureAwait(false);
     }
 
     public async Task<ICollection<Book>> GetBooksByTagsAsync(IEnumerable<string> tags)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
 
         var command = tags.Aggregate(context.Books as IQueryable<Book>,
             (current, tag) => current.Where(m => m.Tags.Select(t => t.Title).Contains(tag)));
@@ -34,7 +34,7 @@ public class BooksRepository
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Books.Where(m => m.Count < count).ToListAsync().ConfigureAwait(false);
     }
 
@@ -49,7 +49,7 @@ public class BooksRepository
             Count = count
         };
 
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         var entity = await context.Books.AddAsync(book).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
@@ -57,14 +57,14 @@ public class BooksRepository
 
     public async Task UpdateBookAsync(Book book)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         context.Update(book);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public async Task DeleteBookAsync(Book book)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         context.Books.Remove(book);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }

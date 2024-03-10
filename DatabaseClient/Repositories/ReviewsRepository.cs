@@ -11,13 +11,13 @@ public class ReviewsRepository
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Reviews.Where(m => m.ClientId == client.Id).ToListAsync().ConfigureAwait(false);
     }
 
     public async Task<ICollection<Review>> GetReviewForBooksAsync(Book book)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Reviews.Where(m => m.BookId == book.Id).ToListAsync().ConfigureAwait(false);
     }
 
@@ -31,7 +31,7 @@ public class ReviewsRepository
             Text = text
         };
         
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         var entity = await context.Reviews.AddAsync(review).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
@@ -39,14 +39,14 @@ public class ReviewsRepository
 
     public async Task UpdateReviewAsync(Review review)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         context.Update(review);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public async Task DeleteReviewAsync(Review review)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         context.Reviews.Remove(review);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }

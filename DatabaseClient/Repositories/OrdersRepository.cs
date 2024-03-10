@@ -12,13 +12,13 @@ public class OrdersRepository
 {
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Orders.Where(m => m.ClientId == client.Id).ToListAsync().ConfigureAwait(false);
     }
 
     public async Task<ICollection<Order>> GetOrdersForBookAsync(Book book)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync()
             .ConfigureAwait(false);
     }
@@ -33,7 +33,7 @@ public class OrdersRepository
             OrdersToBooks = books
         };
 
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
 
         foreach (var book in books)
         {
@@ -63,7 +63,7 @@ public class OrdersRepository
 
     public async Task<int> GetOrderTotalPrice(Order order)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .Where(m => m.OrderId == order.Id)
             .SumAsync(m => m.Count * m.Book.Price);
@@ -71,7 +71,7 @@ public class OrdersRepository
 
     public async Task<ICollection<Order>> GetUnpaidOrdersAsync()
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Orders.Where(m => m.IsPaid == false).ToListAsync();
     }
 }

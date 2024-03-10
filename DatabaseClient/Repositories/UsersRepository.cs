@@ -40,7 +40,7 @@ public class UsersRepository
         CheckCredentials(userName, password);
 
         var roleString = GetRoleString(role);
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         
         await context.Database.ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'");
         await context.Database.ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]");
@@ -49,13 +49,13 @@ public class UsersRepository
     public async Task RemoveUserAsync(string userName)
     {
         CheckCredentials(userName, "default");
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         await context.Database.ExecuteSqlRawAsync($"DROP USER [{userName}]");
     }
 
     public async Task<Role> GetUserRoleAsync(string userName)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
 
         var roles = await context.Database
             .SqlQuery<string>($"exec bsbd_get_user_roles {userName}")

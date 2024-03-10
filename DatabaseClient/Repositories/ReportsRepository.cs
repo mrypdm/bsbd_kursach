@@ -12,13 +12,13 @@ public class ReportsRepository
 {
     public async Task<int> CountOfSales(Book book)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.OrdersToBooks.Where(m => m.BookId == book.Id).SumAsync(m => m.Count);
     }
 
     public async Task<int> RevenueOfClient(Client client)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Orders
             .Where(m => m.ClientId == client.Id)
             .SelectMany(m => m.OrdersToBooks)
@@ -27,13 +27,13 @@ public class ReportsRepository
 
     public async Task<double> AverageScoreOfBook(Book book)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Reviews.Where(m => m.BookId == book.Id).AverageAsync(m => m.Score);
     }
 
     public async Task<ICollection<ScoredBook>> MostScoredBooks(int topCount = 10)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.Reviews
             .GroupBy(m => m.Book)
             .Select(m => new ScoredBook(m.Key, m.Average(b => b.Score)))
@@ -44,7 +44,7 @@ public class ReportsRepository
 
     public async Task<ICollection<SoldBook>> MostPopularBooks(int topCount = 10)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .GroupBy(m => m.Book)
             .Select(m => new SoldBook(m.Key, m.Sum(b => b.Count)))
@@ -55,7 +55,7 @@ public class ReportsRepository
 
     public async Task<ICollection<RevenueBook>> MostMakeMoneyBooks(int topCount = 10)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .GroupBy(m => m.Book)
             .Select(m => new RevenueBook(m.Key, m.Sum(b => b.Count) * m.Key.Price))
@@ -66,7 +66,7 @@ public class ReportsRepository
 
     public async Task<ICollection<RevenueClient>> MostMakeMoneyClients(int topCount = 10)
     {
-        var context = DatabaseContextFactory.Instance;
+        var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .GroupBy(m => m.Order)
             .Select(m => new { m.Key.Client, TotalSum = m.Sum(b => b.Count * b.Book.Price) })
