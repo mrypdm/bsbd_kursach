@@ -80,6 +80,12 @@ public class OrdersRepository : BaseRepository<Order>
             .ConfigureAwait(false);
     }
 
+    public async Task SetPaidAsync(Order order)
+    {
+        order.IsPaid = true;
+        await base.UpdateAsync(order);
+    }
+
     public override Task UpdateAsync(Order entity)
     {
         throw new NotSupportedException();
