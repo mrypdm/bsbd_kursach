@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ReviewsRepository : BaseRepository<Review, int>
+public class ReviewsRepository : BaseRepository<Review>
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {

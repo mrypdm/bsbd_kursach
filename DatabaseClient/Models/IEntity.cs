@@ -1,6 +1,6 @@
 ﻿namespace DatabaseClient.Models;
 
-public interface IEntity<TType>
+public interface IEntity
 {
-    TType Id { get; set; }
+    int Id { get; set; }
 }

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public abstract class BaseRepository<TEntity, TType> where TEntity: class, IEntity<TType>
+public abstract class BaseRepository<TEntity> where TEntity: class, IEntity
 {
-    public virtual async Task<TEntity> GetById(TType id)
+    public virtual async Task<TEntity> GetById(int id)
     {
         var context = DatabaseContext.Instance;
         return await context.Set<TEntity>()

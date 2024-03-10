@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace DatabaseClient.Models;
 
 [Serializable]
-public class Order : IEntity<long>
+public class Order : IEntity
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     public int? ClientId { get; set; }
 

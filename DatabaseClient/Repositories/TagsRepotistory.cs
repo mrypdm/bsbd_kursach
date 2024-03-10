@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class TagsRepository : BaseRepository<Tag, int>
+public class TagsRepository : BaseRepository<Tag>
 {
     public async Task<Tag> GetTagByNameAsync(string name)
     {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersRepository : BaseRepository<Order, long>
+public class OrdersRepository : BaseRepository<Order>
 {
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {

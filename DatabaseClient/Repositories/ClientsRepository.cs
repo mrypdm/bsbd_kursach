@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ClientsRepository : BaseRepository<Client, int>
+public class ClientsRepository : BaseRepository<Client>
 {
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {

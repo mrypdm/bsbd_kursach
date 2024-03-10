@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class BooksRepository : BaseRepository<Book, int>
+public class BooksRepository : BaseRepository<Book>
 {
     public async Task<ICollection<Book>> GetBooksByNameAsync(string title)
     {
