@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,13 +14,19 @@ public class BooksRepository
     public async Task<ICollection<Book>> GetBooksByNameAsync(string title)
     {
         var context = DatabaseContext.Instance;
-        return await context.Books.Where(m => m.Title == title).ToListAsync().ConfigureAwait(false);
+        return await context.Books
+            .Where(m => m.Title == title)
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task<ICollection<Book>> GetBooksByAuthorAsync(string author)
     {
         var context = DatabaseContext.Instance;
-        return await context.Books.Where(m => m.Author == author).ToListAsync().ConfigureAwait(false);
+        return await context.Books
+            .Where(m => m.Author == author)
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task<ICollection<Book>> GetBooksByTagsAsync(IEnumerable<string> tags)
@@ -35,7 +42,10 @@ public class BooksRepository
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
     {
         var context = DatabaseContext.Instance;
-        return await context.Books.Where(m => m.Count < count).ToListAsync().ConfigureAwait(false);
+        return await context.Books
+            .Where(m => m.Count < count)
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate, int price, int count = 0)
@@ -69,17 +79,15 @@ public class BooksRepository
         await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
-    public async Task AttachTagAsync(Book book, Tag tag)
+    public async Task AddTagToBookAsync(Book book, Tag tag)
     {
-        book.Tags.Add(tag);
-        await UpdateBookAsync(book);
+        var context = DatabaseContext.Instance;
+        await context.AddTagToBook(book, tag);
     }
 
-    public async Task DetachTagAsync(Book book, Tag tag)
+    public async Task RemoveTagFromBookAsync(Book book, Tag tag)
     {
-        if (book.Tags.Remove(tag))
-        {
-            await UpdateBookAsync(book);
-        }
+        var context = DatabaseContext.Instance;
+        await context.RemoveTagFromBook(book, tag);
     }
 }

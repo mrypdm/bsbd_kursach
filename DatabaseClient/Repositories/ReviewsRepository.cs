@@ -12,13 +12,19 @@ public class ReviewsRepository
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {
         var context = DatabaseContext.Instance;
-        return await context.Reviews.Where(m => m.ClientId == client.Id).ToListAsync().ConfigureAwait(false);
+        return await context.Reviews
+            .Where(m => m.ClientId == client.Id)
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task<ICollection<Review>> GetReviewForBooksAsync(Book book)
     {
         var context = DatabaseContext.Instance;
-        return await context.Reviews.Where(m => m.BookId == book.Id).ToListAsync().ConfigureAwait(false);
+        return await context.Reviews
+            .Where(m => m.BookId == book.Id)
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public async Task<Review> AddReviewAsync(Client client, Book book, int score, string text = null)

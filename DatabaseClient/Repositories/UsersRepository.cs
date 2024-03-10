@@ -41,16 +41,18 @@ public class UsersRepository
 
         var roleString = GetRoleString(role);
         var context = DatabaseContext.Instance;
-        
-        await context.Database.ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'");
-        await context.Database.ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]");
+
+        await context.Database.ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'")
+            .ConfigureAwait(false);
+        await context.Database.ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]")
+            .ConfigureAwait(false);
     }
 
     public async Task RemoveUserAsync(string userName)
     {
         CheckCredentials(userName, "default");
         var context = DatabaseContext.Instance;
-        await context.Database.ExecuteSqlRawAsync($"DROP USER [{userName}]");
+        await context.Database.ExecuteSqlRawAsync($"DROP USER [{userName}]").ConfigureAwait(false);
     }
 
     public async Task<Role> GetUserRoleAsync(string userName)
@@ -59,7 +61,8 @@ public class UsersRepository
 
         var roles = await context.Database
             .SqlQuery<string>($"exec bsbd_get_user_roles {userName}")
-            .ToListAsync();
+            .ToListAsync()
+            .ConfigureAwait(false);
 
         foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
         {

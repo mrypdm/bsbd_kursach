@@ -11,7 +11,10 @@ public class ClientsRepository
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
         var context = DatabaseContext.Instance;
-        return await context.Clients.Where(m => m.Phone == phone).SingleOrDefaultAsync().ConfigureAwait(false);
+        return await context.Clients
+            .Where(m => m.Phone == phone)
+            .SingleOrDefaultAsync()
+            .ConfigureAwait(false);
     }
     
     public async Task<Client> GetClientByNameAsync(string firstName, string lastName)
