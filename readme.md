@@ -18,6 +18,6 @@
    2. u/i/d books-tags
    3. u/i/d tags
    4. u/i/d clients
-   5. u/i/d orders
-   6. u/i/d orders-books
+   5. i orders
+   6. i orders-books
    7. u/i/d reviews
