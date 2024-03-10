@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class TagsRepository
+public class TagsRepository : BaseRepository<Tag, int>
 {
     public async Task<Tag> GetTagByNameAsync(string name)
     {
@@ -29,20 +29,6 @@ public class TagsRepository
         var entity = await context.AddAsync(tag).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
-    }
-
-    public async Task UpdateTagAsync(Tag tag)
-    {
-        var context = DatabaseContext.Instance;
-        context.Update(tag);
-        await context.SaveChangesAsync().ConfigureAwait(false);
-    }
-
-    public async Task DeleteTagAsync(Tag tag)
-    {
-        var context = DatabaseContext.Instance;
-        context.Tags.Remove(tag);
-        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public async Task AddBookToTagAsync(Book book, Tag tag)

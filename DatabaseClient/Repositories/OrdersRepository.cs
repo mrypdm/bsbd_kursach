@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersRepository
+public class OrdersRepository : BaseRepository<Order, long>
 {
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {
@@ -78,5 +78,15 @@ public class OrdersRepository
             .Where(m => m.IsPaid == false)
             .ToListAsync()
             .ConfigureAwait(false);
+    }
+
+    public override Task UpdateAsync(Order entity)
+    {
+        throw new NotSupportedException();
+    }
+
+    public override Task RemoveAsync(Order entity)
+    {
+        throw new NotSupportedException();
     }
 }

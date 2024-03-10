@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class BooksRepository
+public class BooksRepository : BaseRepository<Book, int>
 {
     public async Task<ICollection<Book>> GetBooksByNameAsync(string title)
     {
@@ -63,20 +63,6 @@ public class BooksRepository
         var entity = await context.Books.AddAsync(book).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
-    }
-
-    public async Task UpdateBookAsync(Book book)
-    {
-        var context = DatabaseContext.Instance;
-        context.Update(book);
-        await context.SaveChangesAsync().ConfigureAwait(false);
-    }
-
-    public async Task DeleteBookAsync(Book book)
-    {
-        var context = DatabaseContext.Instance;
-        context.Books.Remove(book);
-        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public async Task AddTagToBookAsync(Book book, Tag tag)

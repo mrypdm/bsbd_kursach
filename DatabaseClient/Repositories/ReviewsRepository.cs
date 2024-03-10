@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ReviewsRepository
+public class ReviewsRepository : BaseRepository<Review, int>
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {
@@ -41,19 +41,5 @@ public class ReviewsRepository
         var entity = await context.Reviews.AddAsync(review).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
-    }
-
-    public async Task UpdateReviewAsync(Review review)
-    {
-        var context = DatabaseContext.Instance;
-        context.Update(review);
-        await context.SaveChangesAsync().ConfigureAwait(false);
-    }
-
-    public async Task DeleteReviewAsync(Review review)
-    {
-        var context = DatabaseContext.Instance;
-        context.Reviews.Remove(review);
-        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 }

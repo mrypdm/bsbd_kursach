@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ClientsRepository
+public class ClientsRepository : BaseRepository<Client, int>
 {
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
@@ -49,19 +49,5 @@ public class ClientsRepository
         var entity = await context.Clients.AddAsync(client).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
-    }
-
-    public async Task UpdateClientAsync(Client client)
-    {
-        var context = DatabaseContext.Instance;
-        context.Update(client);
-        await context.SaveChangesAsync().ConfigureAwait(false);
-    }
-
-    public async Task DeleteClientAsync(Client client)
-    {
-        var context = DatabaseContext.Instance;
-        context.Clients.Remove(client);
-        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 }
