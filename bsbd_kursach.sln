@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseClient", "DatabaseC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{79928CFB-28DA-40BC-84F5-EECFD716BE06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GuiClient", "GuiClient\GuiClient.csproj", "{E3755C73-3188-4809-ADA2-17A6BCAB02C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{79928CFB-28DA-40BC-84F5-EECFD716BE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79928CFB-28DA-40BC-84F5-EECFD716BE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79928CFB-28DA-40BC-84F5-EECFD716BE06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3755C73-3188-4809-ADA2-17A6BCAB02C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3755C73-3188-4809-ADA2-17A6BCAB02C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3755C73-3188-4809-ADA2-17A6BCAB02C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3755C73-3188-4809-ADA2-17A6BCAB02C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
