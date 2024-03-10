@@ -23,6 +23,7 @@ public class OrdersRepository : BaseRepository<Order>
             .ConfigureAwait(false);
     }
 
+    // TODO: as trigger
     public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
     {
         var books = booksToOrder.ToList();

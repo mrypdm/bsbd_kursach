@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
@@ -49,5 +50,24 @@ public class ClientsRepository : BaseRepository<Client>
         var entity = await context.Clients.AddAsync(client).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
+    }
+
+    // TODO: as trigger
+    public override async Task RemoveAsync(Client entity)
+    {
+        var context = DatabaseContext.Instance;
+
+        if (await context.Orders.Where(m => m.ClientId == entity.Id && m.IsPaid == false).AnyAsync())
+        {
+            throw new InvalidOperationException("User has unpaid orders");
+        }
+
+        entity.FirstName = string.Empty;
+        entity.LastName = string.Empty;
+        entity.Phone = "0000000000";
+        entity.IsDeleted = true;
+
+        context.Update(entity);
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 }
