@@ -147,7 +147,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
                     "BooksToTag",
                     r => r.HasOne<Book>().WithMany()
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_BooksToTags_Books"),
                     l => l.HasOne<Tag>().WithMany()
                         .HasForeignKey("TagId")
