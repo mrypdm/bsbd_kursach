@@ -13,49 +13,11 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
     private static DatabaseContext _context;
 
-    private static string GetConnectionString() =>
-        $"Server=SHAPOVAL-M-NB\\SQLEXPRESS;" +
-        $"Database=bsbd_kursach;" +
-        $"User Id={_user};" +
-        $"Password={_password};" +
-        $"TrustServerCertificate=True;";
-
     /// <summary>
-    /// Current context
+    ///     Current context
     /// </summary>
     /// <exception cref="InvalidOperationException">If user is not authenticated</exception>
     public static DatabaseContext Instance => _context ?? throw new InvalidOperationException("User unauthorized");
-
-    /// <summary>
-    /// Creates context for user
-    /// </summary>
-    public static void LogIn(string user, string password)
-    {
-        if (_user != user || _password != password)
-        {
-            LogOff();
-        }
-
-        _user = user;
-        _password = password;
-
-        var connectionString = GetConnectionString();
-
-        var options = new DbContextOptionsBuilder<DatabaseContext>()
-            .UseSqlServer(connectionString)
-            .Options;
-
-        _context = new DatabaseContext(options);
-    }
-
-    /// <summary>
-    /// Disposes current context
-    /// </summary>
-    public static void LogOff()
-    {
-        _context?.Dispose();
-        _context = null;
-    }
 
     // Tables
 
@@ -70,6 +32,43 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     public DbSet<Review> Reviews { get; set; }
 
     public DbSet<Tag> Tags { get; set; }
+
+    private static string GetConnectionString()
+    {
+        return $"Server=SHAPOVAL-M-NB\\SQLEXPRESS;" +
+               $"Database=bsbd_kursach;" +
+               $"User Id={_user};" +
+               $"Password={_password};" +
+               $"TrustServerCertificate=True;";
+    }
+
+    /// <summary>
+    ///     Creates context for user
+    /// </summary>
+    public static void LogIn(string user, string password)
+    {
+        if (_user != user || _password != password) LogOff();
+
+        _user = user;
+        _password = password;
+
+        var connectionString = GetConnectionString();
+
+        var options = new DbContextOptionsBuilder<DatabaseContext>()
+            .UseSqlServer(connectionString)
+            .Options;
+
+        _context = new DatabaseContext(options);
+    }
+
+    /// <summary>
+    ///     Disposes current context
+    /// </summary>
+    public static void LogOff()
+    {
+        _context?.Dispose();
+        _context = null;
+    }
 
     // Database configuration
 
