@@ -38,43 +38,21 @@ public class BooksRepository
         return await context.Books.Where(m => m.Count < count).ToListAsync().ConfigureAwait(false);
     }
 
-    public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate)
+    public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate, int price, int count = 0)
     {
         var book = new Book
         {
             Title = title,
             Author = author,
-            ReleaseYear = releaseDate
+            ReleaseYear = releaseDate,
+            Price = price,
+            Count = count
         };
 
         var context = DatabaseContextFactory.Context;
         var entity = await context.Books.AddAsync(book).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
-    }
-
-    public async Task IncreaseBooksCount(Book book, int count)
-    {
-        var context = DatabaseContextFactory.Context;
-
-        await context.Books
-            .Where(m => m.Id == book.Id)
-            .ExecuteUpdateAsync(s => s.SetProperty(m => m.Count, m => m.Count + count))
-            .ConfigureAwait(false);
-
-        await context.Entry(book).ReloadAsync();
-    }
-
-    public async Task SetPriceAsync(Book book, int price)
-    {
-        var context = DatabaseContextFactory.Context;
-
-        await context.Books
-            .Where(m => m.Id == book.Id)
-            .ExecuteUpdateAsync(s => s.SetProperty(m => m.Price, price))
-            .ConfigureAwait(false);
-
-        await context.Entry(book).ReloadAsync();
     }
 
     public async Task UpdateBookAsync(Book book)
@@ -89,5 +67,19 @@ public class BooksRepository
         var context = DatabaseContextFactory.Context;
         context.Books.Remove(book);
         await context.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    public async Task AttachTagAsync(Book book, Tag tag)
+    {
+        book.Tags.Add(tag);
+        await UpdateBookAsync(book);
+    }
+
+    public async Task DetachTagAsync(Book book, Tag tag)
+    {
+        if (book.Tags.Remove(tag))
+        {
+            await UpdateBookAsync(book);
+        }
     }
 }

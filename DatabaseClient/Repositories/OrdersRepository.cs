@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -22,17 +23,49 @@ public class OrdersRepository
             .ConfigureAwait(false);
     }
 
-    public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> books)
+    public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
     {
+        var books = booksToOrder.ToList();
+
         var order = new Order
         {
             ClientId = client.Id,
-            OrdersToBooks = books.ToList()
+            OrdersToBooks = books
         };
 
         var context = DatabaseContextFactory.Context;
+
+        foreach (var book in books)
+        {
+            var currentBook = await context.Books
+                .Where(m => m.Id == book.BookId)
+                .SingleOrDefaultAsync();
+
+            if (currentBook == null)
+            {
+                throw new InvalidOperationException($"Book with id={book.BookId} does not exist");
+            }
+
+            if (currentBook.Count < book.Count)
+            {
+                throw new InvalidOperationException("Not enough books to order");
+            }
+
+            currentBook.Count -= book.Count;
+            context.Books.Update(currentBook);
+        }
+
+
         var entity = await context.Orders.AddAsync(order).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
+    }
+
+    public async Task<int> GetOrderTotalPrice(Order order)
+    {
+        var context = DatabaseContextFactory.Context;
+        return await context.OrdersToBooks
+            .Where(m => m.OrderId == order.Id)
+            .SumAsync(m => m.Count * m.Book.Price);
     }
 }
