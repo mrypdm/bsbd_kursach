@@ -124,12 +124,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Review_1");
-
-            entity.ToTable("Review");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-
             entity.HasOne(d => d.Book).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.BookId)
                 .HasConstraintName("FK_Review_Books");
