@@ -10,7 +10,7 @@ public class TagsRepository
 {
     public async Task<Tag> GetTagByNameAsync(string name)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         return await context.Tags.Where(m => m.Title == name).SingleOrDefaultAsync().ConfigureAwait(false);
     }
 
@@ -21,7 +21,7 @@ public class TagsRepository
             Title = name
         };
 
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         var entity = await context.AddAsync(tag).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
@@ -29,14 +29,14 @@ public class TagsRepository
 
     public async Task UpdateTagAsync(Tag tag)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         context.Update(tag);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public async Task DeleteTagAsync(Tag tag)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         context.Tags.Remove(tag);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }

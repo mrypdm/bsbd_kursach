@@ -10,13 +10,13 @@ public class ClientsRepository
 {
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         return await context.Clients.Where(m => m.Phone == phone).SingleOrDefaultAsync().ConfigureAwait(false);
     }
     
     public async Task<Client> GetClientByNameAsync(string firstName, string lastName)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
 
         var command = context.Clients as IQueryable<Client>;
 
@@ -42,7 +42,7 @@ public class ClientsRepository
             Phone = phone
         };
         
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         var entity = await context.Clients.AddAsync(client).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
         return entity.Entity;
@@ -50,14 +50,14 @@ public class ClientsRepository
 
     public async Task UpdateClientAsync(Client client)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         context.Update(client);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     public async Task DeleteClientAsync(Client client)
     {
-        var context = DatabaseContextFactory.Context;
+        var context = DatabaseContextFactory.Instance;
         context.Clients.Remove(client);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }

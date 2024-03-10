@@ -22,7 +22,7 @@ public static class DatabaseContextFactory
     /// Current context
     /// </summary>
     /// <exception cref="InvalidOperationException">If user is not authenticated</exception>
-    public static DatabaseContext Context => _context ?? throw new InvalidOperationException("User unauthorized");
+    public static DatabaseContext Instance => _context ?? throw new InvalidOperationException("User unauthorized");
 
     /// <summary>
     /// Creates context for user
