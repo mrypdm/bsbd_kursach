@@ -41,11 +41,15 @@ public class ReportsProvider
     public async Task<ICollection<ScoredBook>> MostScoredBooks(int topCount = 10)
     {
         var context = DatabaseContext.Instance;
-        return await context.Reviews
-            .GroupBy(m => m.Book)
-            .Select(m => new ScoredBook(m.Key, m.Average(b => b.Score)))
+        return await context.Books
+            .Select(m => new
+            {
+                Book = m,
+                Score = m.Reviews.Average(r => r.Score)
+            })
             .OrderByDescending(m => m.Score)
             .Take(topCount)
+            .Select(m => new ScoredBook(m.Book, m.Score))
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -53,11 +57,15 @@ public class ReportsProvider
     public async Task<ICollection<SoldBook>> MostPopularBooks(int topCount = 10)
     {
         var context = DatabaseContext.Instance;
-        return await context.OrdersToBooks
-            .GroupBy(m => m.Book)
-            .Select(m => new SoldBook(m.Key, m.Sum(b => b.Count)))
-            .OrderByDescending(m => m.Count)
+        return await context.Books
+            .Select(m => new
+            {
+                Book = m,
+                Sum = m.OrdersToBooks.Sum(o => o.Count)
+            })
+            .OrderByDescending(m => m.Sum)
             .Take(topCount)
+            .Select(m => new SoldBook(m.Book, m.Sum))
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -65,11 +73,15 @@ public class ReportsProvider
     public async Task<ICollection<RevenueBook>> MostMakeMoneyBooks(int topCount = 10)
     {
         var context = DatabaseContext.Instance;
-        return await context.OrdersToBooks
-            .GroupBy(m => m.Book)
-            .Select(m => new RevenueBook(m.Key, m.Sum(b => b.Count) * m.Key.Price))
-            .OrderByDescending(m => m.TotalSum)
+        return await context.Books
+            .Select(m => new
+            {
+                Book = m,
+                Sum = m.OrdersToBooks.Sum(o => o.Count) * m.Price
+            })
+            .OrderByDescending(m => m.Sum)
             .Take(topCount)
+            .Select(m => new RevenueBook(m.Book, m.Sum))
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -77,13 +89,15 @@ public class ReportsProvider
     public async Task<ICollection<RevenueClient>> MostMakeMoneyClients(int topCount = 10)
     {
         var context = DatabaseContext.Instance;
-        return await context.OrdersToBooks
-            .GroupBy(m => m.Order)
-            .Select(m => new { m.Key.Client, TotalSum = m.Sum(b => b.Count * b.Book.Price) })
-            .GroupBy(m => m.Client)
-            .Select(m => new RevenueClient(m.Key, m.Sum(b => b.TotalSum)))
-            .OrderByDescending(m => m.TotalSum)
+        return await context.Clients
+            .Select(m => new
+            {
+                Client = m,
+                Sum = m.Orders.SelectMany(order => order.OrdersToBooks.Select(orb => orb.Count * orb.Book.Price)).Sum()
+            })
+            .OrderByDescending(m => m.Sum)
             .Take(topCount)
+            .Select(m => new RevenueClient(m.Client, m.Sum))
             .ToListAsync()
             .ConfigureAwait(false);
     }

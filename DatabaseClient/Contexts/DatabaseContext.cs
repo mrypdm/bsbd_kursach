@@ -104,7 +104,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
         {
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
-                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Orders_Clients");
         });
 
@@ -118,7 +117,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrdersToBooks)
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrdersToBooks_Orders");
         });
 
@@ -130,7 +128,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
             entity.HasOne(d => d.Client).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.ClientId)
-                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Review_Clients");
         });
 

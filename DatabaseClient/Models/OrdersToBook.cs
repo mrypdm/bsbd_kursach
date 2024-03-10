@@ -5,7 +5,7 @@ namespace DatabaseClient.Models;
 [Serializable]
 public class OrdersToBook
 {
-    public long OrderId { get; set; }
+    public int OrderId { get; set; }
 
     public int BookId { get; set; }
 
