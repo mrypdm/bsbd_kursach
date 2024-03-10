@@ -6,9 +6,9 @@ using DatabaseClient.Models;
 using DatabaseClient.Reports;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatabaseClient.Repositories;
+namespace DatabaseClient.Providers;
 
-public class ReportsRepository
+public class ReportsProvider
 {
     public async Task<int> CountOfSales(Book book)
     {

@@ -5,10 +5,10 @@ using DatabaseClient.Contexts;
 using DatabaseClient.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatabaseClient.Repositories;
+namespace DatabaseClient.Managers;
 
 [SuppressMessage("Security", "EF1002:Risk of vulnerability to SQL injection.")]
-public class UsersRepository
+public class UsersManager
 {
     private static void CheckCredentials(string userName, string password)
     {
