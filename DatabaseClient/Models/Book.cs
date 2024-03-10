@@ -12,7 +12,7 @@ public class Book
 
     public string Author { get; set; }
 
-    public DateTime ReleaseYear { get; set; }
+    public DateTime? ReleaseDate { get; set; }
 
     public int Count { get; set; }
 

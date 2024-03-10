@@ -10,6 +10,8 @@ public class Order
 
     public int? ClientId { get; set; }
 
+    public bool IsPaid { get; set; }
+
     public virtual Client Client { get; set; }
 
     public virtual ICollection<OrdersToBook> OrdersToBooks { get; set; } = new List<OrdersToBook>();

@@ -44,7 +44,7 @@ public class BooksRepository
         {
             Title = title,
             Author = author,
-            ReleaseYear = releaseDate,
+            ReleaseDate = releaseDate,
             Price = price,
             Count = count
         };

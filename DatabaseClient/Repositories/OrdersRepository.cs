@@ -68,4 +68,10 @@ public class OrdersRepository
             .Where(m => m.OrderId == order.Id)
             .SumAsync(m => m.Count * m.Book.Price);
     }
+
+    public async Task<ICollection<Order>> GetUnpaidOrdersAsync()
+    {
+        var context = DatabaseContextFactory.Context;
+        return await context.Orders.Where(m => m.IsPaid == false).ToListAsync();
+    }
 }
