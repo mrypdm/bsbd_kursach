@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
@@ -10,49 +11,70 @@ namespace DatabaseClient.Managers;
 [SuppressMessage("Security", "EF1002:Risk of vulnerability to SQL injection.")]
 public class UsersManager
 {
-    private static void CheckCredentials(string userName, string password)
+    private const string ForbiddenCharacters = "[]'\";";
+
+    private static void ValidateCredentials(string name, string value)
     {
-        if (string.IsNullOrWhiteSpace(userName))
+        if (string.IsNullOrWhiteSpace(value))
         {
-            throw new InvalidOperationException("User name cannot be empty");
+            throw new InvalidOperationException($"{name} cannot be empty");
         }
 
-        if (string.IsNullOrWhiteSpace(password))
+        if (value.Intersect(ForbiddenCharacters).Any())
         {
-            throw new InvalidOperationException("Password cannot be empty");
-        }
-
-        if (userName.Contains(']'))
-        {
-            throw new InvalidOperationException("Password cannot contains ] character");
-        }
-
-        if (password.Contains('\''))
-        {
-            throw new InvalidOperationException("Password cannot contains ' character");
+            throw new InvalidOperationException($"{name} cannot contains characters: {ForbiddenCharacters}");
         }
     }
 
     private static string GetRoleString(Role role) => $"bsbd_{role.ToString().ToLowerInvariant()}_role";
 
-    public async Task AddUserAsync(string userName, string password, Role role)
+    public async Task CreateUserAsync(string userName, string password, Role role)
     {
-        CheckCredentials(userName, password);
+        ValidateCredentials("User name", userName);
+        ValidateCredentials("Password", password);
 
         var roleString = GetRoleString(role);
         var context = DatabaseContext.Instance;
 
-        await context.Database.ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'")
+        await context.Database
+            .ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'")
             .ConfigureAwait(false);
-        await context.Database.ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]")
+        await context.Database
+            .ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]")
             .ConfigureAwait(false);
     }
 
     public async Task RemoveUserAsync(string userName)
     {
-        CheckCredentials(userName, "default");
+        ValidateCredentials("User name", userName);
         var context = DatabaseContext.Instance;
-        await context.Database.ExecuteSqlRawAsync($"DROP USER [{userName}]").ConfigureAwait(false);
+        await context.Database
+            .ExecuteSqlRawAsync($"DROP USER [{userName}]")
+            .ConfigureAwait(false);
+    }
+    
+    public async Task ChangePasswordAsync(string userName, string newPassword, string oldPassword)
+    {
+        ValidateCredentials("User name", userName);
+        ValidateCredentials("Password", newPassword);
+        ValidateCredentials("Old password", oldPassword);
+
+        var context = DatabaseContext.Instance;
+        await context.Database
+            .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}' OLD_PASSWORD=N'{oldPassword}'")
+            .ConfigureAwait(false);
+    }
+
+    // Current context should be authorized with ALTER ANY USER rights
+    public async Task ForceChangePasswordAsync(string userName, string newPassword)
+    {
+        ValidateCredentials("User name", userName);
+        ValidateCredentials("Password", newPassword);
+
+        var context = DatabaseContext.Instance;
+        await context.Database
+            .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'")
+            .ConfigureAwait(false);
     }
 
     public async Task<Role> GetUserRoleAsync(string userName)
