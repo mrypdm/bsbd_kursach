@@ -5,7 +5,7 @@ using DatabaseClient.Managers;
 using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
 
-DatabaseContext.LogIn("bsbd_main_admin", "123456");
+DatabaseContext.LogIn("bsbd_owner", "very_secret_Password_forOwner");
 
 var clientsRepository = new ClientsRepository();
 var tagsRepository = new TagsRepository();
