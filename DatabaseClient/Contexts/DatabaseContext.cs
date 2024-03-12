@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DatabaseClient.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Contexts;
@@ -35,11 +36,14 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
     private static string GetConnectionString()
     {
-        return $"Server=SHAPOVAL-M-NB\\SQLEXPRESS;" +
-               $"Database=bsbd_kursach;" +
-               $"User Id={_user};" +
-               $"Password={_password};" +
-               $"TrustServerCertificate=True;";
+        return new SqlConnectionStringBuilder
+        {
+            DataSource = "SHAPOVAL-M-NB\\SQLEXPRESS",
+            InitialCatalog = "bsbd_kursach",
+            UserID = _user,
+            Password = _password,
+            TrustServerCertificate = true
+        }.ConnectionString;
     }
 
     /// <summary>
