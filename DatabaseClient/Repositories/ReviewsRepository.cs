@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -11,6 +12,8 @@ public class ReviewsRepository : BaseRepository<Review>
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {
+        ArgumentNullException.ThrowIfNull(client);
+
         var context = DatabaseContext.Instance;
         return await context.Reviews
             .Where(m => m.ClientId == client.Id)
@@ -20,6 +23,8 @@ public class ReviewsRepository : BaseRepository<Review>
 
     public async Task<ICollection<Review>> GetReviewForBooksAsync(Book book)
     {
+        ArgumentNullException.ThrowIfNull(book);
+
         var context = DatabaseContext.Instance;
         return await context.Reviews
             .Where(m => m.BookId == book.Id)
@@ -29,6 +34,9 @@ public class ReviewsRepository : BaseRepository<Review>
 
     public async Task<Review> AddReviewAsync(Client client, Book book, int score, string text = null)
     {
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(book);
+
         var review = new Review
         {
             ClientId = client.Id,
@@ -36,7 +44,7 @@ public class ReviewsRepository : BaseRepository<Review>
             Score = score,
             Text = text
         };
-        
+
         var context = DatabaseContext.Instance;
         var entity = await context.Reviews.AddAsync(review).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);

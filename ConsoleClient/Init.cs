@@ -1,8 +1,11 @@
-﻿using DatabaseClient.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 
 namespace ConsoleClient;
 
+[SuppressMessage("Reliability", "CA2007:Consider calling ConfigureAwait on the awaited task")]
+[SuppressMessage("Security", "CA5394:Do not use insecure randomness")]
 public static class Startup
 {
     public static async Task InitDataBase()

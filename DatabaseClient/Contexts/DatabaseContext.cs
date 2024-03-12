@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using DatabaseClient.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Contexts;
 
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
 {
     private static string _user;
@@ -76,6 +78,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
     // Database configuration
 
+    [SuppressMessage("Design", "CA1062:Validate arguments of public methods")]
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Book>(entity =>

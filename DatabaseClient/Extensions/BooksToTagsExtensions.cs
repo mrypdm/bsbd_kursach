@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
 
@@ -8,6 +9,10 @@ public static class BooksToTagsExtensions
 {
     public static async Task AddTagToBook(this DatabaseContext context, Book book, Tag tag)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(book);
+        ArgumentNullException.ThrowIfNull(tag);
+        
         book.Tags.Add(tag);
         tag.Books.Add(book);
         context.Update(book);
@@ -17,6 +22,10 @@ public static class BooksToTagsExtensions
 
     public static async Task RemoveTagFromBook(this DatabaseContext context, Book book, Tag tag)
     {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(book);
+        ArgumentNullException.ThrowIfNull(tag);
+
         book.Tags.Remove(tag);
         tag.Books.Remove(book);
         context.Update(book);

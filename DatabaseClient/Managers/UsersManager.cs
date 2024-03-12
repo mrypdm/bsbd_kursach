@@ -15,14 +15,10 @@ public class UsersManager
 
     private static void ValidateCredentials(string name, string value)
     {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new InvalidOperationException($"{name} cannot be empty");
-        }
-
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
         if (value.Intersect(ForbiddenCharacters).Any())
         {
-            throw new InvalidOperationException($"{name} cannot contains characters: {ForbiddenCharacters}");
+            throw new ArgumentException($"{name} cannot contains characters: {ForbiddenCharacters}");
         }
     }
 
@@ -47,12 +43,13 @@ public class UsersManager
     public async Task RemoveUserAsync(string userName)
     {
         ValidateCredentials("User name", userName);
+
         var context = DatabaseContext.Instance;
         await context.Database
             .ExecuteSqlRawAsync($"DROP USER [{userName}]")
             .ConfigureAwait(false);
     }
-    
+
     public async Task ChangePasswordAsync(string userName, string newPassword, string oldPassword)
     {
         ValidateCredentials("User name", userName);
@@ -79,6 +76,8 @@ public class UsersManager
 
     public async Task<Role> GetUserRoleAsync(string userName)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+        
         var context = DatabaseContext.Instance;
 
         var roles = await context.Database

@@ -12,12 +12,16 @@ public class OrdersRepository : BaseRepository<Order>
 {
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {
+        ArgumentNullException.ThrowIfNull(client);
+
         var context = DatabaseContext.Instance;
         return await context.Orders.Where(m => m.ClientId == client.Id).ToListAsync().ConfigureAwait(false);
     }
 
     public async Task<ICollection<Order>> GetOrdersForBookAsync(Book book)
     {
+        ArgumentNullException.ThrowIfNull(book);
+
         var context = DatabaseContext.Instance;
         return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync()
             .ConfigureAwait(false);
@@ -26,7 +30,14 @@ public class OrdersRepository : BaseRepository<Order>
     // TODO: as trigger
     public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
     {
-        var books = booksToOrder.ToList();
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(booksToOrder);
+
+        var books = booksToOrder.Where(m => m is not null).ToList();
+        if (books.Count == 0)
+        {
+            throw new ArgumentException("Books to order are empty");
+        }
 
         var order = new Order
         {
@@ -65,6 +76,8 @@ public class OrdersRepository : BaseRepository<Order>
 
     public async Task<int> GetOrderTotalPrice(Order order)
     {
+        ArgumentNullException.ThrowIfNull(order);
+
         var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .Where(m => m.OrderId == order.Id)
@@ -83,8 +96,10 @@ public class OrdersRepository : BaseRepository<Order>
 
     public async Task SetPaidAsync(Order order)
     {
+        ArgumentNullException.ThrowIfNull(order);
+
         order.IsPaid = true;
-        await base.UpdateAsync(order);
+        await base.UpdateAsync(order).ConfigureAwait(false);
     }
 
     public override Task UpdateAsync(Order entity)

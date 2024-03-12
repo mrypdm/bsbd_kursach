@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
@@ -11,6 +12,8 @@ public class TagsRepository : BaseRepository<Tag>
 {
     public async Task<Tag> GetTagByNameAsync(string name)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
         var context = DatabaseContext.Instance;
         return await context.Tags
             .Where(m => m.Title == name)
@@ -20,6 +23,8 @@ public class TagsRepository : BaseRepository<Tag>
 
     public async Task<Tag> AddTagAsync(string name)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
         var tag = new Tag
         {
             Title = name
@@ -34,12 +39,12 @@ public class TagsRepository : BaseRepository<Tag>
     public async Task AddBookToTagAsync(Book book, Tag tag)
     {
         var context = DatabaseContext.Instance;
-        await context.AddTagToBook(book, tag);
+        await context.AddTagToBook(book, tag).ConfigureAwait(false);
     }
 
     public async Task RemoveBookFromTagAsync(Book book, Tag tag)
     {
         var context = DatabaseContext.Instance;
-        await context.RemoveTagFromBook(book, tag);
+        await context.RemoveTagFromBook(book, tag).ConfigureAwait(false);
     }
 }

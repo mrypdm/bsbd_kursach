@@ -11,15 +11,20 @@ public class ClientsRepository : BaseRepository<Client>
 {
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(phone);
+        
         var context = DatabaseContext.Instance;
         return await context.Clients
             .Where(m => m.Phone == phone)
             .SingleOrDefaultAsync()
             .ConfigureAwait(false);
     }
-    
+
     public async Task<Client> GetClientByNameAsync(string firstName, string lastName)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
+
         var context = DatabaseContext.Instance;
 
         var command = context.Clients as IQueryable<Client>;
@@ -39,13 +44,17 @@ public class ClientsRepository : BaseRepository<Client>
 
     public async Task<Client> AddClientAsync(string firstName, string lastName, string phone)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(phone);
+
         var client = new Client
         {
             FirstName = firstName,
             LastName = lastName,
             Phone = phone
         };
-        
+
         var context = DatabaseContext.Instance;
         var entity = await context.Clients.AddAsync(client).ConfigureAwait(false);
         await context.SaveChangesAsync().ConfigureAwait(false);
@@ -55,9 +64,16 @@ public class ClientsRepository : BaseRepository<Client>
     // TODO: as trigger
     public override async Task RemoveAsync(Client entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
+
         var context = DatabaseContext.Instance;
 
-        if (await context.Orders.Where(m => m.ClientId == entity.Id && m.IsPaid == false).AnyAsync())
+        var isUnPaidExists = await context.Orders
+            .Where(m => m.ClientId == entity.Id && m.IsPaid == false)
+            .AnyAsync()
+            .ConfigureAwait(false);
+
+        if (isUnPaidExists)
         {
             throw new InvalidOperationException("User has unpaid orders");
         }

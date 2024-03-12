@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DatabaseClient.Models;
 
 [Serializable]
+[SuppressMessage("Naming", "CA1724:Type names should not match namespaces")]
 public class Client : IEntity
 {
     public int Id { get; set; }
