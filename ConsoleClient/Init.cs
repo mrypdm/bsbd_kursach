@@ -15,7 +15,7 @@ public static class Startup
         var booksRepository = new BooksRepository();
         var reviewsRepository = new ReviewsRepository();
         var ordersRepository = new OrdersRepository();
-        
+
         var cl1 = await clientsRepository.AddClientAsync("Maxim", "Shapovalov", "0987654321");
         var cl2 = await clientsRepository.AddClientAsync("Andrew", "Raficoff", "8005553535");
         var cl3 = await clientsRepository.AddClientAsync("Vitya", "Aka", "7777777777");

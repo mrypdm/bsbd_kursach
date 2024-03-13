@@ -12,7 +12,7 @@ public class ClientsRepository : BaseRepository<Client>
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
-        
+
         var context = DatabaseContext.Instance;
         return await context.Clients
             .Where(m => m.Phone == phone)

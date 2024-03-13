@@ -12,7 +12,7 @@ public static class BooksToTagsExtensions
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(book);
         ArgumentNullException.ThrowIfNull(tag);
-        
+
         book.Tags.Add(tag);
         tag.Books.Add(book);
         context.Update(book);

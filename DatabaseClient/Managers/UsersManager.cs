@@ -22,7 +22,10 @@ public class UsersManager
         }
     }
 
-    private static string GetRoleString(Role role) => $"bsbd_{role.ToString().ToLowerInvariant()}_role";
+    private static string GetRoleString(Role role)
+    {
+        return $"bsbd_{role.ToString().ToLowerInvariant()}_role";
+    }
 
     public async Task CreateUserAsync(string userName, string password, Role role)
     {
@@ -77,7 +80,7 @@ public class UsersManager
     public async Task<Role> GetUserRoleAsync(string userName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
-        
+
         var context = DatabaseContext.Instance;
 
         var roles = await context.Database
