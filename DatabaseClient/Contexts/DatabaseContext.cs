@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using DatabaseClient.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Serilog.Extensions.Logging;
 
 namespace DatabaseClient.Contexts;
 
@@ -15,6 +16,8 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     private static string _password;
 
     private static DatabaseContext _context;
+
+    private static SerilogLoggerFactory _loggerFactory;
 
     /// <summary>
     ///     Current context
@@ -53,15 +56,21 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     /// </summary>
     public static void LogIn(string user, string password)
     {
-        if (_user != user || _password != password) LogOff();
+        if (_user != user || _password != password)
+        {
+            LogOff();
+        }
 
         _user = user;
         _password = password;
 
         var connectionString = GetConnectionString();
 
+        _loggerFactory = new SerilogLoggerFactory();
+
         var options = new DbContextOptionsBuilder<DatabaseContext>()
             .UseSqlServer(connectionString)
+            .UseLoggerFactory(_loggerFactory)
             .Options;
 
         _context = new DatabaseContext(options);
@@ -73,7 +82,9 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     public static void LogOff()
     {
         _context?.Dispose();
+        _loggerFactory?.Dispose();
         _context = null;
+        _loggerFactory = null;
     }
 
     // Database configuration
