@@ -1,10 +1,13 @@
 ﻿// This project is used for testing
 
+using ConsoleClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Managers;
 using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
 using Serilog;
+
+Startup.InitLogging();
 
 DatabaseContext.LogIn("bsbd_owner", "very_secret_Password_forOwner");
 
