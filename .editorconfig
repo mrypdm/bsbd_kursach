@@ -229,14 +229,14 @@ dotnet_diagnostic.CA1819.severity = none
 
 # CA5362: Potential reference cycle in deserialized object graph
 # Cycles are used in DB models
-dotnet_diagnostic.CA5362.severity = none
+dotnet_diagnostic.CA5362.severity = suggestion
 
 # CA1305: Specify IFormatProvider
 # In English and Russian there are no problems
 dotnet_diagnostic.CA1305.severity = suggestion
 
 # CA1822: Mark members as static
-dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1822.severity = suggestion
 
 # CA5394: Do not use insecure randomness
 # We use random not for sensitive data
