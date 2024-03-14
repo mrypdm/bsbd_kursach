@@ -16,8 +16,7 @@ public class ClientsRepository : BaseRepository<Client>
         var context = DatabaseContext.Instance;
         return await context.Clients
             .Where(m => m.Phone == phone)
-            .SingleOrDefaultAsync()
-            ;
+            .SingleOrDefaultAsync();
     }
 
     public async Task<Client> GetClientByNameAsync(string firstName, string lastName)
@@ -70,8 +69,7 @@ public class ClientsRepository : BaseRepository<Client>
 
         var isUnPaidExists = await context.Orders
             .Where(m => m.ClientId == entity.Id && m.IsPaid == false)
-            .AnyAsync()
-            ;
+            .AnyAsync();
 
         if (isUnPaidExists)
         {

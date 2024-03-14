@@ -15,8 +15,7 @@ public class ReportsProvider
         var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .Where(m => m.BookId == book.Id)
-            .SumAsync(m => m.Count)
-            ;
+            .SumAsync(m => m.Count);
     }
 
     public async Task<int> RevenueOfClient(Client client)
@@ -25,8 +24,7 @@ public class ReportsProvider
         return await context.Orders
             .Where(m => m.ClientId == client.Id)
             .SelectMany(m => m.OrdersToBooks)
-            .SumAsync(m => m.Count * m.Book.Price)
-            ;
+            .SumAsync(m => m.Count * m.Book.Price);
     }
 
     public async Task<double> AverageScoreOfBook(Book book)
@@ -34,8 +32,7 @@ public class ReportsProvider
         var context = DatabaseContext.Instance;
         return await context.Reviews
             .Where(m => m.BookId == book.Id)
-            .AverageAsync(m => m.Score)
-            ;
+            .AverageAsync(m => m.Score);
     }
 
     public async Task<ICollection<ScoredBook>> MostScoredBooks(int topCount = 10)
@@ -50,8 +47,7 @@ public class ReportsProvider
             .OrderByDescending(m => m.Score)
             .Take(topCount)
             .Select(m => new ScoredBook(m.Book, m.Score))
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task<ICollection<SoldBook>> MostPopularBooks(int topCount = 10)
@@ -66,8 +62,7 @@ public class ReportsProvider
             .OrderByDescending(m => m.Sum)
             .Take(topCount)
             .Select(m => new SoldBook(m.Book, m.Sum))
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task<ICollection<RevenueBook>> MostMakeMoneyBooks(int topCount = 10)
@@ -82,8 +77,7 @@ public class ReportsProvider
             .OrderByDescending(m => m.Sum)
             .Take(topCount)
             .Select(m => new RevenueBook(m.Book, m.Sum))
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task<ICollection<RevenueClient>> MostMakeMoneyClients(int topCount = 10)
@@ -93,12 +87,13 @@ public class ReportsProvider
             .Select(m => new
             {
                 Client = m,
-                Sum = m.Orders.SelectMany(order => order.OrdersToBooks.Select(orb => orb.Count * orb.Book.Price)).Sum()
+                Sum = m.Orders.SelectMany(order
+                        => order.OrdersToBooks.Select(orb => orb.Count * orb.Book.Price))
+                    .Sum()
             })
             .OrderByDescending(m => m.Sum)
             .Take(topCount)
             .Select(m => new RevenueClient(m.Client, m.Sum))
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 }

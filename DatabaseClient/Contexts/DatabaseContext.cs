@@ -20,7 +20,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     private static SerilogLoggerFactory _loggerFactory;
 
     /// <summary>
-    ///     Current context
+    /// Current context
     /// </summary>
     /// <exception cref="InvalidOperationException">If user is not authenticated</exception>
     public static DatabaseContext Instance => _context ?? throw new InvalidOperationException("User unauthorized");
@@ -52,7 +52,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     }
 
     /// <summary>
-    ///     Creates context for user
+    /// Creates context for user
     /// </summary>
     public static void LogIn(string user, string password)
     {
@@ -77,7 +77,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     }
 
     /// <summary>
-    ///     Disposes current context
+    /// Disposes current context
     /// </summary>
     public static void LogOff()
     {

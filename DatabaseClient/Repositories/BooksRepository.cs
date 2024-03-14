@@ -18,8 +18,7 @@ public class BooksRepository : BaseRepository<Book>
         var context = DatabaseContext.Instance;
         return await context.Books
             .Where(m => m.Title == title)
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksByAuthorAsync(string author)
@@ -29,8 +28,7 @@ public class BooksRepository : BaseRepository<Book>
         var context = DatabaseContext.Instance;
         return await context.Books
             .Where(m => m.Author == author)
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksByTagsAsync(IEnumerable<string> tags)
@@ -56,8 +54,7 @@ public class BooksRepository : BaseRepository<Book>
         var context = DatabaseContext.Instance;
         return await context.Books
             .Where(m => m.Count < count)
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate, int price, int count = 0)

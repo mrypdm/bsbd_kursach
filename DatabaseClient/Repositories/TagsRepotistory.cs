@@ -17,8 +17,7 @@ public class TagsRepository : BaseRepository<Tag>
         var context = DatabaseContext.Instance;
         return await context.Tags
             .Where(m => m.Title == name)
-            .SingleOrDefaultAsync()
-            ;
+            .SingleOrDefaultAsync();
     }
 
     public async Task<Tag> AddTagAsync(string name)

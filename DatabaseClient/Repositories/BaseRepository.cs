@@ -14,8 +14,7 @@ public abstract class BaseRepository<TEntity> where TEntity : class, IEntity
         var context = DatabaseContext.Instance;
         return await context.Set<TEntity>()
             .Where(m => m.Id.Equals(id))
-            .SingleOrDefaultAsync()
-            ;
+            .SingleOrDefaultAsync();
     }
 
     public virtual async Task UpdateAsync(TEntity entity)

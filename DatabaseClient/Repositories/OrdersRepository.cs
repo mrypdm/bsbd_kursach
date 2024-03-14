@@ -23,8 +23,7 @@ public class OrdersRepository : BaseRepository<Order>
         ArgumentNullException.ThrowIfNull(book);
 
         var context = DatabaseContext.Instance;
-        return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync()
-            ;
+        return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync();
     }
 
     // TODO: as trigger
@@ -51,8 +50,7 @@ public class OrdersRepository : BaseRepository<Order>
         {
             var currentBook = await context.Books
                 .Where(m => m.Id == book.BookId)
-                .SingleOrDefaultAsync()
-                ;
+                .SingleOrDefaultAsync();
 
             if (currentBook == null)
             {
@@ -68,7 +66,6 @@ public class OrdersRepository : BaseRepository<Order>
             context.Books.Update(currentBook);
         }
 
-
         var entity = await context.Orders.AddAsync(order);
         await context.SaveChangesAsync();
         return entity.Entity;
@@ -81,8 +78,7 @@ public class OrdersRepository : BaseRepository<Order>
         var context = DatabaseContext.Instance;
         return await context.OrdersToBooks
             .Where(m => m.OrderId == order.Id)
-            .SumAsync(m => m.Count * m.Book.Price)
-            ;
+            .SumAsync(m => m.Count * m.Book.Price);
     }
 
     public async Task<ICollection<Order>> GetUnpaidOrdersAsync()
@@ -90,8 +86,7 @@ public class OrdersRepository : BaseRepository<Order>
         var context = DatabaseContext.Instance;
         return await context.Orders
             .Where(m => m.IsPaid == false)
-            .ToListAsync()
-            ;
+            .ToListAsync();
     }
 
     public async Task SetPaidAsync(Order order)

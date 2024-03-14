@@ -120,6 +120,7 @@ dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
 
 # ReSharper properties
+resharper_align_linq_query = true
 resharper_align_multiline_binary_expressions_chain = false
 resharper_align_multiline_expression_braces = true
 resharper_align_ternary = none
@@ -235,7 +236,7 @@ dotnet_diagnostic.CA5362.severity = hint
 dotnet_diagnostic.CA1305.severity = suggestion
 
 # CA1822: Mark members as static
-dotnet_diagnostic.CA1822.severity = hint
+dotnet_diagnostic.CA1822.severity = none
 
 # CA5394: Do not use insecure randomness
 # We use random not for sensitive data

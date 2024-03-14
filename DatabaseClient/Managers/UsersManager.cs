@@ -36,11 +36,9 @@ public class UsersManager
         var context = DatabaseContext.Instance;
 
         await context.Database
-            .ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'")
-            ;
+            .ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'");
         await context.Database
-            .ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]")
-            ;
+            .ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]");
     }
 
     public async Task RemoveUserAsync(string userName)
@@ -49,8 +47,7 @@ public class UsersManager
 
         var context = DatabaseContext.Instance;
         await context.Database
-            .ExecuteSqlRawAsync($"DROP USER [{userName}]")
-            ;
+            .ExecuteSqlRawAsync($"DROP USER [{userName}]");
     }
 
     public async Task ChangePasswordAsync(string userName, string newPassword, string oldPassword)
@@ -61,8 +58,8 @@ public class UsersManager
 
         var context = DatabaseContext.Instance;
         await context.Database
-            .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}' OLD_PASSWORD=N'{oldPassword}'")
-            ;
+            .ExecuteSqlRawAsync(
+                $"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}' OLD_PASSWORD=N'{oldPassword}'");
     }
 
     // Current context should be authorized with ALTER ANY USER rights
@@ -73,8 +70,7 @@ public class UsersManager
 
         var context = DatabaseContext.Instance;
         await context.Database
-            .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'")
-            ;
+            .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'");
     }
 
     public async Task<Role> GetUserRoleAsync(string userName)
@@ -85,8 +81,7 @@ public class UsersManager
 
         var roles = await context.Database
             .SqlQuery<string>($"exec bsbd_get_user_roles {userName}")
-            .ToListAsync()
-            ;
+            .ToListAsync();
 
         foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
         {
