@@ -1,13 +1,23 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using DatabaseClient.Models;
+﻿using DatabaseClient.Models;
 using DatabaseClient.Repositories;
+using Serilog;
+using Serilog.Events;
 
 namespace ConsoleClient;
 
-[SuppressMessage("Reliability", "CA2007:Consider calling ConfigureAwait on the awaited task")]
-[SuppressMessage("Security", "CA5394:Do not use insecure randomness")]
 public static class Startup
 {
+    public static void InitLogging()
+    {
+        const string format = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}";
+        const string filePath = "./logs/log.txt";
+
+        var loggerConfiguration = new LoggerConfiguration()
+            .WriteTo.Async(p => p.Console(LogEventLevel.Information, format))
+            .WriteTo.Async(p => p.File(filePath, LogEventLevel.Debug, format));
+        Log.Logger = loggerConfiguration.CreateLogger();
+    }
+
     public static async Task InitDataBase()
     {
         var clientsRepository = new ClientsRepository();
@@ -30,8 +40,7 @@ public static class Startup
 
         var b1 = await booksRepository.AddBookAsync("Very interesting book", "Famous Author", DateTime.Now, 1000, 123);
         var b2 = await booksRepository.AddBookAsync("Very interesting book 2", "Famous Author", DateTime.Now.AddDays(3),
-            1300,
-            91);
+            1300, 91);
         var b3 = await booksRepository.AddBookAsync("Pretty boring book", "Silly Author", DateTime.Now.AddDays(1), 300,
             34);
         var b4 = await booksRepository.AddBookAsync("Rocket Science", "Scamer", DateTime.Now.AddHours(9), 550, 12);

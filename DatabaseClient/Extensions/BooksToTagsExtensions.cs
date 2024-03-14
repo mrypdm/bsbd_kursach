@@ -17,7 +17,7 @@ public static class BooksToTagsExtensions
         tag.Books.Add(book);
         context.Update(book);
         context.Update(tag);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        await context.SaveChangesAsync();
     }
 
     public static async Task RemoveTagFromBook(this DatabaseContext context, Book book, Tag tag)
@@ -30,6 +30,6 @@ public static class BooksToTagsExtensions
         tag.Books.Remove(book);
         context.Update(book);
         context.Update(tag);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        await context.SaveChangesAsync();
     }
 }

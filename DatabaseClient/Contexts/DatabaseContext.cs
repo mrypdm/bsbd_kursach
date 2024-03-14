@@ -89,8 +89,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
     // Database configuration
 
-    [SuppressMessage("Design", "CA1062:Validate arguments of public methods")]
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Book>(entity =>
         {

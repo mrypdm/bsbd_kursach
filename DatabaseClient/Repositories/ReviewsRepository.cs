@@ -18,7 +18,7 @@ public class ReviewsRepository : BaseRepository<Review>
         return await context.Reviews
             .Where(m => m.ClientId == client.Id)
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task<ICollection<Review>> GetReviewForBooksAsync(Book book)
@@ -29,7 +29,7 @@ public class ReviewsRepository : BaseRepository<Review>
         return await context.Reviews
             .Where(m => m.BookId == book.Id)
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task<Review> AddReviewAsync(Client client, Book book, int score, string text = null)
@@ -46,8 +46,8 @@ public class ReviewsRepository : BaseRepository<Review>
         };
 
         var context = DatabaseContext.Instance;
-        var entity = await context.Reviews.AddAsync(review).ConfigureAwait(false);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        var entity = await context.Reviews.AddAsync(review);
+        await context.SaveChangesAsync();
         return entity.Entity;
     }
 }

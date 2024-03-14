@@ -1,9 +1,0 @@
-<Project>
-    <PropertyGroup>
-        <!-- CA1308: Normalize strings to uppercase -->
-        <!-- CA1822: Mark members as static -->
-        <!-- CA2227: Collection properties should be read only -->
-        <!-- CA5362: Potential reference cycle in deserialized object graph -->
-        <NoWarn>$(NoWarn);CA1308;CA1822;CA2227;CA5362</NoWarn>
-    </PropertyGroup>
-</Project>

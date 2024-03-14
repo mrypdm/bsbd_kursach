@@ -37,10 +37,10 @@ public class UsersManager
 
         await context.Database
             .ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'")
-            .ConfigureAwait(false);
+            ;
         await context.Database
             .ExecuteSqlRawAsync($"ALTER ROLE [{roleString}] ADD MEMBER [{userName}]")
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task RemoveUserAsync(string userName)
@@ -50,7 +50,7 @@ public class UsersManager
         var context = DatabaseContext.Instance;
         await context.Database
             .ExecuteSqlRawAsync($"DROP USER [{userName}]")
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task ChangePasswordAsync(string userName, string newPassword, string oldPassword)
@@ -62,7 +62,7 @@ public class UsersManager
         var context = DatabaseContext.Instance;
         await context.Database
             .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}' OLD_PASSWORD=N'{oldPassword}'")
-            .ConfigureAwait(false);
+            ;
     }
 
     // Current context should be authorized with ALTER ANY USER rights
@@ -74,7 +74,7 @@ public class UsersManager
         var context = DatabaseContext.Instance;
         await context.Database
             .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'")
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task<Role> GetUserRoleAsync(string userName)
@@ -86,7 +86,7 @@ public class UsersManager
         var roles = await context.Database
             .SqlQuery<string>($"exec bsbd_get_user_roles {userName}")
             .ToListAsync()
-            .ConfigureAwait(false);
+            ;
 
         foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
         {

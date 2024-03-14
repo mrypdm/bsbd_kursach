@@ -18,7 +18,7 @@ public class TagsRepository : BaseRepository<Tag>
         return await context.Tags
             .Where(m => m.Title == name)
             .SingleOrDefaultAsync()
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task<Tag> AddTagAsync(string name)
@@ -31,20 +31,20 @@ public class TagsRepository : BaseRepository<Tag>
         };
 
         var context = DatabaseContext.Instance;
-        var entity = await context.AddAsync(tag).ConfigureAwait(false);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        var entity = await context.AddAsync(tag);
+        await context.SaveChangesAsync();
         return entity.Entity;
     }
 
     public async Task AddBookToTagAsync(Book book, Tag tag)
     {
         var context = DatabaseContext.Instance;
-        await context.AddTagToBook(book, tag).ConfigureAwait(false);
+        await context.AddTagToBook(book, tag);
     }
 
     public async Task RemoveBookFromTagAsync(Book book, Tag tag)
     {
         var context = DatabaseContext.Instance;
-        await context.RemoveTagFromBook(book, tag).ConfigureAwait(false);
+        await context.RemoveTagFromBook(book, tag);
     }
 }

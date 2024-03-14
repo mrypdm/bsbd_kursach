@@ -17,7 +17,7 @@ public class ClientsRepository : BaseRepository<Client>
         return await context.Clients
             .Where(m => m.Phone == phone)
             .SingleOrDefaultAsync()
-            .ConfigureAwait(false);
+            ;
     }
 
     public async Task<Client> GetClientByNameAsync(string firstName, string lastName)
@@ -39,7 +39,7 @@ public class ClientsRepository : BaseRepository<Client>
             command = command.Where(m => m.LastName == lastName);
         }
 
-        return await command.SingleOrDefaultAsync().ConfigureAwait(false);
+        return await command.SingleOrDefaultAsync();
     }
 
     public async Task<Client> AddClientAsync(string firstName, string lastName, string phone)
@@ -56,8 +56,8 @@ public class ClientsRepository : BaseRepository<Client>
         };
 
         var context = DatabaseContext.Instance;
-        var entity = await context.Clients.AddAsync(client).ConfigureAwait(false);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        var entity = await context.Clients.AddAsync(client);
+        await context.SaveChangesAsync();
         return entity.Entity;
     }
 
@@ -71,7 +71,7 @@ public class ClientsRepository : BaseRepository<Client>
         var isUnPaidExists = await context.Orders
             .Where(m => m.ClientId == entity.Id && m.IsPaid == false)
             .AnyAsync()
-            .ConfigureAwait(false);
+            ;
 
         if (isUnPaidExists)
         {
@@ -84,6 +84,6 @@ public class ClientsRepository : BaseRepository<Client>
         entity.IsDeleted = true;
 
         context.Update(entity);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        await context.SaveChangesAsync();
     }
 }
