@@ -10,7 +10,9 @@ public class Order : IEntity
 
     public int ClientId { get; set; }
 
-    public bool IsPaid { get; set; }
+    public DateTime CreatedAt { get; set; }
+    
+    public DateTime? PaidAt { get; set; }
 
     public virtual Client Client { get; set; }
 

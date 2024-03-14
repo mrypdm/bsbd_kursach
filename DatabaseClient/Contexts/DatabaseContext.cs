@@ -119,6 +119,8 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         modelBuilder.Entity<Order>(entity =>
         {
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK_Orders_Clients");

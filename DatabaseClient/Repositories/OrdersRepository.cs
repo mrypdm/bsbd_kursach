@@ -85,7 +85,7 @@ public class OrdersRepository : BaseRepository<Order>
     {
         var context = DatabaseContext.Instance;
         return await context.Orders
-            .Where(m => m.IsPaid == false)
+            .Where(m => m.PaidAt == null)
             .ToListAsync();
     }
 
@@ -93,7 +93,7 @@ public class OrdersRepository : BaseRepository<Order>
     {
         ArgumentNullException.ThrowIfNull(order);
 
-        order.IsPaid = true;
+        order.PaidAt = DateTime.Now;
         await base.UpdateAsync(order);
     }
 

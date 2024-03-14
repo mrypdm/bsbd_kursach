@@ -68,7 +68,7 @@ public class ClientsRepository : BaseRepository<Client>
         var context = DatabaseContext.Instance;
 
         var isUnPaidExists = await context.Orders
-            .Where(m => m.ClientId == entity.Id && m.IsPaid == false)
+            .Where(m => m.ClientId == entity.Id && m.PaidAt == null)
             .AnyAsync();
 
         if (isUnPaidExists)
