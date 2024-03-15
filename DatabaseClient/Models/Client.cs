@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DatabaseClient.Models;
@@ -16,9 +17,18 @@ public class Client : IEntity
 
     public string Phone { get; set; }
 
+    public bool Sex { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+    [NotMapped]
+    public Gender Gender
+    {
+        get => Sex ? Gender.Female : Gender.Male;
+        set => Sex = value == Gender.Female;
+    }
 }

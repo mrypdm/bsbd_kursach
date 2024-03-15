@@ -41,7 +41,7 @@ public class ClientsRepository : BaseRepository<Client>
         return await command.SingleOrDefaultAsync();
     }
 
-    public async Task<Client> AddClientAsync(string firstName, string lastName, string phone)
+    public async Task<Client> AddClientAsync(string firstName, string lastName, string phone, Gender gender)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
         ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
@@ -51,7 +51,8 @@ public class ClientsRepository : BaseRepository<Client>
         {
             FirstName = firstName,
             LastName = lastName,
-            Phone = phone
+            Phone = phone,
+            Gender = gender
         };
 
         var context = DatabaseContext.Instance;

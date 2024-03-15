@@ -26,11 +26,11 @@ public static class Startup
         var reviewsRepository = new ReviewsRepository();
         var ordersRepository = new OrdersRepository();
 
-        var cl1 = await clientsRepository.AddClientAsync("Maxim", "Shapovalov", "0987654321");
-        var cl2 = await clientsRepository.AddClientAsync("Andrew", "Raficoff", "8005553535");
-        var cl3 = await clientsRepository.AddClientAsync("Vitya", "Aka", "7777777777");
-        var cl4 = await clientsRepository.AddClientAsync("Vasiliy", "Skorobogadko", "0000000000");
-        var cl5 = await clientsRepository.AddClientAsync("Admin", "Adminovich", "1234567890");
+        var cl1 = await clientsRepository.AddClientAsync("Maxim", "Shapovalov", "0987654321", Gender.Male);
+        var cl2 = await clientsRepository.AddClientAsync("Andrew", "Raficoff", "8005553535", Gender.Male);
+        var cl3 = await clientsRepository.AddClientAsync("Vitya", "Aka", "7777777777", Gender.Male);
+        var cl4 = await clientsRepository.AddClientAsync("Vasiliy", "Skorobogadko", "0000000000", Gender.Male);
+        var cl5 = await clientsRepository.AddClientAsync("Admin", "Adminovich", "1234567890", Gender.Female);
 
         var tag1 = await tagsRepository.AddTagAsync("action");
         var tag2 = await tagsRepository.AddTagAsync("fanfiction");
