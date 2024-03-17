@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,17 +11,6 @@ namespace DatabaseClient.Managers;
 [SuppressMessage("Security", "EF1002:Risk of vulnerability to SQL injection.")]
 public class UsersManager
 {
-    private const string ForbiddenCharacters = "[]'\";";
-
-    private static void ValidateCredentials(string name, string value)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(value);
-        if (value.Intersect(ForbiddenCharacters).Any())
-        {
-            throw new ArgumentException($"{name} cannot contains characters: {ForbiddenCharacters}");
-        }
-    }
-
     private static string GetRoleString(Role role)
     {
         return $"bsbd_{role.ToString().ToLowerInvariant()}_role";
@@ -29,8 +18,8 @@ public class UsersManager
 
     public async Task CreateUserAsync(string userName, string password, Role role)
     {
-        ValidateCredentials("User name", userName);
-        ValidateCredentials("Password", password);
+        userName.ValidateForSqlInjection();
+        password.ValidateForSqlInjection();
 
         var roleString = GetRoleString(role);
         var context = DatabaseContext.Instance;
@@ -43,7 +32,7 @@ public class UsersManager
 
     public async Task RemoveUserAsync(string userName)
     {
-        ValidateCredentials("User name", userName);
+        userName.ValidateForSqlInjection();
 
         var context = DatabaseContext.Instance;
         await context.Database
@@ -52,9 +41,9 @@ public class UsersManager
 
     public async Task ChangePasswordAsync(string userName, string newPassword, string oldPassword)
     {
-        ValidateCredentials("User name", userName);
-        ValidateCredentials("Password", newPassword);
-        ValidateCredentials("Old password", oldPassword);
+        userName.ValidateForSqlInjection();
+        newPassword.ValidateForSqlInjection();
+        oldPassword.ValidateForSqlInjection();
 
         var context = DatabaseContext.Instance;
         await context.Database
@@ -65,8 +54,8 @@ public class UsersManager
     // Current context should be authorized with ALTER ANY USER rights
     public async Task ForceChangePasswordAsync(string userName, string newPassword)
     {
-        ValidateCredentials("User name", userName);
-        ValidateCredentials("Password", newPassword);
+        userName.ValidateForSqlInjection();
+        newPassword.ValidateForSqlInjection();
 
         var context = DatabaseContext.Instance;
         await context.Database
