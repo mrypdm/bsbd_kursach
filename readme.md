@@ -23,7 +23,7 @@
     5. i orders
     6. i orders-books
     7. u/i/d reviews
-7. Настроено защищенное подключение к БД (на сервере настроен IIS Dev сертификат)
+7. Настроено защищенное подключение к БД (с помощью Self-Signed сертификата [см. скрипт](./assets/create-mssql-cert.ps1))
 
 ![](./assets/db-diagram.png "Диаграмма БД")
 
