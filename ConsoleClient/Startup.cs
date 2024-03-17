@@ -1,5 +1,7 @@
-﻿using DatabaseClient.Models;
+﻿using DatabaseClient.Contexts;
+using DatabaseClient.Models;
 using DatabaseClient.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
@@ -18,7 +20,7 @@ public static class Startup
         Log.Logger = loggerConfiguration.CreateLogger();
     }
 
-    public static async Task InitDataBase()
+    public static async Task InitDatabaseAsync()
     {
         var clientsRepository = new ClientsRepository();
         var tagsRepository = new TagsRepository();
@@ -82,5 +84,17 @@ public static class Startup
                 Count = 2
             }
         });
+    }
+
+    public static async Task ClearAllAsync()
+    {
+        var context = DatabaseContext.Instance;
+
+        await context.Reviews.ExecuteDeleteAsync();
+        await context.OrdersToBooks.ExecuteDeleteAsync();
+        await context.Books.ExecuteDeleteAsync();
+        await context.Clients.ExecuteDeleteAsync();
+        await context.Orders.ExecuteDeleteAsync();
+        await context.Tags.ExecuteDeleteAsync();
     }
 }
