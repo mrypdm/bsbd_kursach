@@ -107,10 +107,16 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.HasIndex(e => e.Phone, "IX_Clients_Phone").IsUnique();
+            entity.HasIndex(e => e.Phone, "IX_Clients_Phone")
+                .IsUnique()
+                .HasFilter("([Phone]<>'0000000000')");
 
-            entity.Property(e => e.FirstName).IsRequired();
-            entity.Property(e => e.LastName).IsRequired();
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(100)
+                .IsRequired();
+            entity.Property(e => e.LastName)
+                .HasMaxLength(100)
+                .IsRequired();
             entity.Property(e => e.Phone)
                 .IsRequired()
                 .HasMaxLength(10)

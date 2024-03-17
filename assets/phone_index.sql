@@ -1,0 +1,3 @@
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Clients_Phone]
+ON [Clients]([Phone])
+WHERE [Phone] != '0000000000';
