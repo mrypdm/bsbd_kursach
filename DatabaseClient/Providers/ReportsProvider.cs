@@ -27,6 +27,15 @@ public class ReportsProvider
             .SumAsync(m => m.Count * m.Book.Price);
     }
 
+    public async Task<int> RevenueOfGender(Gender gender)
+    {
+        var context = DatabaseContext.Instance;
+        return await context.Orders
+            .Where(m => m.Client.Gender == gender)
+            .SelectMany(m => m.OrdersToBooks)
+            .SumAsync(m => m.Count * m.Book.Price);
+    }
+
     public async Task<double> AverageScoreOfBook(Book book)
     {
         var context = DatabaseContext.Instance;
@@ -94,6 +103,31 @@ public class ReportsProvider
             .OrderByDescending(m => m.Sum)
             .Take(topCount)
             .Select(m => new RevenueClient(m.Client, m.Sum))
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<GenderCount>> CountOfClientsByGender()
+    {
+        var context = DatabaseContext.Instance;
+        return await context.Clients
+            .GroupBy(m => m.Gender)
+            .Select(m => new GenderCount(m.Key, m.Count()))
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<GenderRevenue>> RevenueOfGenders()
+    {
+        var context = DatabaseContext.Instance;
+        return await context.Clients
+            .GroupBy(m => m.Gender)
+            .Select(m => new
+            {
+                Gender = m.Key,
+                TotalSum = m.SelectMany(g => g.Orders
+                        .SelectMany(o => o.OrdersToBooks.Select(orb => orb.Count * orb.Book.Price)))
+                    .Sum()
+            })
+            .Select(m => new GenderRevenue(m.Gender, m.TotalSum))
             .ToListAsync();
     }
 }
