@@ -47,7 +47,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
             InitialCatalog = "bsbd_kursach",
             UserID = _user,
             Password = _password,
-            TrustServerCertificate = true
+            Encrypt = true
         }.ConnectionString;
     }
 
