@@ -4,12 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GuiClient.UserControls"
-             mc:Ignorable="d" d:DesignHeight="25" d:DesignWidth="390">
-    <StackPanel Orientation="Horizontal">
-        <TextBlock Name="UserLabel" Style="{StaticResource RowControl}" TextAlignment="Center" />
-        <Button Name="AuthenticateButton" Content="Log In" Click="Authenticate" Style="{StaticResource RowControl}" />
-        <Button Name="ChangePasswordButton" IsEnabled="False" Content="Change password" Click="ChangePassword"
-                Style="{StaticResource RowControl}" />
+             xmlns:vm="clr-namespace:GuiClient.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{ d:DesignInstance Type=vm:AuthViewModel, IsDesignTimeCreatable=True }"
+             d:DesignHeight="25" d:DesignWidth="390">
 
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding UserText}" Style="{StaticResource RowControl}" TextAlignment="Center" />
+        <Button Content="{Binding AuthButtonText}" Style="{StaticResource RowControl}" Command="{Binding Authenticate}" />
+        <Button Content="Change password" IsEnabled="{Binding ChangePasswordButtonEnabled}"
+                Style="{StaticResource RowControl}" Command="{Binding ChangePassword}" />
     </StackPanel>
 </UserControl>
