@@ -8,8 +8,8 @@
 3. Создали роль **owner** с правами securty, access, read, write и УЗ главного админа **bsbd_main_admin**
 4. Создали роль **readonly** (select на все таблицы)
 5. Создали роль **worker**:
-    1. update/insert books
-    2. u/i/delete books-tags
+    1. u/i books
+    2. u/i/d books-tags
     3. u/i tags
     4. u/i clients
     5. u/i orders
@@ -20,8 +20,8 @@
     2. u/i/d books-tags
     3. u/i/d tags
     4. u/i/d clients
-    5. i orders
-    6. i orders-books
+    5. u/i orders
+    6. u/i/d orders-books
     7. u/i/d reviews
 7. Настроено защищенное подключение к БД (с помощью Self-Signed сертификата [см. скрипт](./assets/create-mssql-cert.ps1))
 
