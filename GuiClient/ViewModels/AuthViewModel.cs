@@ -5,12 +5,14 @@ using Domain;
 using GuiClient.Commands;
 using GuiClient.UserControls;
 using GuiClient.Windows;
+using JetBrains.Annotations;
 
 namespace GuiClient.ViewModels;
 
 public class AuthViewModel(AuthUserControl control) : BaseViewModel<AuthUserControl>(control)
 {
     // For XAML
+    [UsedImplicitly]
     public AuthViewModel()
         : this(null)
     {
