@@ -53,9 +53,16 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     /// </summary>
     public static void LogIn(string user, string password)
     {
-        if (_user != user || _password != password)
+        if (_context != null)
         {
-            LogOff();
+            if (_user != user || _password != password)
+            {
+                LogOff();
+            }
+            else
+            {
+                return;
+            }
         }
 
         _user = user;

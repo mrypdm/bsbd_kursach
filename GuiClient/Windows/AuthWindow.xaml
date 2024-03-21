@@ -5,12 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GuiClient.Windows"
         mc:Ignorable="d"
-        Title="AuthWindow" Height="246" Width="282" ResizeMode="CanMinimize" Style="{StaticResource WinAll}">
-    <DockPanel>
-        <Label Content="Login" DockPanel.Dock="Top" Margin="5,5"/>
-        <TextBox Name="LoginBox" Height="30" DockPanel.Dock="Top" Margin="5,5"/>
-        <Label Content="Password" DockPanel.Dock="Top" Margin="5,5"/>
-        <PasswordBox Name="PasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5"/>
-        <Button Name="AuthButton" Content="Authenticate" Height="30" DockPanel.Dock="Top" Margin="5,5" Click="AuthButton_Click"/>
+        Title="AuthWindow" MinWidth="350" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Style="{StaticResource WinAll}">
+    <DockPanel LastChildFill="False">
+        <Label Content="Login" DockPanel.Dock="Top" Margin="5,5" />
+        <TextBox Name="LoginBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center" />
+        <Label Content="Password" DockPanel.Dock="Top" Margin="5,5" />
+        <PasswordBox Name="PasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center" />
+
+        <Button Name="AuthenticateButton" Content="Log In" Height="30" DockPanel.Dock="Top" Margin="5,5"
+                Click="Authenticate" Visibility="Collapsed" />
+
+        <DockPanel Name="ChangePasswordDock" LastChildFill="False" DockPanel.Dock="Top" Visibility="Collapsed" >
+            <Label Content="New Password" DockPanel.Dock="Top" Margin="5,5" />
+            <PasswordBox Name="NewPasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center" />
+            <Button Content="Change password" Height="30" DockPanel.Dock="Top" Margin="5,5" Click="ChangePassword" />
+        </DockPanel>
+
+
     </DockPanel>
 </Window>

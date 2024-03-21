@@ -1,6 +1,8 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using DatabaseClient.Users;
+using Domain;
 using GuiClient.Windows;
 
 namespace GuiClient.UserControls;
@@ -19,23 +21,52 @@ public partial class AuthUserControl : UserControl
 
     private void Authenticate(object sender, RoutedEventArgs e)
     {
-        CurrentUser = null;
-        ChangePasswordButton.IsEnabled = false;
+        if (CurrentUser != null)
+        {
+            LogOff();
+            return;
+        }
 
         var authWindow = new AuthWindow();
-        var result = authWindow.ShowDialog();
-
-        if (result != true)
+        if (authWindow.ShowDialog() != true)
         {
             return;
         }
 
-        CurrentUser = authWindow.User;
-        ChangePasswordButton.IsEnabled = true;
-        UserLabel.Text = $"{CurrentUser.Role.ToString()}/{CurrentUser.Login}";
+        LogIn(authWindow.User);
     }
 
     private void ChangePassword(object sender, RoutedEventArgs e)
     {
+        if (CurrentUser == null)
+        {
+            Logging.Logger.Error("Something wrong. User can change password while unauthorized");
+            throw new InvalidOperationException("Attempt to change password for null user");
+        }
+        
+        var authWindow = new AuthWindow(true, CurrentUser);
+        if (authWindow.ShowDialog() != true)
+        {
+            return;
+        }
+
+        LogOff();
+    }
+
+    private void LogIn(User user)
+    {
+        AuthenticateButton.Content = "Log Off";
+        CurrentUser = user;
+        ChangePasswordButton.IsEnabled = true;
+        UserLabel.Text = $"{CurrentUser.Role}/{CurrentUser.Login}";
+    }
+
+    private void LogOff()
+    {
+        AuthWindow.LogOff();
+        AuthenticateButton.Content = "Log In";
+        CurrentUser = null;
+        ChangePasswordButton.IsEnabled = false;
+        UserLabel.Text = string.Empty;
     }
 }

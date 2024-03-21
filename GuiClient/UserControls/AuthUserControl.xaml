@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:GuiClient.UserControls"
              mc:Ignorable="d" d:DesignHeight="25" d:DesignWidth="390">
     <StackPanel Orientation="Horizontal">
-        <TextBlock Name="UserLabel" Style="{StaticResource RowControl}" />
-        <Button Content="Authenticate" Click="Authenticate" Style="{StaticResource RowControl}" />
+        <TextBlock Name="UserLabel" Style="{StaticResource RowControl}" TextAlignment="Center" />
+        <Button Name="AuthenticateButton" Content="Log In" Click="Authenticate" Style="{StaticResource RowControl}" />
         <Button Name="ChangePasswordButton" IsEnabled="False" Content="Change password" Click="ChangePassword"
                 Style="{StaticResource RowControl}" />
 
