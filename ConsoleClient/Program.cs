@@ -2,11 +2,10 @@
 
 using ConsoleClient;
 using DatabaseClient.Contexts;
-using DatabaseClient.Managers;
 using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
+using DatabaseClient.Users;
 using Domain;
-using Serilog;
 
 Logging.Init();
 

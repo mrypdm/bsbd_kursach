@@ -3,10 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
-using DatabaseClient.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatabaseClient.Managers;
+namespace DatabaseClient.Users;
 
 [SuppressMessage("Security", "EF1002:Risk of vulnerability to SQL injection.")]
 public class UsersManager
@@ -62,7 +61,7 @@ public class UsersManager
             .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'");
     }
 
-    public async Task<Role> GetUserRoleAsync(string userName)
+    public async Task<User> GetUserAsync(string userName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
 
@@ -76,10 +75,10 @@ public class UsersManager
         {
             if (roles.Contains(GetRoleString(role)))
             {
-                return role;
+                return new User(userName, role);
             }
         }
 
-        return Role.Unknown;
+        return new User(userName, Role.Unknown);
     }
 }
