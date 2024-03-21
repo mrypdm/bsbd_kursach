@@ -1,4 +1,4 @@
-﻿using DatabaseClient.Contexts;
+using DatabaseClient.Contexts;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +9,6 @@ namespace ConsoleClient;
 
 public static class Startup
 {
-    public static void InitLogging()
-    {
-        const string format = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}";
-        const string filePath = "./logs/log.txt";
-
-        var loggerConfiguration = new LoggerConfiguration()
-            .WriteTo.Async(p => p.Console(LogEventLevel.Information, format))
-            .WriteTo.Async(p => p.File(filePath, LogEventLevel.Debug, format));
-        Log.Logger = loggerConfiguration.CreateLogger();
-    }
-
     public static async Task InitDatabaseAsync()
     {
         var clientsRepository = new ClientsRepository();

@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using DatabaseClient.Models;
+using Domain;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Serilog.Extensions.Logging;
 
 namespace DatabaseClient.Contexts;
 
-[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
 {
     private static string _user;
@@ -16,8 +15,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     private static string _password;
 
     private static DatabaseContext _context;
-
-    private static SerilogLoggerFactory _loggerFactory;
 
     /// <summary>
     /// Current context
@@ -66,14 +63,15 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         var connectionString = GetConnectionString();
 
-        _loggerFactory = new SerilogLoggerFactory();
+        var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>()
+            .UseSqlServer(connectionString);
 
-        var options = new DbContextOptionsBuilder<DatabaseContext>()
-            .UseSqlServer(connectionString)
-            .UseLoggerFactory(_loggerFactory)
-            .Options;
+        if (Logging.IsInit)
+        {
+            optionsBuilder = optionsBuilder.UseLoggerFactory(Logging.LoggerFactory);
+        }
 
-        _context = new DatabaseContext(options);
+        _context = new DatabaseContext(optionsBuilder.Options);
     }
 
     /// <summary>
@@ -82,9 +80,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     public static void LogOff()
     {
         _context?.Dispose();
-        _loggerFactory?.Dispose();
         _context = null;
-        _loggerFactory = null;
     }
 
     // Database configuration
