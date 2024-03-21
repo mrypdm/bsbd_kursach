@@ -1,0 +1,15 @@
+<UserControl x:Class="GuiClient.UserControls.AuthUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:GuiClient.UserControls"
+             mc:Ignorable="d" d:DesignHeight="25" d:DesignWidth="390">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Name="UserLabel" Style="{StaticResource RowControl}" />
+        <Button Content="Authenticate" Click="Authenticate" Style="{StaticResource RowControl}" />
+        <Button Name="ChangePasswordButton" IsEnabled="False" Content="Change password" Click="ChangePassword"
+                Style="{StaticResource RowControl}" />
+
+    </StackPanel>
+</UserControl>

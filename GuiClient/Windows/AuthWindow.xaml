@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GuiClient.Windows"
         mc:Ignorable="d"
-        Title="AuthWindow" Height="246" Width="282" ResizeMode="CanMinimize"
-        FontFamily="Century Gothic" FontSize="18">
+        Title="AuthWindow" Height="246" Width="282" ResizeMode="CanMinimize" Style="{StaticResource WinAll}">
     <DockPanel>
         <Label Content="Login" DockPanel.Dock="Top" Margin="5,5"/>
         <TextBox Name="LoginBox" Height="30" DockPanel.Dock="Top" Margin="5,5"/>

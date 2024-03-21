@@ -1,12 +1,59 @@
-﻿<UserControl x:Class="GuiClient.UserControls.WorkerUserControl"
+<UserControl x:Class="GuiClient.UserControls.WorkerUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GuiClient.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+             mc:Ignorable="d" Width="925" Height="475">
+    <DockPanel LastChildFill="False">
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Add book" Style="{StaticResource RowControl}" />
+            <Button Content="Update book" Style="{StaticResource RowControl}" />
+            <Button Content="Get book by ID" Style="{StaticResource RowControl}" />
+            <Button Content="Get books by Title" Style="{StaticResource RowControl}" />
+            <Button Content="Get books by Author" Style="{StaticResource RowControl}" />
+            <Button Content="Get books by Tags" Style="{StaticResource RowControl}" />
+            <Button Content="Get with count" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Add tag" Style="{StaticResource RowControl}" />
+            <Button Content="Update tag" Style="{StaticResource RowControl}" />
+            <Button Content="Get tag by Name" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Attach tag to book" Style="{StaticResource RowControl}" />
+            <Button Content="Detach tag from book" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Add client" Style="{StaticResource RowControl}" />
+            <Button Content="Update client" Style="{StaticResource RowControl}" />
+            <Button Content="Get client by Name" Style="{StaticResource RowControl}" />
+            <Button Content="Get client by Phone" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Add order" Style="{StaticResource RowControl}" />
+            <Button Content="Update order" Style="{StaticResource RowControl}" />
+            <Button Content="Get unpaid orders" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Add review" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Revenue of Genders" Style="{StaticResource RowControl}" />
+            <Button Content="Top money clients" Style="{StaticResource RowControl}" />
+            <Button Content="Count of clients by Gender" Style="{StaticResource RowControl}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Top" Style="{StaticResource DockStack}">
+            <Button Content="Top sold books" Style="{StaticResource RowControl}" />
+            <Button Content="Top score books" Style="{StaticResource RowControl}" />
+            <Button Content="Top money books" Style="{StaticResource RowControl}" />
+        </StackPanel>
+    </DockPanel>
 </UserControl>
