@@ -1,0 +1,17 @@
+<Window x:Class="GuiClient.Windows.AuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GuiClient.Windows"
+        mc:Ignorable="d"
+        Title="AuthWindow" Height="246" Width="282" ResizeMode="CanMinimize"
+        FontFamily="Century Gothic" FontSize="18">
+    <DockPanel>
+        <Label Content="Login" DockPanel.Dock="Top" Margin="5,5"/>
+        <TextBox Name="LoginBox" Height="30" DockPanel.Dock="Top" Margin="5,5"/>
+        <Label Content="Password" DockPanel.Dock="Top" Margin="5,5"/>
+        <PasswordBox Name="PasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5"/>
+        <Button Name="AuthButton" Content="Authenticate" Height="30" DockPanel.Dock="Top" Margin="5,5" Click="AuthButton_Click"/>
+    </DockPanel>
+</Window>

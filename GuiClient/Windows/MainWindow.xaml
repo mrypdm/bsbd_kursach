@@ -5,5 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid />
+    <Grid >
+        <Button Content="Authenticate" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="100" Click="AuthButton_OnClick"/>
+    </Grid>
 </Window>
