@@ -1,7 +1,7 @@
-using GuiClient.ViewModels;
-using UserControl = System.Windows.Controls.UserControl;
+using System.Windows.Controls;
+using GuiClient.ViewModels.UserControls;
 
-namespace GuiClient.UserControls;
+namespace GuiClient.Views.UserControls;
 
 /// <summary>
 /// Interaction logic for AuthUserControl.xaml

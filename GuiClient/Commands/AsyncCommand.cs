@@ -11,7 +11,7 @@ public class AsyncCommand(Func<Task> action, Func<bool> canExecute = null) : ICo
         add => CommandManager.RequerySuggested += value;
         remove => CommandManager.RequerySuggested -= value;
     }
-    
+
     public bool CanExecute(object parameter)
     {
         return canExecute?.Invoke() ?? true;

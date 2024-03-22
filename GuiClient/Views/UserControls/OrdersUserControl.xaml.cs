@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace GuiClient.UserControls;
+namespace GuiClient.Views.UserControls;
 
 public partial class OrdersUserControl : UserControl
 {

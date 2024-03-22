@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 
-namespace GuiClient.UserControls;
+namespace GuiClient.Views.UserControls;
+
 /// <summary>
 /// Interaction logic for OwnerUserControl.xaml
 /// </summary>

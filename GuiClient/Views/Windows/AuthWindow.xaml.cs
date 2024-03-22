@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace GuiClient.Windows;
+namespace GuiClient.Views.Windows;
 
 /// <summary>
 /// Interaction logic for AuthWindow.xaml

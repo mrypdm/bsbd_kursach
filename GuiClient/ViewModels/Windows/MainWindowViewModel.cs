@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using GuiClient.Extensions;
-using GuiClient.Windows;
+using GuiClient.ViewModels.UserControls;
+using GuiClient.Views.Windows;
 
-namespace GuiClient.ViewModels;
+namespace GuiClient.ViewModels.Windows;
 
 public class MainWindowViewModel : WindowViewModel<MainWindow>
 {

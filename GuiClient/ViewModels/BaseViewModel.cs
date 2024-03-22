@@ -24,7 +24,11 @@ public abstract class BaseViewModel<TType> : INotifyPropertyChanged where TType 
 
     protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        if (EqualityComparer<T>.Default.Equals(field, value))
+        {
+            return false;
+        }
+
         field = value;
         OnPropertyChanged(propertyName);
         return true;

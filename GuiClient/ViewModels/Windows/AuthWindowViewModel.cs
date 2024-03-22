@@ -5,9 +5,9 @@ using System.Windows.Input;
 using DatabaseClient.Contexts;
 using DatabaseClient.Users;
 using GuiClient.Commands;
-using GuiClient.Windows;
+using GuiClient.Views.Windows;
 
-namespace GuiClient.ViewModels;
+namespace GuiClient.ViewModels.Windows;
 
 public class AuthWindowViewModel : WindowViewModel<AuthWindow>
 {
@@ -35,7 +35,10 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
 
     public ICommand LogIn => new AsyncCommand(LogInInternal);
 
-    public static void LogOff() => DatabaseContext.LogOff();
+    public static void LogOff()
+    {
+        DatabaseContext.LogOff();
+    }
 
     private async Task ChangePasswordInternal()
     {

@@ -1,8 +1,9 @@
 using System.Windows;
-using GuiClient.ViewModels;
+using GuiClient.ViewModels.UserControls;
+using GuiClient.ViewModels.Windows;
 using JetBrains.Annotations;
 
-namespace GuiClient.Windows;
+namespace GuiClient.Views.Windows;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

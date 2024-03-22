@@ -3,14 +3,15 @@ using System.Windows.Input;
 using DatabaseClient.Users;
 using Domain;
 using GuiClient.Commands;
-using GuiClient.UserControls;
+using GuiClient.ViewModels.Windows;
+using GuiClient.Views.UserControls;
 
-namespace GuiClient.ViewModels;
+namespace GuiClient.ViewModels.UserControls;
 
 public class AuthControlViewModel(AuthUserControl control) : BaseViewModel<AuthUserControl>(control)
 {
-    private bool _isChangePasswordEnabled;
     private User _currentUser;
+    private bool _isChangePasswordEnabled;
 
     public User CurrentUser
     {
