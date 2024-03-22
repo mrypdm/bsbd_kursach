@@ -13,6 +13,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new MainViewModel(this, AuthUserControl.DataContext as AuthViewModel);
+        DataContext = new MainWindowViewModel(this, AuthUserControl.DataContext as AuthControlViewModel);
     }
 }

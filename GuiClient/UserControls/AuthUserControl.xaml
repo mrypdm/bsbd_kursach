@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:GuiClient.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{ d:DesignInstance Type=vm:AuthViewModel, IsDesignTimeCreatable=True }"
+             d:DataContext="{ d:DesignInstance Type=vm:AuthControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="25" d:DesignWidth="390">
 
     <StackPanel Orientation="Horizontal">

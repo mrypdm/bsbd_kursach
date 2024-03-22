@@ -3,24 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GuiClient.Windows"
+        xmlns:vm="clr-namespace:GuiClient.ViewModels"
         mc:Ignorable="d"
-        Title="AuthWindow" MinWidth="350" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" Style="{StaticResource WinAll}">
+        d:DataContext="{ d:DesignInstance Type=vm:AuthWindowViewModel, IsDesignTimeCreatable=True }"
+        Title="AuthWindow" MinWidth="350" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Style="{StaticResource WinAll}">
     <DockPanel LastChildFill="False">
-        <Label Content="Login" DockPanel.Dock="Top" Margin="5,5" />
-        <TextBox x:Name="LoginBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center" />
+        <Label Content="User name" DockPanel.Dock="Top" Margin="5,5" />
+        <TextBox x:Name="UserNameBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center"
+                 IsEnabled="{Binding IsUserNameEnabled}" />
         <Label Content="Password" DockPanel.Dock="Top" Margin="5,5" />
-        <PasswordBox x:Name="PasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center" />
+        <PasswordBox x:Name="PasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5"
+                     VerticalContentAlignment="Center" />
 
-        <Button x:Name="AuthenticateButton" Content="Log In" Height="30" DockPanel.Dock="Top" Margin="5,5"
-                Click="Authenticate" Visibility="Collapsed" />
+        <Button Content="Log In" Height="30" DockPanel.Dock="Top" Margin="5,5"
+                Visibility="{Binding LoginModeVisibility}" Command="{Binding LogIn}" />
 
-        <DockPanel x:Name="ChangePasswordDock" LastChildFill="False" DockPanel.Dock="Top" Visibility="Collapsed" >
+        <DockPanel LastChildFill="False" DockPanel.Dock="Top"
+                   Visibility="{Binding ChangePasswordModeVisibility}">
             <Label Content="New Password" DockPanel.Dock="Top" Margin="5,5" />
-            <PasswordBox x:Name="NewPasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center" />
-            <Button Content="Change password" Height="30" DockPanel.Dock="Top" Margin="5,5" Click="ChangePassword" />
+            <PasswordBox x:Name="NewPasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5"
+                         VerticalContentAlignment="Center" />
+            <Button Content="Change password" Height="30" DockPanel.Dock="Top" Margin="5,5"
+                    Command="{Binding ChangePassword}" />
         </DockPanel>
-
-
     </DockPanel>
 </Window>

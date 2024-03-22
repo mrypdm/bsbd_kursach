@@ -4,20 +4,11 @@ using DatabaseClient.Users;
 using Domain;
 using GuiClient.Commands;
 using GuiClient.UserControls;
-using GuiClient.Windows;
-using JetBrains.Annotations;
 
 namespace GuiClient.ViewModels;
 
-public class AuthViewModel(AuthUserControl control) : BaseViewModel<AuthUserControl>(control)
+public class AuthControlViewModel(AuthUserControl control) : BaseViewModel<AuthUserControl>(control)
 {
-    // For XAML
-    [UsedImplicitly]
-    public AuthViewModel()
-        : this(null)
-    {
-    }
-
     private bool _isChangePasswordEnabled;
     private User _currentUser;
 
@@ -40,7 +31,7 @@ public class AuthViewModel(AuthUserControl control) : BaseViewModel<AuthUserCont
 
     public string AuthButtonText => CurrentUser == null ? "Log In" : "Log Off";
 
-    public string UserText => CurrentUser == null ? string.Empty : $"{CurrentUser.Role}/{CurrentUser.Login}";
+    public string UserText => CurrentUser == null ? string.Empty : $"{CurrentUser.Role}/{CurrentUser.UserName}";
 
     public ICommand Authenticate => new Command(AuthenticateInternal);
 
@@ -54,13 +45,14 @@ public class AuthViewModel(AuthUserControl control) : BaseViewModel<AuthUserCont
             return;
         }
 
-        var authWindow = new AuthWindow();
-        if (authWindow.ShowDialog() != true)
+        var authWindowViewModel = new AuthWindowViewModel();
+        if (authWindowViewModel.ShowDialog() != true)
         {
             return;
         }
 
-        LogIn(authWindow.User);
+        CurrentUser = authWindowViewModel.User;
+        ChangePasswordButtonEnabled = true;
     }
 
     private void ChangePasswordInternal()
@@ -71,8 +63,8 @@ public class AuthViewModel(AuthUserControl control) : BaseViewModel<AuthUserCont
             throw new InvalidOperationException("Attempt to change password for null user");
         }
 
-        var authWindow = new AuthWindow(true, CurrentUser);
-        if (authWindow.ShowDialog() != true)
+        var authWindowViewModel = new AuthWindowViewModel(CurrentUser);
+        if (authWindowViewModel.ShowDialog() != true)
         {
             return;
         }
@@ -80,15 +72,9 @@ public class AuthViewModel(AuthUserControl control) : BaseViewModel<AuthUserCont
         LogOff();
     }
 
-    private void LogIn(User user)
-    {
-        CurrentUser = user;
-        ChangePasswordButtonEnabled = true;
-    }
-
     private void LogOff()
     {
-        AuthWindow.LogOff();
+        AuthWindowViewModel.LogOff();
         CurrentUser = null;
         ChangePasswordButtonEnabled = false;
     }

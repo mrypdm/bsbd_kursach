@@ -6,7 +6,7 @@
         xmlns:uc="clr-namespace:GuiClient.UserControls"
         xmlns:vm="clr-namespace:GuiClient.ViewModels"
         mc:Ignorable="d"
-        d:DataContext="{ d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True }"
+        d:DataContext="{ d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=True }"
         Title="MainWindow" Height="450" Width="950" Style="{StaticResource WinAll}">
     <Grid>
         <uc:AuthUserControl x:Name="AuthUserControl" HorizontalAlignment="Right" VerticalAlignment="Top"

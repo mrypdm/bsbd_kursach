@@ -61,7 +61,7 @@ public class UsersManager
             .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'");
     }
 
-    public async Task<User> GetUserAsync(string userName)
+    public async Task<Role> GetUserRoleAsync(string userName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
 
@@ -75,10 +75,10 @@ public class UsersManager
         {
             if (roles.Contains(GetRoleString(role)))
             {
-                return new User(userName, role);
+                return role;
             }
         }
 
-        return new User(userName, Role.Unknown);
+        return Role.Unknown;
     }
 }

@@ -1,12 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace GuiClient.ViewModels;
 
-public abstract class BaseViewModel<TType>(TType control) : INotifyPropertyChanged
+public abstract class BaseViewModel<TType> : INotifyPropertyChanged where TType : FrameworkElement
 {
-    protected TType Control { get; } = control;
+    protected BaseViewModel(TType control)
+    {
+        Control = control;
+        Control.DataContext = this;
+    }
+
+    protected TType Control { get; }
 
     public event PropertyChangedEventHandler PropertyChanged;
 

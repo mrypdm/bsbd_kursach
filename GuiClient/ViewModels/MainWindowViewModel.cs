@@ -1,30 +1,20 @@
 ﻿using System.Windows;
 using DatabaseClient.Users;
 using GuiClient.Windows;
-using JetBrains.Annotations;
 
 namespace GuiClient.ViewModels;
 
-public class MainViewModel : BaseViewModel<MainWindow>
+public class MainWindowViewModel : WindowViewModel<MainWindow>
 {
-    private readonly AuthViewModel _authViewModel;
+    private readonly AuthControlViewModel _authControlViewModel;
 
-    /// <summary>
-    /// For XAML
-    /// </summary>
-    [UsedImplicitly]
-    public MainViewModel()
-        : base(null)
-    {
-    }
-
-    public MainViewModel(MainWindow window, AuthViewModel authViewModel)
+    public MainWindowViewModel(MainWindow window, AuthControlViewModel authControlViewModel)
         : base(window)
     {
-        _authViewModel = authViewModel;
-        _authViewModel.PropertyChanged += (_, args) =>
+        _authControlViewModel = authControlViewModel;
+        _authControlViewModel.PropertyChanged += (_, args) =>
         {
-            if (args.PropertyName == nameof(AuthViewModel.CurrentUser))
+            if (args.PropertyName == nameof(AuthControlViewModel.CurrentUser))
             {
                 OnPropertyChanged(nameof(OwnerButtonsVisibility));
                 OnPropertyChanged(nameof(AdminButtonsVisibility));
@@ -41,7 +31,7 @@ public class MainViewModel : BaseViewModel<MainWindow>
 
     private Visibility GetVisibilityForRole(Role role)
     {
-        var isHasRole = _authViewModel.CurrentUser != null && _authViewModel.CurrentUser.Role >= role;
+        var isHasRole = _authControlViewModel.CurrentUser != null && _authControlViewModel.CurrentUser.Role >= role;
         return isHasRole ? Visibility.Visible : Visibility.Collapsed;
     }
 }
