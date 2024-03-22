@@ -4,9 +4,9 @@ namespace GuiClient.UserControls;
 /// <summary>
 /// Interaction logic for OwnerUserControl.xaml
 /// </summary>
-public partial class OwnerUserControl : UserControl
+public partial class UsersUserControl : UserControl
 {
-    public OwnerUserControl()
+    public UsersUserControl()
     {
         InitializeComponent();
     }

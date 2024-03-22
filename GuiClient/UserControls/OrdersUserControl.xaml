@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="GuiClient.UserControls.OrdersUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="50" d:DesignWidth="300">
+    <StackPanel Orientation="Horizontal">
+        <Button Content="Add Order" Style="{StaticResource RowControl}" />
+        <Button Content="Get Order by ID" Style="{StaticResource RowControl}" />
+        <Button Content="Get unpaid Orders" Style="{StaticResource RowControl}" />
+        <Button Content="Get Books by Author" Style="{StaticResource RowControl}" />
+        <Button Content="Get Books by Tags" Style="{StaticResource RowControl}" />
+        <Button Content="Get Books with Count" Style="{StaticResource RowControl}" />
+    </StackPanel>
+</UserControl>

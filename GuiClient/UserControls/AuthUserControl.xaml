@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:GuiClient.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{ d:DesignInstance Type=vm:AuthControlViewModel, IsDesignTimeCreatable=True }"
-             d:DesignHeight="25" d:DesignWidth="390">
+             d:DesignHeight="25" d:DesignWidth="500">
 
     <StackPanel Orientation="Horizontal">
         <TextBlock Text="{Binding UserText}" Style="{StaticResource RowControl}" TextAlignment="Center" />
