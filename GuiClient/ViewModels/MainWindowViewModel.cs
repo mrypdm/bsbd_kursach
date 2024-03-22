@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using DatabaseClient.Users;
+using GuiClient.Extensions;
 using GuiClient.Windows;
 
 namespace GuiClient.ViewModels;
@@ -23,15 +23,9 @@ public class MainWindowViewModel : WindowViewModel<MainWindow>
         };
     }
 
-    public Visibility OwnerButtonsVisibility => GetVisibilityForRole(Role.Owner);
+    public Visibility OwnerButtonsVisibility => _authControlViewModel.CurrentUser.IsOwner().AsVisibility();
 
-    public Visibility AdminButtonsVisibility => GetVisibilityForRole(Role.Admin);
+    public Visibility AdminButtonsVisibility => _authControlViewModel.CurrentUser.IsAdmin().AsVisibility();
 
-    public Visibility WorkerButtonsVisibility => GetVisibilityForRole(Role.Worker);
-
-    private Visibility GetVisibilityForRole(Role role)
-    {
-        var isHasRole = _authControlViewModel.CurrentUser != null && _authControlViewModel.CurrentUser.Role >= role;
-        return isHasRole ? Visibility.Visible : Visibility.Collapsed;
-    }
+    public Visibility WorkerButtonsVisibility => _authControlViewModel.CurrentUser.IsWorker().AsVisibility();
 }
