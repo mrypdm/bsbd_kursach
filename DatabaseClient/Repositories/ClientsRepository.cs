@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ClientsRepository : BaseRepository<Client>
+public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<Client>(factory)
 {
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Clients
             .Where(m => m.Phone == phone)
             .SingleOrDefaultAsync();
@@ -24,7 +24,7 @@ public class ClientsRepository : BaseRepository<Client>
         ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
         ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
 
         var command = context.Clients as IQueryable<Client>;
 
@@ -55,7 +55,7 @@ public class ClientsRepository : BaseRepository<Client>
             Gender = gender
         };
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         var entity = await context.Clients.AddAsync(client);
         await context.SaveChangesAsync();
         return entity.Entity;
@@ -66,7 +66,7 @@ public class ClientsRepository : BaseRepository<Client>
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
 
         var isUnPaidExists = await context.Orders
             .Where(m => m.ClientId == entity.Id && m.PaidAt == null)

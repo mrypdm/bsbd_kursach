@@ -7,11 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public abstract class BaseRepository<TEntity> where TEntity : class, IEntity
+public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) where TEntity : class, IEntity
 {
+    protected DatabaseContextFactory Factory { get; } = factory;
+    
     public virtual async Task<TEntity> GetById(int id)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Set<TEntity>()
             .Where(m => m.Id.Equals(id))
             .SingleOrDefaultAsync();
@@ -21,7 +23,7 @@ public abstract class BaseRepository<TEntity> where TEntity : class, IEntity
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         context.Set<TEntity>().Update(entity);
         await context.SaveChangesAsync();
     }
@@ -30,7 +32,7 @@ public abstract class BaseRepository<TEntity> where TEntity : class, IEntity
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         context.Set<TEntity>().Remove(entity);
         await context.SaveChangesAsync();
     }

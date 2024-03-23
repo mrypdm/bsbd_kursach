@@ -9,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class BooksRepository : BaseRepository<Book>
+public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory)
 {
     public async Task<ICollection<Book>> GetBooksByNameAsync(string title)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Books
             .Where(m => m.Title == title)
             .ToListAsync();
@@ -25,7 +25,7 @@ public class BooksRepository : BaseRepository<Book>
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(author);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Books
             .Where(m => m.Author == author)
             .ToListAsync();
@@ -41,7 +41,7 @@ public class BooksRepository : BaseRepository<Book>
             throw new ArgumentException("Tags are empty");
         }
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
 
         var command = safeTags.Aggregate(context.Books as IQueryable<Book>,
             (current, tag) => current.Where(m => m.Tags.Select(t => t.Title).Contains(tag)));
@@ -51,7 +51,7 @@ public class BooksRepository : BaseRepository<Book>
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Books
             .Where(m => m.Count < count)
             .ToListAsync();
@@ -71,7 +71,7 @@ public class BooksRepository : BaseRepository<Book>
             Count = count
         };
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         var entity = await context.Books.AddAsync(book);
         await context.SaveChangesAsync();
         return entity.Entity;
@@ -79,13 +79,13 @@ public class BooksRepository : BaseRepository<Book>
 
     public async Task AddTagToBookAsync(Book book, Tag tag)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         await context.AddTagToBook(book, tag);
     }
 
     public async Task RemoveTagFromBookAsync(Book book, Tag tag)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         await context.RemoveTagFromBook(book, tag);
     }
 }

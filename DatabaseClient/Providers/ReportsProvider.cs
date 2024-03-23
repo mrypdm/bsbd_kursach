@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Providers;
 
-public class ReportsProvider
+public class ReportsProvider(DatabaseContextFactory factory)
 {
     public async Task<int> CountOfSales(Book book)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.OrdersToBooks
             .Where(m => m.BookId == book.Id)
             .SumAsync(m => m.Count);
@@ -20,7 +20,7 @@ public class ReportsProvider
 
     public async Task<int> RevenueOfClient(Client client)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Orders
             .Where(m => m.ClientId == client.Id)
             .SelectMany(m => m.OrdersToBooks)
@@ -29,7 +29,7 @@ public class ReportsProvider
 
     public async Task<int> RevenueOfGender(Gender gender)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Orders
             .Where(m => m.Client.Gender == gender)
             .SelectMany(m => m.OrdersToBooks)
@@ -38,7 +38,7 @@ public class ReportsProvider
 
     public async Task<double> AverageScoreOfBook(Book book)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Reviews
             .Where(m => m.BookId == book.Id)
             .AverageAsync(m => m.Score);
@@ -46,7 +46,7 @@ public class ReportsProvider
 
     public async Task<ICollection<ScoredBook>> MostScoredBooks(int topCount = 10)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Books
             .Select(m => new
             {
@@ -61,7 +61,7 @@ public class ReportsProvider
 
     public async Task<ICollection<SoldBook>> MostPopularBooks(int topCount = 10)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Books
             .Select(m => new
             {
@@ -76,7 +76,7 @@ public class ReportsProvider
 
     public async Task<ICollection<RevenueBook>> MostMakeMoneyBooks(int topCount = 10)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Books
             .Select(m => new
             {
@@ -91,7 +91,7 @@ public class ReportsProvider
 
     public async Task<ICollection<RevenueClient>> MostMakeMoneyClients(int topCount = 10)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Clients
             .Select(m => new
             {
@@ -108,7 +108,7 @@ public class ReportsProvider
 
     public async Task<ICollection<GenderCount>> CountOfClientsByGender()
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Clients
             .GroupBy(m => m.Gender)
             .Select(m => new GenderCount(m.Key, m.Count()))
@@ -117,7 +117,7 @@ public class ReportsProvider
 
     public async Task<ICollection<GenderRevenue>> RevenueOfGenders()
     {
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         return await context.Clients
             .GroupBy(m => m.Gender)
             .Select(m => new

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DatabaseClient.Users;
 
 [SuppressMessage("Security", "EF1002:Risk of vulnerability to SQL injection.")]
-public class UsersManager
+public class UsersManager(DatabaseContextFactory factory)
 {
     private static string GetRoleString(Role role)
     {
@@ -21,7 +21,7 @@ public class UsersManager
         password.ValidateForSqlInjection();
 
         var roleString = GetRoleString(role);
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
 
         await context.Database
             .ExecuteSqlRawAsync($"CREATE USER [{userName}] WITH PASSWORD=N'{password}'");
@@ -33,21 +33,21 @@ public class UsersManager
     {
         userName.ValidateForSqlInjection();
 
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         await context.Database
             .ExecuteSqlRawAsync($"DROP USER [{userName}]");
     }
 
-    public async Task ChangePasswordAsync(string userName, string newPassword, string oldPassword)
+    public async Task ChangePasswordAsync(string userName, string password, string newPassword)
     {
         userName.ValidateForSqlInjection();
         newPassword.ValidateForSqlInjection();
-        oldPassword.ValidateForSqlInjection();
+        password.ValidateForSqlInjection();
 
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         await context.Database
             .ExecuteSqlRawAsync(
-                $"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}' OLD_PASSWORD=N'{oldPassword}'");
+                $"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}' OLD_PASSWORD=N'{password}'");
     }
 
     // Current context should be authorized with ALTER ANY USER rights
@@ -56,7 +56,7 @@ public class UsersManager
         userName.ValidateForSqlInjection();
         newPassword.ValidateForSqlInjection();
 
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
         await context.Database
             .ExecuteSqlRawAsync($"ALTER USER [{userName}] WITH PASSWORD=N'{newPassword}'");
     }
@@ -65,7 +65,7 @@ public class UsersManager
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
 
-        var context = DatabaseContext.Instance;
+        await using var context = factory.Create();
 
         var roles = await context.Database
             .SqlQuery<string>($"exec bsbd_get_user_roles {userName}")

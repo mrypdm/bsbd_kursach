@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class TagsRepository : BaseRepository<Tag>
+public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag>(factory)
 {
     public async Task<Tag> GetTagByNameAsync(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Tags
             .Where(m => m.Title == name)
             .SingleOrDefaultAsync();
@@ -29,7 +29,7 @@ public class TagsRepository : BaseRepository<Tag>
             Title = name
         };
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         var entity = await context.AddAsync(tag);
         await context.SaveChangesAsync();
         return entity.Entity;
@@ -37,13 +37,13 @@ public class TagsRepository : BaseRepository<Tag>
 
     public async Task AddBookToTagAsync(Book book, Tag tag)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         await context.AddTagToBook(book, tag);
     }
 
     public async Task RemoveBookFromTagAsync(Book book, Tag tag)
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         await context.RemoveTagFromBook(book, tag);
     }
 }

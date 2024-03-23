@@ -1,27 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using DatabaseClient.Models;
-using Domain;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Contexts;
 
 public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
 {
-    private static string _user;
-
-    private static string _password;
-
-    private static DatabaseContext _context;
-
-    /// <summary>
-    /// Current context
-    /// </summary>
-    /// <exception cref="InvalidOperationException">If user is not authenticated</exception>
-    public static DatabaseContext Instance => _context ?? throw new InvalidOperationException("User unauthorized");
-
     // Tables
 
     public DbSet<Book> Books { get; set; }
@@ -35,60 +20,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     public DbSet<Review> Reviews { get; set; }
 
     public DbSet<Tag> Tags { get; set; }
-
-    private static string GetConnectionString()
-    {
-        return new SqlConnectionStringBuilder
-        {
-            DataSource = "SHAPOVAL-M-NB\\SQLEXPRESS",
-            InitialCatalog = "bsbd_kursach",
-            UserID = _user,
-            Password = _password,
-            Encrypt = true
-        }.ConnectionString;
-    }
-
-    /// <summary>
-    /// Creates context for user
-    /// </summary>
-    public static void LogIn(string user, string password)
-    {
-        if (_context != null)
-        {
-            if (_user != user || _password != password)
-            {
-                LogOff();
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        _user = user;
-        _password = password;
-
-        var connectionString = GetConnectionString();
-
-        var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>()
-            .UseSqlServer(connectionString);
-
-        if (Logging.IsInit)
-        {
-            optionsBuilder = optionsBuilder.UseLoggerFactory(Logging.LoggerFactory);
-        }
-
-        _context = new DatabaseContext(optionsBuilder.Options);
-    }
-
-    /// <summary>
-    /// Disposes current context
-    /// </summary>
-    public static void LogOff()
-    {
-        _context?.Dispose();
-        _context = null;
-    }
 
     // Database configuration
 

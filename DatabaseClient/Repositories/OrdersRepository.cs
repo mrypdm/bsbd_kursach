@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersRepository : BaseRepository<Order>
+public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<Order>(factory)
 {
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {
         ArgumentNullException.ThrowIfNull(client);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Orders.Where(m => m.ClientId == client.Id).ToListAsync();
     }
 
@@ -22,7 +22,7 @@ public class OrdersRepository : BaseRepository<Order>
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync();
     }
 
@@ -44,7 +44,7 @@ public class OrdersRepository : BaseRepository<Order>
             OrdersToBooks = books
         };
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
 
         foreach (var book in books)
         {
@@ -75,7 +75,7 @@ public class OrdersRepository : BaseRepository<Order>
     {
         ArgumentNullException.ThrowIfNull(order);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.OrdersToBooks
             .Where(m => m.OrderId == order.Id)
             .SumAsync(m => m.Count * m.Book.Price);
@@ -83,7 +83,7 @@ public class OrdersRepository : BaseRepository<Order>
 
     public async Task<ICollection<Order>> GetUnpaidOrdersAsync()
     {
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Orders
             .Where(m => m.PaidAt == null)
             .ToListAsync();

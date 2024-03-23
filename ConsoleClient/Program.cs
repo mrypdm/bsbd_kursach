@@ -1,5 +1,6 @@
 // This project is used for testing
 
+using System.Net;
 using ConsoleClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Providers;
@@ -9,15 +10,17 @@ using Domain;
 
 Logging.Init();
 
-DatabaseContext.LogIn("bsbd_owner", "very_secret_Password_forOwner");
+var username = "bsbd_owner";
+var password = "very_secret_Password_forOwner";
 
-var clientsRepository = new ClientsRepository();
-var tagsRepository = new TagsRepository();
-var booksRepository = new BooksRepository();
-var reviewsRepository = new ReviewsRepository();
-var ordersRepository = new OrdersRepository();
-var usersManager = new UsersManager();
-var reportsProvider = new ReportsProvider();
+var factory = new DatabaseContextFactory(new NetworkCredential(username, password));
 
-DatabaseContext.LogOff();
+var clientsRepository = new ClientsRepository(factory);
+var tagsRepository = new TagsRepository(factory);
+var booksRepository = new BooksRepository(factory);
+var reviewsRepository = new ReviewsRepository(factory);
+var ordersRepository = new OrdersRepository(factory);
+var usersManager = new UsersManager(factory);
+var reportsProvider = new ReportsProvider(factory);
+
 Logging.Close();

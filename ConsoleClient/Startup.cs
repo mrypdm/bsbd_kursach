@@ -1,21 +1,22 @@
+using System.Net;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Serilog.Events;
 
 namespace ConsoleClient;
 
 public static class Startup
 {
-    public static async Task InitDatabaseAsync()
+    public static async Task InitDatabaseAsync(string username, string password)
     {
-        var clientsRepository = new ClientsRepository();
-        var tagsRepository = new TagsRepository();
-        var booksRepository = new BooksRepository();
-        var reviewsRepository = new ReviewsRepository();
-        var ordersRepository = new OrdersRepository();
+        var factory = new DatabaseContextFactory(new NetworkCredential(username, password));
+        
+        var clientsRepository = new ClientsRepository(factory);
+        var tagsRepository = new TagsRepository(factory);
+        var booksRepository = new BooksRepository(factory);
+        var reviewsRepository = new ReviewsRepository(factory);
+        var ordersRepository = new OrdersRepository(factory);
 
         var cl1 = await clientsRepository.AddClientAsync("Maxim", "Shapovalov", "0987654321", Gender.Male);
         var cl2 = await clientsRepository.AddClientAsync("Andrew", "Raficoff", "8005553535", Gender.Male);
@@ -75,9 +76,10 @@ public static class Startup
         });
     }
 
-    public static async Task ClearAllAsync()
+    public static async Task ClearAllAsync(string username, string password)
     {
-        var context = DatabaseContext.Instance;
+        var factory = new DatabaseContextFactory(new NetworkCredential(username, password)); 
+        await using var context = factory.Create();
 
         await context.Reviews.ExecuteDeleteAsync();
         await context.OrdersToBooks.ExecuteDeleteAsync();

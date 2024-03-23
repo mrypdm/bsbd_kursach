@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ReviewsRepository : BaseRepository<Review>
+public class ReviewsRepository(DatabaseContextFactory factory) : BaseRepository<Review>(factory)
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {
         ArgumentNullException.ThrowIfNull(client);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Reviews
             .Where(m => m.ClientId == client.Id)
             .ToListAsync();
@@ -24,7 +24,7 @@ public class ReviewsRepository : BaseRepository<Review>
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         return await context.Reviews
             .Where(m => m.BookId == book.Id)
             .ToListAsync();
@@ -43,7 +43,7 @@ public class ReviewsRepository : BaseRepository<Review>
             Text = text
         };
 
-        var context = DatabaseContext.Instance;
+        await using var context = Factory.Create();
         var entity = await context.Reviews.AddAsync(review);
         await context.SaveChangesAsync();
         return entity.Entity;
