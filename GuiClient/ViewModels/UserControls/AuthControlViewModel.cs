@@ -25,7 +25,7 @@ public class AuthControlViewModel : BaseViewModel<AuthUserControl>
     public string AuthButtonText => SecurityContext.IsAuthenticated ? "Log Off" : "Log In";
 
     public string UserText => SecurityContext.IsAuthenticated
-        ? $"{SecurityContext.Role}/{SecurityContext.UserName}"
+        ? SecurityContext.Instance.User.ToString()
         : string.Empty;
 
     public ICommand Authenticate => new Command(AuthenticateInternal);
@@ -36,7 +36,7 @@ public class AuthControlViewModel : BaseViewModel<AuthUserControl>
     {
         if (SecurityContext.IsAuthenticated)
         {
-            SecurityContext.LogOff();
+            SecurityContext.Instance.LogOff();
             return;
         }
 

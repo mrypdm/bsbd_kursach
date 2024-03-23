@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using DatabaseClient.Users;
+using DatabaseClient.Extensions;
 using GuiClient.Extensions;
 
 namespace GuiClient.ViewModels;
@@ -18,9 +18,9 @@ public abstract class AuthenticatedViewModel<TControl> : BaseViewModel<TControl>
         };
     }
 
-    public Visibility IsOwner => (SecurityContext.Role >= Role.Owner).AsVisibility();
+    public Visibility IsOwner => SecurityContext.Instance.User.IsOwner().AsVisibility();
 
-    public Visibility IsAdmin => (SecurityContext.Role >= Role.Admin).AsVisibility();
+    public Visibility IsAdmin => SecurityContext.Instance.User.IsAdmin().AsVisibility();
 
-    public Visibility IsWorker => (SecurityContext.Role >= Role.Worker).AsVisibility();
+    public Visibility IsWorker => SecurityContext.Instance.User.IsWorker().AsVisibility();
 }

@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using DatabaseClient.Contexts;
-using DatabaseClient.Users;
 using GuiClient.Commands;
 using GuiClient.Views.Windows;
 
@@ -20,7 +18,7 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
 
         Control.InitializeComponent();
 
-        Control.UserNameBox.Text = changePassword ? SecurityContext.UserName : string.Empty;
+        Control.UserNameBox.Text = changePassword ? SecurityContext.Instance.User.UserName : string.Empty;
     }
 
     public bool IsUserNameEnabled { get; }
@@ -38,10 +36,10 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
         try
         {
             var username = Control.UserNameBox.Text;
-            var password = Control.PasswordBox.Password;
-            var newPassword = Control.NewPasswordBox.Password;
+            var password = Control.PasswordBox.SecurePassword;
+            var newPassword = Control.NewPasswordBox.SecurePassword;
 
-            await SecurityContext.ChangePasswordAsync(username, password, newPassword);
+            await SecurityContext.Instance.ChangePasswordAsync(username, password, newPassword);
 
             MessageBox.Show(Control, "Password changed. Please authenticate with new password", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
@@ -61,12 +59,12 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
         try
         {
             var username = Control.UserNameBox.Text;
-            var password = Control.PasswordBox.Password;
+            var password = Control.PasswordBox.SecurePassword;
 
-            await SecurityContext.LogInAsync(username, password);
+            await SecurityContext.Instance.LogInAsync(username, password);
 
             MessageBox.Show(Control,
-                $"Authenticated as {SecurityContext.Role}/{SecurityContext.UserName}", "Info",
+                $"Authenticated as {SecurityContext.Instance.User}", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
 
             Control.DialogResult = true;

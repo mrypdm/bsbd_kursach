@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Users;
@@ -7,8 +9,7 @@ namespace GuiClient;
 
 public class SecurityContext : NotifyPropertyChanged
 {
-    private string _username;
-    private Role _role;
+    private User _user;
 
     private SecurityContext()
     {
@@ -19,43 +20,52 @@ public class SecurityContext : NotifyPropertyChanged
         Instance = new SecurityContext();
     }
 
-    public static string UserName
-    {
-        get => Instance._username;
-        private set => Instance.SetField(ref Instance._username, value);
-    }
-
-    public static Role Role
-    {
-        get => Instance._role;
-        private set => Instance.SetField(ref Instance._role, value);
-    }
-
-    public static bool IsAuthenticated => UserName is not null;
+    public static bool IsAuthenticated => Instance.User is not null;
 
     public static SecurityContext Instance { get; private set; }
 
-    public static async Task LogInAsync(string username, string password)
+    public User User
     {
-        var factory = new DatabaseContextFactory(new NetworkCredential(username, password));
-        var usersManager = new UsersManager(factory);
-
-        Role = await usersManager.GetUserRoleAsync(username);
-        UserName = username;
+        get => _user;
+        private set
+        {
+            SetField(ref _user, value);
+            OnPropertyChanged(nameof(IsAuthenticated));
+        }
     }
 
-    public static void LogOff()
+    public async Task LogInAsync(string username, SecureString password)
     {
-        Role = default;
-        UserName = default;
-    }
+        ArgumentException.ThrowIfNullOrWhiteSpace(username);
+        ArgumentNullException.ThrowIfNull(password);
 
-    public static async Task ChangePasswordAsync(string username, string password, string newPassword)
-    {
-        var factory = new DatabaseContextFactory(new NetworkCredential(username, password));
+        var cred = new NetworkCredential(username, password);
+        var factory = new DatabaseContextFactory(cred);
         var usersManager = new UsersManager(factory);
 
-        await usersManager.ChangePasswordAsync(username, password, newPassword);
+        var role = await usersManager.GetUserRoleAsync(username);
+
+        User = new User(username, password, role);
+    }
+
+    public void LogOff()
+    {
+        User = default;
+    }
+
+    public async Task ChangePasswordAsync(string username, SecureString password, SecureString newPassword)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(username);
+        ArgumentNullException.ThrowIfNull(password);
+        ArgumentNullException.ThrowIfNull(newPassword);
+
+        var oldCred = new NetworkCredential(username, password);
+        var newCred = new NetworkCredential(username, newPassword);
+
+        var factory = new DatabaseContextFactory(oldCred);
+        var usersManager = new UsersManager(factory);
+
+        await usersManager.ChangePasswordAsync(username, oldCred.Password, newCred.Password);
 
         LogOff();
     }
