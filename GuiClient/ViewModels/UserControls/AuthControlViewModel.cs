@@ -10,8 +10,12 @@ namespace GuiClient.ViewModels.UserControls;
 
 public class AuthControlViewModel : AuthenticatedViewModel
 {
-    public AuthControlViewModel(ISecurityContext securityContext) : base(securityContext)
+    public AuthControlViewModel(ISecurityContext securityContext)
+        : base(securityContext)
     {
+        Authenticate = new ActionCommand(AuthenticateInternal);
+        ChangePassword = new ActionCommand(ChangePasswordInternal);
+
         SecurityContext.PropertyChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(ChangePasswordButtonEnabled));
@@ -28,9 +32,9 @@ public class AuthControlViewModel : AuthenticatedViewModel
         ? SecurityContext.User.ToString()
         : string.Empty;
 
-    public ICommand Authenticate => new ActionCommand(AuthenticateInternal);
+    public ICommand Authenticate { get; }
 
-    public ICommand ChangePassword => new ActionCommand(ChangePasswordInternal);
+    public ICommand ChangePassword { get; }
 
     private void AuthenticateInternal()
     {

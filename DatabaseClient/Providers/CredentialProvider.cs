@@ -4,5 +4,5 @@ namespace DatabaseClient.Providers;
 
 public class CredentialProvider(NetworkCredential credential) : ICredentialProvider
 {
-    public NetworkCredential Credential => credential;
+    public NetworkCredential Credential { get; } = credential;
 }

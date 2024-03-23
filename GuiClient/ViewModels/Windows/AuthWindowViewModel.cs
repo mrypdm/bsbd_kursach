@@ -8,15 +8,27 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AuthWindowViewModel(ISecurityContext securityContext, bool changePassword) : BaseViewModel
+public class AuthWindowViewModel : BaseViewModel
 {
-    public Visibility ChangePasswordModeVisibility => changePassword ? Visibility.Visible : Visibility.Collapsed;
+    private readonly ISecurityContext _securityContext;
 
-    public Visibility LoginModeVisibility => !changePassword ? Visibility.Visible : Visibility.Collapsed;
+    public AuthWindowViewModel(ISecurityContext securityContext, bool changePassword)
+    {
+        _securityContext = securityContext;
+        ChangePasswordModeVisibility = changePassword ? Visibility.Visible : Visibility.Collapsed;
+        LoginModeVisibility = !changePassword ? Visibility.Visible : Visibility.Collapsed;
 
-    public ICommand ChangePassword => new AsyncFuncCommand<AuthWindow>(ChangePasswordInternal);
+        ChangePassword = new AsyncFuncCommand<AuthWindow>(ChangePasswordInternal);
+        LogIn = new AsyncFuncCommand<AuthWindow>(LogInInternal);
+    }
 
-    public ICommand LogIn => new AsyncFuncCommand<AuthWindow>(LogInInternal);
+    public Visibility ChangePasswordModeVisibility { get; }
+
+    public Visibility LoginModeVisibility { get; }
+
+    public ICommand ChangePassword { get; }
+
+    public ICommand LogIn { get; }
 
     private async Task ChangePasswordInternal(AuthWindow window)
     {
@@ -25,7 +37,7 @@ public class AuthWindowViewModel(ISecurityContext securityContext, bool changePa
             using var password = window.PasswordBox.SecurePassword;
             using var newPassword = window.NewPasswordBox.SecurePassword;
 
-            await securityContext.ChangePasswordAsync(password, newPassword);
+            await _securityContext.ChangePasswordAsync(password, newPassword);
 
             MessageBox.Show(window, "Password changed. Please authenticate with new password", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
@@ -47,9 +59,9 @@ public class AuthWindowViewModel(ISecurityContext securityContext, bool changePa
             var username = window.UserNameBox.Text;
             using var password = window.PasswordBox.SecurePassword;
 
-            await securityContext.LogInAsync(username, password);
+            await _securityContext.LogInAsync(username, password);
 
-            MessageBox.Show(window, $"Authenticated as {securityContext.User}", "Info",
+            MessageBox.Show(window, $"Authenticated as {_securityContext.User}", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
 
             window.DialogResult = true;
