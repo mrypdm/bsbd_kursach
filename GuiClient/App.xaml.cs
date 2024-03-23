@@ -36,6 +36,13 @@ public partial class App : Application
                 services.AddScoped<MainWindowViewModel>();
                 services.AddScoped<AuthControlViewModel>();
                 services.AddScoped<BooksUserControlViewModel>();
+                services.AddScoped<TagsUserControlViewModel>();
+                services.AddScoped<BooksToTagsUserControlViewModel>();
+                services.AddScoped<ClientsUserControlViewModel>();
+                services.AddScoped<OrdersUserControlViewModel>();
+                services.AddScoped<ReviewsUserControlViewModel>();
+                services.AddScoped<ReportsUserControlViewModel>();
+                services.AddScoped<UsersUserControlViewModel>();
 
                 services.AddSingleton<MainWindow>();
             })

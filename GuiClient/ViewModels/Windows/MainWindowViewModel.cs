@@ -4,9 +4,30 @@ namespace GuiClient.ViewModels.Windows;
 
 public class MainWindowViewModel(
     AuthControlViewModel authControlViewModel,
-    BooksUserControlViewModel booksUserControlViewModel) : NotifyPropertyChanged
+    BooksUserControlViewModel booksUserControlViewModel,
+    TagsUserControlViewModel tagsUserControlViewModel,
+    BooksToTagsUserControlViewModel booksToTagsUserControlViewModel,
+    ClientsUserControlViewModel clientsUserControlViewModel,
+    OrdersUserControlViewModel ordersUserControlViewModel,
+    ReviewsUserControlViewModel reviewsUserControlViewModel,
+    ReportsUserControlViewModel reportsUserControlViewModel,
+    UsersUserControlViewModel usersUserControlViewModel) : NotifyPropertyChanged
 {
     public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
 
     public BooksUserControlViewModel BooksUserControlViewModel { get; } = booksUserControlViewModel;
+
+    public TagsUserControlViewModel TagsUserControlViewModel { get; } = tagsUserControlViewModel;
+
+    public BooksToTagsUserControlViewModel BooksToTagsUserControlViewModel { get; } = booksToTagsUserControlViewModel;
+
+    public ClientsUserControlViewModel ClientsUserControlViewModel { get; } = clientsUserControlViewModel;
+
+    public OrdersUserControlViewModel OrdersUserControlViewModel { get; } = ordersUserControlViewModel;
+
+    public ReviewsUserControlViewModel ReviewsUserControlViewModel { get; } = reviewsUserControlViewModel;
+
+    public ReportsUserControlViewModel ReportsUserControlViewModel { get; } = reportsUserControlViewModel;
+
+    public UsersUserControlViewModel UsersUserControlViewModel { get; } = usersUserControlViewModel;
 }

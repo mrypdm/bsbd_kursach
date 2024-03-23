@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:GuiClient.ViewModels.UserControls"
              mc:Ignorable="d"
              d:DataContext="{ d:DesignInstance Type=vm:BooksUserControlViewModel, IsDesignTimeCreatable=True }"
-             d:DesignHeight="50" d:DesignWidth="1000">
+             d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
         <Button Content="Add Book" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Delete Book" Style="{StaticResource RowControl}" Visibility="{Binding IsAdmin}" />

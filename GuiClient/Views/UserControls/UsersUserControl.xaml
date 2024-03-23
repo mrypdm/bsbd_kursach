@@ -3,11 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:GuiClient.ViewModels.UserControls"
              mc:Ignorable="d"
-             d:DesignHeight="50" d:DesignWidth="450">
+             d:DataContext="{ d:DesignInstance Type=vm:UsersUserControlViewModel, IsDesignTimeCreatable=True }"
+             d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Add user" Style="{StaticResource RowControl}" />
-        <Button Content="Delete user" Style="{StaticResource RowControl}" />
-        <Button Content="Change user password (force)" Style="{StaticResource RowControl}" />
+        <Button Content="Add user" Style="{StaticResource RowControl}" Visibility="{Binding IsOwner}" />
+        <Button Content="Delete user" Style="{StaticResource RowControl}" Visibility="{Binding IsOwner}" />
+        <Button Content="Change user password (force)" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsOwner}" />
     </StackPanel>
 </UserControl>

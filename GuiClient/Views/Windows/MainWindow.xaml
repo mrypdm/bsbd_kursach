@@ -16,13 +16,20 @@
             <StackPanel>
                 <uc:BooksUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
                                      DataContext="{Binding BooksUserControlViewModel}" />
-                <uc:TagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
-                <uc:BooksToTagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
-                <uc:ClientsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
-                <uc:OrdersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
-                <uc:ReviewsUserControls VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
-                <uc:ReportsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
-                <uc:UsersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
+                <uc:TagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                    DataContext="{Binding TagsUserControlViewModel}" />
+                <uc:BooksToTagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                           DataContext="{Binding BooksToTagsUserControlViewModel}" />
+                <uc:ClientsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                       DataContext="{Binding ClientsUserControlViewModel}" />
+                <uc:OrdersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                      DataContext="{Binding OrdersUserControlViewModel}" />
+                <uc:ReviewsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                       DataContext="{Binding ReviewsUserControlViewModel}" />
+                <uc:ReportsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                       DataContext="{Binding ReportsUserControlViewModel}" />
+                <uc:UsersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                     DataContext="{Binding UsersUserControlViewModel}" />
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

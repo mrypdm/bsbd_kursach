@@ -3,14 +3,14 @@ using GuiClient.ViewModels.UserControls;
 
 namespace GuiClient.Views.UserControls;
 
-public partial class ReportsUserControl : UserControl
+public partial class ReviewsUserControl : UserControl
 {
-    public ReportsUserControl()
+    public ReviewsUserControl()
     {
         InitializeComponent();
     }
 
-    public ReportsUserControl(ReportsUserControlViewModel viewModel)
+    public ReviewsUserControl(ReviewsUserControlViewModel viewModel)
         : this()
     {
         DataContext = viewModel;
