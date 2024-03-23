@@ -14,13 +14,13 @@ public sealed class User(string userName, SecureString password, Role role) : ID
 
     public NetworkCredential Credential => new(UserName, Password);
 
-    public override string ToString()
-    {
-        return $"{Role}/{UserName}";
-    }
-
     public void Dispose()
     {
         Password?.Dispose();
+    }
+
+    public override string ToString()
+    {
+        return $"{Role}/{UserName}";
     }
 }

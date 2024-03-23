@@ -4,7 +4,8 @@ using System.Windows.Input;
 
 namespace GuiClient.Commands;
 
-public class AsyncFuncCommand<TParam>(Func<TParam, Task> action, Func<bool> canExecute = null, bool allowNulls = false) : ICommand
+public class AsyncFuncCommand<TParam>(Func<TParam, Task> action, Func<bool> canExecute = null, bool allowNulls = false)
+    : ICommand
 {
     public event EventHandler CanExecuteChanged
     {

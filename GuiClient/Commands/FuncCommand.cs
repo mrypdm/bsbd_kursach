@@ -3,7 +3,8 @@ using System.Windows.Input;
 
 namespace GuiClient.Commands;
 
-public class FuncCommand<TParam>(Action<TParam> action, Func<bool> canExecute = null, bool allowNulls = false) : ICommand
+public class FuncCommand<TParam>(Action<TParam> action, Func<bool> canExecute = null, bool allowNulls = false)
+    : ICommand
 {
     public event EventHandler CanExecuteChanged
     {

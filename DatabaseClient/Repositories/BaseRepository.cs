@@ -10,7 +10,7 @@ namespace DatabaseClient.Repositories;
 public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) where TEntity : class, IEntity
 {
     protected DatabaseContextFactory Factory { get; } = factory;
-    
+
     public virtual async Task<TEntity> GetById(int id)
     {
         await using var context = Factory.Create();

@@ -8,8 +8,6 @@ namespace GuiClient.ViewModels;
 
 public abstract class AuthenticatedViewModel : BaseViewModel
 {
-    protected ISecurityContext SecurityContext { get; }
-
     protected AuthenticatedViewModel(ISecurityContext securityContext)
     {
         SecurityContext = securityContext ?? throw new ArgumentNullException(nameof(securityContext));
@@ -20,6 +18,8 @@ public abstract class AuthenticatedViewModel : BaseViewModel
             OnPropertyChanged(nameof(IsWorker));
         };
     }
+
+    protected ISecurityContext SecurityContext { get; }
 
     public Visibility IsOwner => SecurityContext.User.IsOwner().AsVisibility();
 

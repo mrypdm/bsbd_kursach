@@ -11,6 +11,12 @@ namespace Domain;
 [SuppressMessage("Naming", "CA1724:Type names should not match namespaces")]
 public static class Logging
 {
+    public static bool IsInit { get; private set; }
+
+    public static ILogger Logger { get; private set; }
+
+    public static ILoggerFactory LoggerFactory { get; private set; }
+
     public static void Init()
     {
         const string format = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}";
@@ -34,10 +40,4 @@ public static class Logging
         Logger = null;
         LoggerFactory = null;
     }
-
-    public static bool IsInit { get; private set; }
-
-    public static ILogger Logger { get; private set; }
-
-    public static ILoggerFactory LoggerFactory { get; private set; }
 }

@@ -23,7 +23,8 @@
     5. u/i orders
     6. u/i/d orders-books
     7. u/i/d reviews
-7. Настроено защищенное подключение к БД (с помощью Self-Signed сертификата [см. скрипт](./assets/create-mssql-cert.ps1))
+7. Настроено защищенное подключение к БД (с помощью Self-Signed
+   сертификата [см. скрипт](./assets/create-mssql-cert.ps1))
 
 ![](./assets/db-diagram.png "Диаграмма БД")
 

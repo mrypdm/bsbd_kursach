@@ -14,7 +14,7 @@ namespace GuiClient.Contexts;
 public sealed class SecurityContext : ISecurityContext
 {
     private User _user;
-    
+
     public bool IsAuthenticated => User is not null;
 
     public User User
