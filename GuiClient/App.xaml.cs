@@ -12,6 +12,7 @@ public partial class App : Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
+        SecurityContext.Init();
         Logging.Init();
 
         base.OnStartup(e);

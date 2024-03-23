@@ -1,5 +1,4 @@
 using System.Windows;
-using GuiClient.ViewModels.UserControls;
 using GuiClient.ViewModels.Windows;
 using JetBrains.Annotations;
 
@@ -13,7 +12,7 @@ public partial class MainWindow : Window
 {
     public MainWindow()
     {
+        DataContext = new MainWindowViewModel(this);
         InitializeComponent();
-        DataContext = new MainWindowViewModel(this, AuthUserControl.DataContext as AuthControlViewModel);
     }
 }

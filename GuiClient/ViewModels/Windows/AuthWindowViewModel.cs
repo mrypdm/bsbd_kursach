@@ -11,21 +11,19 @@ namespace GuiClient.ViewModels.Windows;
 
 public class AuthWindowViewModel : WindowViewModel<AuthWindow>
 {
-    public AuthWindowViewModel(User user = null)
+    public AuthWindowViewModel(bool changePassword)
         : base(new AuthWindow())
     {
-        ChangePasswordModeVisibility = user != null ? Visibility.Visible : Visibility.Collapsed;
-        LoginModeVisibility = user == null ? Visibility.Visible : Visibility.Collapsed;
-        User = user;
+        ChangePasswordModeVisibility = changePassword ? Visibility.Visible : Visibility.Collapsed;
+        LoginModeVisibility = !changePassword ? Visibility.Visible : Visibility.Collapsed;
+        IsUserNameEnabled = !changePassword;
 
         Control.InitializeComponent();
 
-        Control.UserNameBox.Text = user?.UserName ?? string.Empty;
+        Control.UserNameBox.Text = changePassword ? SecurityContext.UserName : string.Empty;
     }
 
-    public User User { get; private set; }
-
-    public bool IsUserNameEnabled => User == null;
+    public bool IsUserNameEnabled { get; }
 
     public Visibility ChangePasswordModeVisibility { get; }
 
@@ -35,11 +33,6 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
 
     public ICommand LogIn => new AsyncCommand(LogInInternal);
 
-    public static void LogOff()
-    {
-        DatabaseContext.LogOff();
-    }
-
     private async Task ChangePasswordInternal()
     {
         try
@@ -48,15 +41,10 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
             var password = Control.PasswordBox.Password;
             var newPassword = Control.NewPasswordBox.Password;
 
-            DatabaseContext.LogIn(username, password);
-
-            var usersManager = new UsersManager();
-            await usersManager.ChangePasswordAsync(username, newPassword, password);
+            await SecurityContext.ChangePasswordAsync(username, password, newPassword);
 
             MessageBox.Show(Control, "Password changed. Please authenticate with new password", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
-
-            DatabaseContext.LogOff();
 
             Control.DialogResult = true;
             Control.Close();
@@ -75,15 +63,12 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
             var username = Control.UserNameBox.Text;
             var password = Control.PasswordBox.Password;
 
-            DatabaseContext.LogIn(username, password);
+            await SecurityContext.LogInAsync(username, password);
 
-            var usersManager = new UsersManager();
-            var role = await usersManager.GetUserRoleAsync(username);
-
-            MessageBox.Show(Control, $"Authenticated as {role}/{username}", "Info",
+            MessageBox.Show(Control,
+                $"Authenticated as {SecurityContext.Role}/{SecurityContext.UserName}", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
 
-            User = new User(username, password, role);
             Control.DialogResult = true;
             Control.Close();
         }

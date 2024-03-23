@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Input;
-using DatabaseClient.Users;
 using Domain;
 using GuiClient.Commands;
 using GuiClient.ViewModels.Windows;
@@ -8,31 +7,26 @@ using GuiClient.Views.UserControls;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class AuthControlViewModel(AuthUserControl control) : BaseViewModel<AuthUserControl>(control)
+public class AuthControlViewModel : BaseViewModel<AuthUserControl>
 {
-    private User _currentUser;
-    private bool _isChangePasswordEnabled;
-
-    public User CurrentUser
+    public AuthControlViewModel(AuthUserControl control)
+        : base(control)
     {
-        get => _currentUser;
-        set
+        SecurityContext.Instance.PropertyChanged += (_, _) =>
         {
-            SetField(ref _currentUser, value);
-            OnPropertyChanged(nameof(UserText));
+            OnPropertyChanged(nameof(ChangePasswordButtonEnabled));
             OnPropertyChanged(nameof(AuthButtonText));
-        }
+            OnPropertyChanged(nameof(UserText));
+        };
     }
 
-    public bool ChangePasswordButtonEnabled
-    {
-        get => _isChangePasswordEnabled;
-        set => SetField(ref _isChangePasswordEnabled, value);
-    }
+    public bool ChangePasswordButtonEnabled => SecurityContext.IsAuthenticated;
 
-    public string AuthButtonText => CurrentUser == null ? "Log In" : "Log Off";
+    public string AuthButtonText => SecurityContext.IsAuthenticated ? "Log Off" : "Log In";
 
-    public string UserText => CurrentUser == null ? string.Empty : $"{CurrentUser.Role}/{CurrentUser.UserName}";
+    public string UserText => SecurityContext.IsAuthenticated
+        ? $"{SecurityContext.Role}/{SecurityContext.UserName}"
+        : string.Empty;
 
     public ICommand Authenticate => new Command(AuthenticateInternal);
 
@@ -40,43 +34,25 @@ public class AuthControlViewModel(AuthUserControl control) : BaseViewModel<AuthU
 
     private void AuthenticateInternal()
     {
-        if (CurrentUser != null)
+        if (SecurityContext.IsAuthenticated)
         {
-            LogOff();
+            SecurityContext.LogOff();
             return;
         }
 
-        var authWindowViewModel = new AuthWindowViewModel();
-        if (authWindowViewModel.ShowDialog() != true)
-        {
-            return;
-        }
-
-        CurrentUser = authWindowViewModel.User;
-        ChangePasswordButtonEnabled = true;
+        var authWindowViewModel = new AuthWindowViewModel(false);
+        authWindowViewModel.ShowDialog();
     }
 
     private void ChangePasswordInternal()
     {
-        if (CurrentUser == null)
+        if (!SecurityContext.IsAuthenticated)
         {
-            Logging.Logger.Error("Something wrong. User can change password while unauthorized");
+            Logging.Logger.Error("Something wrong. User can change password while unauthenticated");
             throw new InvalidOperationException("Attempt to change password for null user");
         }
 
-        var authWindowViewModel = new AuthWindowViewModel(CurrentUser);
-        if (authWindowViewModel.ShowDialog() != true)
-        {
-            return;
-        }
-
-        LogOff();
-    }
-
-    private void LogOff()
-    {
-        AuthWindowViewModel.LogOff();
-        CurrentUser = null;
-        ChangePasswordButtonEnabled = false;
+        var authWindowViewModel = new AuthWindowViewModel(true);
+        authWindowViewModel.ShowDialog();
     }
 }
