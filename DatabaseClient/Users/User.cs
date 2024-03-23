@@ -1,9 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Security;
 
 namespace DatabaseClient.Users;
 
-public class User(string userName, SecureString password, Role role)
+public sealed class User(string userName, SecureString password, Role role) : IDisposable
 {
     public string UserName { get; } = userName;
 
@@ -16,5 +17,10 @@ public class User(string userName, SecureString password, Role role)
     public override string ToString()
     {
         return $"{Role}/{UserName}";
+    }
+
+    public void Dispose()
+    {
+        Password?.Dispose();
     }
 }

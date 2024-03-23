@@ -36,8 +36,8 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
         try
         {
             var username = Control.UserNameBox.Text;
-            var password = Control.PasswordBox.SecurePassword;
-            var newPassword = Control.NewPasswordBox.SecurePassword;
+            using var password = Control.PasswordBox.SecurePassword;
+            using var newPassword = Control.NewPasswordBox.SecurePassword;
 
             await SecurityContext.Instance.ChangePasswordAsync(username, password, newPassword);
 
@@ -59,7 +59,7 @@ public class AuthWindowViewModel : WindowViewModel<AuthWindow>
         try
         {
             var username = Control.UserNameBox.Text;
-            var password = Control.PasswordBox.SecurePassword;
+            using var password = Control.PasswordBox.SecurePassword;
 
             await SecurityContext.Instance.LogInAsync(username, password);
 

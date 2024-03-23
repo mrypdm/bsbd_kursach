@@ -45,11 +45,12 @@ public class SecurityContext : NotifyPropertyChanged
 
         var role = await usersManager.GetUserRoleAsync(username);
 
-        User = new User(username, password, role);
+        User = new User(username, password.Copy(), role);
     }
 
     public void LogOff()
     {
+        User.Dispose();
         User = default;
     }
 
