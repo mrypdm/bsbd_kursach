@@ -20,7 +20,7 @@ public sealed class SecurityContext : ISecurityContext
     public User User
     {
         get => _user;
-        set
+        private set
         {
             SetField(ref _user, value);
             OnPropertyChanged(nameof(Credential));
