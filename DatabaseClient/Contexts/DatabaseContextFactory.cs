@@ -1,11 +1,12 @@
-﻿using DatabaseClient.Providers;
+﻿using DatabaseClient.Options;
+using DatabaseClient.Providers;
 using Domain;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Contexts;
 
-public class DatabaseContextFactory(ICredentialProvider credentialProvider)
+public class DatabaseContextFactory(ICredentialProvider credentialProvider, ServerOptions options)
 {
     public DatabaseContext Create()
     {
@@ -13,11 +14,11 @@ public class DatabaseContextFactory(ICredentialProvider credentialProvider)
 
         var connectionString = new SqlConnectionStringBuilder
         {
-            DataSource = "SHAPOVAL-M-NB\\SQLEXPRESS",
-            InitialCatalog = "bsbd_kursach",
+            DataSource = options.DatabaseName,
+            InitialCatalog = options.ServerName,
             UserID = credential.UserName,
             Password = credential.Password,
-            Encrypt = true
+            Encrypt = options.Encryption
         }.ConnectionString;
 
         var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>()

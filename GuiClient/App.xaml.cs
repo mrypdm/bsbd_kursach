@@ -1,8 +1,11 @@
+using System;
 using System.Windows;
 using DatabaseClient.Contexts;
+using DatabaseClient.Options;
 using DatabaseClient.Providers;
 using Domain;
 using GuiClient.Contexts;
+using GuiClient.Extensions;
 using GuiClient.ViewModels.UserControls;
 using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
@@ -21,12 +24,14 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(e);
+
         base.OnStartup(e);
 
         Logging.Init();
 
         ApplicationHost = Host
-            .CreateDefaultBuilder()
+            .CreateDefaultBuilder(e.Args)
             .ConfigureServices(ConfigureServices)
             .Build();
 
@@ -40,9 +45,11 @@ public partial class App : Application
         base.OnExit(e);
     }
 
-    private void ConfigureServices(IServiceCollection services)
+    private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         services.AddSerilog();
+
+        services.AddOptions<ServerOptions>(context.Configuration);
 
         services.AddSingleton<MainWindow>();
 

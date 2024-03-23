@@ -6,12 +6,13 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
+using DatabaseClient.Options;
 using DatabaseClient.Providers;
 using DatabaseClient.Users;
 
 namespace GuiClient.Contexts;
 
-public sealed class SecurityContext : ISecurityContext
+public sealed class SecurityContext(ServerOptions options) : ISecurityContext
 {
     private User _user;
 
@@ -37,7 +38,7 @@ public sealed class SecurityContext : ISecurityContext
 
         var cred = new NetworkCredential(userName, password);
 
-        var factory = new DatabaseContextFactory(new CredentialProvider(cred));
+        var factory = new DatabaseContextFactory(new CredentialProvider(cred), options);
         var usersManager = new UsersManager(factory);
 
         var role = await usersManager.GetUserRoleAsync(userName);
@@ -59,7 +60,7 @@ public sealed class SecurityContext : ISecurityContext
         var oldCred = new NetworkCredential(User.UserName, oldPassword);
         var newCred = new NetworkCredential(User.UserName, newPassword);
 
-        var factory = new DatabaseContextFactory(new CredentialProvider(oldCred));
+        var factory = new DatabaseContextFactory(new CredentialProvider(oldCred), options);
         var usersManager = new UsersManager(factory);
 
         await usersManager.ChangePasswordAsync(User.UserName, oldCred.Password, newCred.Password);
@@ -80,15 +81,14 @@ public sealed class SecurityContext : ISecurityContext
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
         {
-            return false;
+            return;
         }
 
         field = value;
         OnPropertyChanged(propertyName);
-        return true;
     }
 }
