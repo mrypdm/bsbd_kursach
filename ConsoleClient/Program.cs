@@ -10,10 +10,9 @@ using Domain;
 
 Logging.Init();
 
-var username = "bsbd_owner";
-var password = "very_secret_Password_forOwner";
+var cred = new NetworkCredential("bsbd_owner", "very_secret_Password_forOwner");
 
-var factory = new DatabaseContextFactory(new NetworkCredential(username, password));
+var factory = new DatabaseContextFactory(new CredentialProvider(cred));
 
 var clientsRepository = new ClientsRepository(factory);
 var tagsRepository = new TagsRepository(factory);

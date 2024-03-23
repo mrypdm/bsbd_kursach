@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace GuiClient.Commands;
 
-public class Command(Action action, Func<bool> canExecute = null) : ICommand
+public class AsyncActionCommand(Func<Task> action, Func<bool> canExecute = null) : ICommand
 {
     public event EventHandler CanExecuteChanged
     {
@@ -16,8 +17,8 @@ public class Command(Action action, Func<bool> canExecute = null) : ICommand
         return canExecute?.Invoke() ?? true;
     }
 
-    public void Execute(object parameter)
+    public async void Execute(object parameter)
     {
-        action();
+        await action();
     }
 }

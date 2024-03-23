@@ -3,76 +3,61 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using GuiClient.Commands;
+using GuiClient.Contexts;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AuthWindowViewModel : WindowViewModel<AuthWindow>
+public class AuthWindowViewModel(ISecurityContext securityContext, bool changePassword) : NotifyPropertyChanged
 {
-    public AuthWindowViewModel(bool changePassword)
-        : base(new AuthWindow())
-    {
-        ChangePasswordModeVisibility = changePassword ? Visibility.Visible : Visibility.Collapsed;
-        LoginModeVisibility = !changePassword ? Visibility.Visible : Visibility.Collapsed;
-        IsUserNameEnabled = !changePassword;
+    public Visibility ChangePasswordModeVisibility => changePassword ? Visibility.Visible : Visibility.Collapsed;
 
-        Control.InitializeComponent();
+    public Visibility LoginModeVisibility => !changePassword ? Visibility.Visible : Visibility.Collapsed;
 
-        Control.UserNameBox.Text = changePassword ? SecurityContext.Instance.User.UserName : string.Empty;
-    }
+    public ICommand ChangePassword => new AsyncFuncCommand<AuthWindow>(ChangePasswordInternal);
 
-    public bool IsUserNameEnabled { get; }
+    public ICommand LogIn => new AsyncFuncCommand<AuthWindow>(LogInInternal);
 
-    public Visibility ChangePasswordModeVisibility { get; }
-
-    public Visibility LoginModeVisibility { get; }
-
-    public ICommand ChangePassword => new AsyncCommand(ChangePasswordInternal);
-
-    public ICommand LogIn => new AsyncCommand(LogInInternal);
-
-    private async Task ChangePasswordInternal()
+    private async Task ChangePasswordInternal(AuthWindow window)
     {
         try
         {
-            var username = Control.UserNameBox.Text;
-            using var password = Control.PasswordBox.SecurePassword;
-            using var newPassword = Control.NewPasswordBox.SecurePassword;
+            using var password = window.PasswordBox.SecurePassword;
+            using var newPassword = window.NewPasswordBox.SecurePassword;
 
-            await SecurityContext.Instance.ChangePasswordAsync(username, password, newPassword);
+            await securityContext.ChangePasswordAsync(password, newPassword);
 
-            MessageBox.Show(Control, "Password changed. Please authenticate with new password", "Info",
+            MessageBox.Show(window, "Password changed. Please authenticate with new password", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
 
-            Control.DialogResult = true;
-            Control.Close();
+            window.DialogResult = true;
+            window.Close();
         }
         catch (Exception ex)
         {
-            MessageBox.Show(Control, $"Error while authenticating: {ex.Message}", "Error", MessageBoxButton.OK,
+            MessageBox.Show(window, ex.Message, "Error", MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
     }
 
-    private async Task LogInInternal()
+    private async Task LogInInternal(AuthWindow window)
     {
         try
         {
-            var username = Control.UserNameBox.Text;
-            using var password = Control.PasswordBox.SecurePassword;
+            var username = window.UserNameBox.Text;
+            using var password = window.PasswordBox.SecurePassword;
 
-            await SecurityContext.Instance.LogInAsync(username, password);
+            await securityContext.LogInAsync(username, password);
 
-            MessageBox.Show(Control,
-                $"Authenticated as {SecurityContext.Instance.User}", "Info",
+            MessageBox.Show(window, $"Authenticated as {securityContext.User}", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
 
-            Control.DialogResult = true;
-            Control.Close();
+            window.DialogResult = true;
+            window.Close();
         }
         catch (Exception ex)
         {
-            MessageBox.Show(Control, $"Error while authenticating: {ex.Message}", "Error", MessageBoxButton.OK,
+            MessageBox.Show(window, ex.Message, "Error", MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
     }

@@ -9,12 +9,13 @@
         d:DataContext="{ d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=True }"
         Title="MainWindow" Height="450" Width="950" Style="{StaticResource WinAll}">
     <DockPanel>
-        <uc:AuthUserControl x:Name="AuthUserControl" DockPanel.Dock="Top" HorizontalAlignment="Right" Height="25"
-                            Margin="5,5" />
+        <uc:AuthUserControl DockPanel.Dock="Top" HorizontalAlignment="Right" Height="25"
+                            Margin="5,5" DataContext="{Binding AuthControlViewModel}" />
         <Separator Height="5" Foreground="Black" DockPanel.Dock="Top" />
         <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel>
-                <uc:BooksUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
+                <uc:BooksUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                     DataContext="{Binding BooksUserControlViewModel}" />
                 <uc:TagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
                 <uc:BooksToTagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />
                 <uc:ClientsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5" />

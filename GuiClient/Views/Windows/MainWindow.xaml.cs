@@ -12,7 +12,12 @@ public partial class MainWindow : Window
 {
     public MainWindow()
     {
-        DataContext = new MainWindowViewModel(this);
         InitializeComponent();
+    }
+
+    public MainWindow(MainWindowViewModel viewModel)
+        : this()
+    {
+        DataContext = viewModel;
     }
 }

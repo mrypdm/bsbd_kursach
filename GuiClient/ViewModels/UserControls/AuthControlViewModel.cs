@@ -2,17 +2,17 @@ using System;
 using System.Windows.Input;
 using Domain;
 using GuiClient.Commands;
+using GuiClient.Contexts;
 using GuiClient.ViewModels.Windows;
-using GuiClient.Views.UserControls;
+using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class AuthControlViewModel : BaseViewModel<AuthUserControl>
+public class AuthControlViewModel : AuthenticatedViewModel
 {
-    public AuthControlViewModel(AuthUserControl control)
-        : base(control)
+    public AuthControlViewModel(ISecurityContext securityContext) : base(securityContext)
     {
-        SecurityContext.Instance.PropertyChanged += (_, _) =>
+        SecurityContext.PropertyChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(ChangePasswordButtonEnabled));
             OnPropertyChanged(nameof(AuthButtonText));
@@ -25,23 +25,24 @@ public class AuthControlViewModel : BaseViewModel<AuthUserControl>
     public string AuthButtonText => SecurityContext.IsAuthenticated ? "Log Off" : "Log In";
 
     public string UserText => SecurityContext.IsAuthenticated
-        ? SecurityContext.Instance.User.ToString()
+        ? SecurityContext.User.ToString()
         : string.Empty;
 
-    public ICommand Authenticate => new Command(AuthenticateInternal);
+    public ICommand Authenticate => new ActionCommand(AuthenticateInternal);
 
-    public ICommand ChangePassword => new Command(ChangePasswordInternal);
+    public ICommand ChangePassword => new ActionCommand(ChangePasswordInternal);
 
     private void AuthenticateInternal()
     {
         if (SecurityContext.IsAuthenticated)
         {
-            SecurityContext.Instance.LogOff();
+            SecurityContext.LogOff();
             return;
         }
 
-        var authWindowViewModel = new AuthWindowViewModel(false);
-        authWindowViewModel.ShowDialog();
+        var viewModel = new AuthWindowViewModel(SecurityContext, false);
+        var window = new AuthWindow(viewModel);
+        window.ShowDialog();
     }
 
     private void ChangePasswordInternal()
@@ -52,7 +53,8 @@ public class AuthControlViewModel : BaseViewModel<AuthUserControl>
             throw new InvalidOperationException("Attempt to change password for null user");
         }
 
-        var authWindowViewModel = new AuthWindowViewModel(true);
-        authWindowViewModel.ShowDialog();
+        var viewModel = new AuthWindowViewModel(SecurityContext, true);
+        var window = new AuthWindow(viewModel);
+        window.ShowDialog();
     }
 }

@@ -7,7 +7,12 @@ public partial class BooksUserControl : UserControl
 {
     public BooksUserControl()
     {
-        DataContext = new BooksUserControlViewModel(this);
         InitializeComponent();
+    }
+
+    public BooksUserControl(BooksUserControlViewModel viewModel)
+        : this()
+    {
+        DataContext = viewModel;
     }
 }

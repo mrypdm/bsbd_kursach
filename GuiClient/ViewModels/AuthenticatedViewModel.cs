@@ -1,16 +1,19 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using DatabaseClient.Extensions;
+using GuiClient.Contexts;
 using GuiClient.Extensions;
 
 namespace GuiClient.ViewModels;
 
-public abstract class AuthenticatedViewModel<TControl> : BaseViewModel<TControl>
-    where TControl : FrameworkElement
+public abstract class AuthenticatedViewModel : NotifyPropertyChanged
 {
-    protected AuthenticatedViewModel(TControl control)
-        : base(control)
+    protected ISecurityContext SecurityContext { get; }
+
+    protected AuthenticatedViewModel(ISecurityContext securityContext)
     {
-        SecurityContext.Instance.PropertyChanged += (_, _) =>
+        SecurityContext = securityContext ?? throw new ArgumentNullException(nameof(securityContext));
+        SecurityContext.PropertyChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(IsOwner));
             OnPropertyChanged(nameof(IsAdmin));
@@ -18,9 +21,9 @@ public abstract class AuthenticatedViewModel<TControl> : BaseViewModel<TControl>
         };
     }
 
-    public Visibility IsOwner => SecurityContext.Instance.User.IsOwner().AsVisibility();
+    public Visibility IsOwner => SecurityContext.User.IsOwner().AsVisibility();
 
-    public Visibility IsAdmin => SecurityContext.Instance.User.IsAdmin().AsVisibility();
+    public Visibility IsAdmin => SecurityContext.User.IsAdmin().AsVisibility();
 
-    public Visibility IsWorker => SecurityContext.Instance.User.IsWorker().AsVisibility();
+    public Visibility IsWorker => SecurityContext.User.IsWorker().AsVisibility();
 }

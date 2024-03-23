@@ -1,6 +1,7 @@
 using System.Net;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
+using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +11,9 @@ public static class Startup
 {
     public static async Task InitDatabaseAsync(string username, string password)
     {
-        var factory = new DatabaseContextFactory(new NetworkCredential(username, password));
-        
+        var cred = new NetworkCredential(username, password);
+        var factory = new DatabaseContextFactory(new CredentialProvider(cred));
+
         var clientsRepository = new ClientsRepository(factory);
         var tagsRepository = new TagsRepository(factory);
         var booksRepository = new BooksRepository(factory);
@@ -78,7 +80,8 @@ public static class Startup
 
     public static async Task ClearAllAsync(string username, string password)
     {
-        var factory = new DatabaseContextFactory(new NetworkCredential(username, password)); 
+        var cred = new NetworkCredential(username, password);
+        var factory = new DatabaseContextFactory(new CredentialProvider(cred));
         await using var context = factory.Create();
 
         await context.Reviews.ExecuteDeleteAsync();

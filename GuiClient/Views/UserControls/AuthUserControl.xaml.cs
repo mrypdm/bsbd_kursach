@@ -11,6 +11,11 @@ public partial class AuthUserControl : UserControl
     public AuthUserControl()
     {
         InitializeComponent();
-        DataContext = new AuthControlViewModel(this);
+    }
+
+    public AuthUserControl(AuthControlViewModel viewModel)
+        : this()
+    {
+        DataContext = viewModel;
     }
 }

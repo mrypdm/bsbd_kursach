@@ -7,17 +7,22 @@
         mc:Ignorable="d"
         d:DataContext="{ d:DesignInstance Type=vm:AuthWindowViewModel, IsDesignTimeCreatable=True }"
         Title="AuthWindow" MinWidth="350" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
-        Style="{StaticResource WinAll}">
+        x:Name="CurrentWindow" Style="{StaticResource WinAll}">
     <DockPanel LastChildFill="False">
-        <Label Content="User name" DockPanel.Dock="Top" Margin="5,5" />
-        <TextBox x:Name="UserNameBox" Height="30" DockPanel.Dock="Top" Margin="5,5" VerticalContentAlignment="Center"
-                 IsEnabled="{Binding IsUserNameEnabled}" />
+        <DockPanel LastChildFill="False" DockPanel.Dock="Top" Margin="5,5"
+                   Visibility="{Binding LoginModeVisibility}">
+            <Label Content="User name" DockPanel.Dock="Top" />
+            <TextBox x:Name="UserNameBox" Height="30" DockPanel.Dock="Top"
+                     VerticalContentAlignment="Center" />
+        </DockPanel>
+
         <Label Content="Password" DockPanel.Dock="Top" Margin="5,5" />
         <PasswordBox x:Name="PasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5"
                      VerticalContentAlignment="Center" />
 
         <Button Content="Log In" Height="30" DockPanel.Dock="Top" Margin="5,5"
-                Visibility="{Binding LoginModeVisibility}" Command="{Binding LogIn}" />
+                Visibility="{Binding LoginModeVisibility}"
+                Command="{Binding LogIn}" CommandParameter="{Binding ElementName=CurrentWindow}" />
 
         <DockPanel LastChildFill="False" DockPanel.Dock="Top"
                    Visibility="{Binding ChangePasswordModeVisibility}">
@@ -25,7 +30,7 @@
             <PasswordBox x:Name="NewPasswordBox" Height="30" DockPanel.Dock="Top" Margin="5,5"
                          VerticalContentAlignment="Center" />
             <Button Content="Change password" Height="30" DockPanel.Dock="Top" Margin="5,5"
-                    Command="{Binding ChangePassword}" />
+                    Command="{Binding ChangePassword}" CommandParameter="{Binding ElementName=CurrentWindow}" />
         </DockPanel>
     </DockPanel>
 </Window>

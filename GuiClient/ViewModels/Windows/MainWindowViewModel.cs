@@ -1,5 +1,12 @@
-﻿using GuiClient.Views.Windows;
+﻿using GuiClient.ViewModels.UserControls;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class MainWindowViewModel(MainWindow control) : BaseViewModel<MainWindow>(control);
+public class MainWindowViewModel(
+    AuthControlViewModel authControlViewModel,
+    BooksUserControlViewModel booksUserControlViewModel) : NotifyPropertyChanged
+{
+    public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
+
+    public BooksUserControlViewModel BooksUserControlViewModel { get; } = booksUserControlViewModel;
+}

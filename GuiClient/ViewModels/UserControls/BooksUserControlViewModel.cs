@@ -1,5 +1,5 @@
-﻿using GuiClient.Views.UserControls;
+﻿using GuiClient.Contexts;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class BooksUserControlViewModel(BooksUserControl control) : AuthenticatedViewModel<BooksUserControl>(control);
+public class BooksUserControlViewModel(ISecurityContext securityContext) : AuthenticatedViewModel(securityContext);
