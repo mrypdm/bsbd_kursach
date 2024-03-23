@@ -8,7 +8,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AuthWindowViewModel(ISecurityContext securityContext, bool changePassword) : NotifyPropertyChanged
+public class AuthWindowViewModel(ISecurityContext securityContext, bool changePassword) : BaseViewModel
 {
     public Visibility ChangePasswordModeVisibility => changePassword ? Visibility.Visible : Visibility.Collapsed;
 

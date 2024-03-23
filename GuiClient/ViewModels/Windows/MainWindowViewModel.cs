@@ -11,7 +11,7 @@ public class MainWindowViewModel(
     OrdersUserControlViewModel ordersUserControlViewModel,
     ReviewsUserControlViewModel reviewsUserControlViewModel,
     ReportsUserControlViewModel reportsUserControlViewModel,
-    UsersUserControlViewModel usersUserControlViewModel) : NotifyPropertyChanged
+    UsersUserControlViewModel usersUserControlViewModel) : BaseViewModel
 {
     public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
 

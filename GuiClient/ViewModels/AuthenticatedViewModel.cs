@@ -6,7 +6,7 @@ using GuiClient.Extensions;
 
 namespace GuiClient.ViewModels;
 
-public abstract class AuthenticatedViewModel : NotifyPropertyChanged
+public abstract class AuthenticatedViewModel : BaseViewModel
 {
     protected ISecurityContext SecurityContext { get; }
 

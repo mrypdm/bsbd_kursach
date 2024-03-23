@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace GuiClient;
+namespace GuiClient.ViewModels;
 
-public class NotifyPropertyChanged : INotifyPropertyChanged
+public class BaseViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
