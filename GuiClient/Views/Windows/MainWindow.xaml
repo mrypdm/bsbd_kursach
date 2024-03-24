@@ -28,8 +28,8 @@
                                        DataContext="{Binding ReviewsUserControlViewModel}" />
                 <uc:ReportsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
                                        DataContext="{Binding ReportsUserControlViewModel}" />
-                <uc:UsersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
-                                     DataContext="{Binding UsersUserControlViewModel}" />
+                <uc:PrincipalsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
+                                     DataContext="{Binding PrincipalsUserControlViewModel}" />
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

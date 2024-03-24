@@ -1,21 +1,21 @@
-﻿using DatabaseClient.Users;
+﻿using DatabaseClient.Principals;
 
 namespace DatabaseClient.Extensions;
 
 public static class UserExtensions
 {
-    public static bool IsOwner(this User user)
+    public static bool IsOwner(this Principal principal)
     {
-        return user?.Role >= Role.Owner;
+        return principal?.Role <= Role.Owner;
     }
 
-    public static bool IsAdmin(this User user)
+    public static bool IsAdmin(this Principal principal)
     {
-        return user?.Role >= Role.Admin;
+        return principal?.Role <= Role.Admin;
     }
 
-    public static bool IsWorker(this User user)
+    public static bool IsWorker(this Principal principal)
     {
-        return user?.Role >= Role.Worker;
+        return principal?.Role <= Role.Worker;
     }
 }

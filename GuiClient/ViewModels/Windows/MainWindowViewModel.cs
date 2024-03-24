@@ -11,7 +11,7 @@ public class MainWindowViewModel(
     OrdersUserControlViewModel ordersUserControlViewModel,
     ReviewsUserControlViewModel reviewsUserControlViewModel,
     ReportsUserControlViewModel reportsUserControlViewModel,
-    UsersUserControlViewModel usersUserControlViewModel) : BaseViewModel
+    PrincipalsUserControlViewModel principalsUserControlViewModel) : BaseViewModel
 {
     public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
 
@@ -29,5 +29,5 @@ public class MainWindowViewModel(
 
     public ReportsUserControlViewModel ReportsUserControlViewModel { get; } = reportsUserControlViewModel;
 
-    public UsersUserControlViewModel UsersUserControlViewModel { get; } = usersUserControlViewModel;
+    public PrincipalsUserControlViewModel PrincipalsUserControlViewModel { get; } = principalsUserControlViewModel;
 }

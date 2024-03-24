@@ -68,6 +68,6 @@ public partial class App : Application
         services.AddScoped<OrdersUserControlViewModel>();
         services.AddScoped<ReviewsUserControlViewModel>();
         services.AddScoped<ReportsUserControlViewModel>();
-        services.AddScoped<UsersUserControlViewModel>();
+        services.AddScoped<PrincipalsUserControlViewModel>();
     }
 }

@@ -29,7 +29,7 @@ public class AuthControlViewModel : AuthenticatedViewModel
     public string AuthButtonText => SecurityContext.IsAuthenticated ? "Log Off" : "Log In";
 
     public string UserText => SecurityContext.IsAuthenticated
-        ? SecurityContext.User.ToString()
+        ? SecurityContext.Principal.ToString()
         : string.Empty;
 
     public ICommand Authenticate { get; }

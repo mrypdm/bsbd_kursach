@@ -4,9 +4,9 @@ using System.Net;
 using ConsoleClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Options;
+using DatabaseClient.Principals;
 using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
-using DatabaseClient.Users;
 using Domain;
 
 Logging.Init();
@@ -20,7 +20,7 @@ var tagsRepository = new TagsRepository(factory);
 var booksRepository = new BooksRepository(factory);
 var reviewsRepository = new ReviewsRepository(factory);
 var ordersRepository = new OrdersRepository(factory);
-var usersManager = new UsersManager(factory);
+var principalsManager = new PrincipalsManager(factory);
 var reportsProvider = new ReportsProvider(factory);
 
 Logging.Close();

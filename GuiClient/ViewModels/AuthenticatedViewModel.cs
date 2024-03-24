@@ -21,9 +21,9 @@ public abstract class AuthenticatedViewModel : BaseViewModel
 
     protected ISecurityContext SecurityContext { get; }
 
-    public Visibility IsOwner => SecurityContext.User.IsOwner().AsVisibility();
+    public Visibility IsOwner => SecurityContext.Principal.IsOwner().AsVisibility();
 
-    public Visibility IsAdmin => SecurityContext.User.IsAdmin().AsVisibility();
+    public Visibility IsAdmin => SecurityContext.Principal.IsAdmin().AsVisibility();
 
-    public Visibility IsWorker => SecurityContext.User.IsWorker().AsVisibility();
+    public Visibility IsWorker => SecurityContext.Principal.IsWorker().AsVisibility();
 }

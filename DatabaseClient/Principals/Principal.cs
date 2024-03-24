@@ -2,17 +2,17 @@
 using System.Net;
 using System.Security;
 
-namespace DatabaseClient.Users;
+namespace DatabaseClient.Principals;
 
-public sealed class User(string userName, SecureString password, Role role) : IDisposable
+public sealed class Principal(string name, SecureString password, Role role) : IDisposable
 {
-    public string UserName { get; } = userName;
+    public string Name { get; } = name;
 
     public SecureString Password { get; } = password;
 
     public Role Role { get; } = role;
 
-    public NetworkCredential Credential => new(UserName, Password);
+    public NetworkCredential Credential { get; } = new(name, password);
 
     public void Dispose()
     {
@@ -21,6 +21,6 @@ public sealed class User(string userName, SecureString password, Role role) : ID
 
     public override string ToString()
     {
-        return $"{Role}/{UserName}";
+        return $"{Role}/{Name}";
     }
 }

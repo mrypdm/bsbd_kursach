@@ -7,29 +7,29 @@ using System.Security;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Options;
+using DatabaseClient.Principals;
 using DatabaseClient.Providers;
-using DatabaseClient.Users;
 
 namespace GuiClient.Contexts;
 
 public sealed class SecurityContext(ServerOptions options) : ISecurityContext
 {
-    private User _user;
+    private Principal _principal;
 
-    public bool IsAuthenticated => User is not null;
+    public bool IsAuthenticated => Principal is not null;
 
-    public User User
+    public Principal Principal
     {
-        get => _user;
+        get => _principal;
         private set
         {
-            SetField(ref _user, value);
+            SetField(ref _principal, value);
             OnPropertyChanged(nameof(Credential));
             OnPropertyChanged(nameof(IsAuthenticated));
         }
     }
 
-    public NetworkCredential Credential => User?.Credential;
+    public NetworkCredential Credential => Principal?.Credential;
 
     public async Task LogInAsync(string userName, SecureString password)
     {
@@ -39,12 +39,12 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         var cred = new NetworkCredential(userName, password);
 
         var factory = new DatabaseContextFactory(new CredentialProvider(cred), options);
-        var usersManager = new UsersManager(factory);
+        var usersManager = new PrincipalsManager(factory);
 
-        var role = await usersManager.GetUserRoleAsync(userName);
+        var role = await usersManager.GetPrincipalRoleAsync(userName);
 
         LogOff();
-        User = new User(userName, password, role);
+        Principal = new Principal(userName, password, role);
     }
 
     public async Task ChangePasswordAsync(SecureString oldPassword, SecureString newPassword)
@@ -57,21 +57,21 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentNullException.ThrowIfNull(oldPassword);
         ArgumentNullException.ThrowIfNull(newPassword);
 
-        var oldCred = new NetworkCredential(User.UserName, oldPassword);
-        var newCred = new NetworkCredential(User.UserName, newPassword);
+        var oldCred = new NetworkCredential(Principal.Name, oldPassword);
+        var newCred = new NetworkCredential(Principal.Name, newPassword);
 
         var factory = new DatabaseContextFactory(new CredentialProvider(oldCred), options);
-        var usersManager = new UsersManager(factory);
+        var usersManager = new PrincipalsManager(factory);
 
-        await usersManager.ChangePasswordAsync(User.UserName, oldCred.Password, newCred.Password);
+        await usersManager.ChangePasswordAsync(Principal.Name, oldCred.Password, newCred.Password);
 
         LogOff();
     }
 
     public void LogOff()
     {
-        User?.Dispose();
-        User = default;
+        Principal?.Dispose();
+        Principal = default;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
