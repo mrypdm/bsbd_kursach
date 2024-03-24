@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Options;
 using DatabaseClient.Providers;
 using Domain;
@@ -23,7 +24,7 @@ public partial class App : Application
 {
     private IHost ApplicationHost { get; set; }
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         ArgumentNullException.ThrowIfNull(e);
 
@@ -35,6 +36,11 @@ public partial class App : Application
             .CreateDefaultBuilder(e.Args)
             .ConfigureServices(ConfigureServices)
             .Build();
+
+#if DEBUG
+        var context = ApplicationHost.Services.GetService<ISecurityContext>();
+        await context.LogInAsync("bsbd_owner", "very_secret_Password_forOwner".AsSecure());
+#endif
 
         var window = ApplicationHost.Services.GetRequiredService<MainWindow>();
         window.Show();
