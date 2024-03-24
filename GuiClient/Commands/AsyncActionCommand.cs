@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace GuiClient.Commands;
@@ -19,6 +20,13 @@ public class AsyncActionCommand(Func<Task> action, Func<bool> canExecute = null)
 
     public async void Execute(object parameter)
     {
-        await action();
+        try
+        {
+            await action();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace GuiClient.Commands;
@@ -20,14 +21,20 @@ public class AsyncFuncCommand<TParam>(Func<TParam, Task> action, Func<bool> canE
 
     public async void Execute(object parameter)
     {
-        if (parameter is TParam || (parameter == null && allowNulls))
+        if (parameter is not TParam && (parameter != null || !allowNulls))
+        {
+            MessageBox.Show($"{typeof(TParam).Name} was expected. But was {parameter?.GetType().Name ?? "<null>"}",
+                "DEV_ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Environment.Exit(1);
+        }
+
+        try
         {
             await action((TParam)parameter);
         }
-        else
+        catch (Exception e)
         {
-            throw new InvalidOperationException(
-                $"{typeof(TParam).Name} was expected. But was {parameter?.GetType().Name ?? "<null>"}");
+            MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

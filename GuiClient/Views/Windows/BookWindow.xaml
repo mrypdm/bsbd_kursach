@@ -7,17 +7,18 @@
         mc:Ignorable="d"
         d:DataContext="{ d:DesignInstance Type=vm:BookWindowViewModel, IsDesignTimeCreatable=True }"
         x:Name="CurrentWindow"
-        Title="{Binding WindowTitle}" d:Height="450" MinWidth="300" Style="{StaticResource WinAll}"
-        SizeToContent="WidthAndHeight">
+        Title="{Binding WindowTitle}"
+        d:Height="450" MinWidth="300" MaxWidth="500" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
+        Style="{StaticResource WinAll}">
     <StackPanel>
         <StackPanel Margin="5">
             <TextBlock Text="Title" Margin="0,0,0,5" />
-            <TextBox Text="{Binding Title}" TextAlignment="Center" MinHeight="15" />
+            <TextBox Text="{Binding Title}" VerticalContentAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
             <TextBlock Text="Author" Margin="0,0,0,5" />
-            <TextBox Text="{Binding Author}" TextAlignment="Center" MinHeight="15" />
+            <TextBox Text="{Binding Author}" VerticalContentAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
@@ -27,17 +28,17 @@
 
         <StackPanel Margin="5">
             <TextBlock Text="Count" Margin="0,0,0,5" />
-            <TextBox Text="{Binding Count}" TextAlignment="Center" MinHeight="15" />
+            <TextBox Text="{Binding Count}" VerticalContentAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
             <TextBlock Text="Price" Margin="0,0,0,5" />
-            <TextBox Text="{Binding Price}" TextAlignment="Center" MinHeight="15" />
+            <TextBox Text="{Binding Price}" VerticalContentAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
             <TextBlock Text="Tags" Margin="0,0,0,5" />
-            <TextBox Text="{Binding Tags}" TextAlignment="Center" MinHeight="15" />
+            <TextBox Text="{Binding Tags}" TextWrapping="Wrap" VerticalContentAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <Button Content="Save" Margin="5"

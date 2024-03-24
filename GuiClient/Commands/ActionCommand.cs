@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace GuiClient.Commands;
@@ -18,6 +19,13 @@ public class ActionCommand(Action action, Func<bool> canExecute = null) : IComma
 
     public void Execute(object parameter)
     {
-        action();
+        try
+        {
+            action();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }
