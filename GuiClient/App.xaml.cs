@@ -6,6 +6,7 @@ using DatabaseClient.Providers;
 using Domain;
 using GuiClient.Contexts;
 using GuiClient.Extensions;
+using GuiClient.Factories;
 using GuiClient.ViewModels.UserControls;
 using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
@@ -59,6 +60,9 @@ public partial class App : Application
         services.AddSingleton<IPrincipalProvider>(p => p.GetRequiredService<SecurityContext>());
 
         services.AddScoped<DatabaseContextFactory>();
+
+        services.AddScoped<AllEntitiesWindowViewModelFactory>();
+        services.AddScoped<DtoViewFactory>();
 
         services.AddScoped<MainWindowViewModel>();
         services.AddScoped<AuthControlViewModel>();

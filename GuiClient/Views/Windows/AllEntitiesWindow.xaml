@@ -1,0 +1,39 @@
+﻿<Window x:Class="GuiClient.Views.Windows.AllEntitiesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="clr-namespace:GuiClient.ViewModels.Windows"
+        mc:Ignorable="d"
+        d:DataContext="{ d:DesignInstance Type={x:Type vm:AllEntitiesWindowViewModel`2}, IsDesignTimeCreatable=True }"
+        Title="{Binding WindowTitle}" Height="450" Width="800" Style="{StaticResource WinAll}">
+    <DockPanel Margin="5">
+        <Button Content="Refresh" Command="{Binding Refresh}" DockPanel.Dock="Top" Margin="0,0,0,5" />
+        <Button Content="Add" Command="{Binding Update}" DockPanel.Dock="Top" Margin="0,5,0,0" />
+        <Separator Height="5" Foreground="Black" DockPanel.Dock="Top" />
+        <DataGrid AutoGenerateColumns="True" ItemsSource="{Binding Entities}" IsReadOnly="True" DockPanel.Dock="Top">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn MinWidth="75">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Update"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Update}"
+                                    CommandParameter="{Binding}"
+                                    Visibility="{Binding IsAdmin}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn MinWidth="75">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Delete"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.Delete}"
+                                    CommandParameter="{Binding}"
+                                    Visibility="{Binding IsAdmin}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

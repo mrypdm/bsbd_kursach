@@ -61,9 +61,6 @@ public class AuthWindowViewModel : BaseViewModel
 
             await _securityContext.LogInAsync(username, password);
 
-            MessageBox.Show(window, $"Authenticated as {_securityContext.Principal}", "Info",
-                MessageBoxButton.OK, MessageBoxImage.Information);
-
             window.DialogResult = true;
             window.Close();
         }
