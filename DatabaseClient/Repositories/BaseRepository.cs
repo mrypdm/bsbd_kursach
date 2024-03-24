@@ -33,7 +33,6 @@ public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) wh
         ArgumentNullException.ThrowIfNull(entity);
 
         await using var context = Factory.Create();
-        context.Set<TEntity>().Remove(entity);
-        await context.SaveChangesAsync();
+        await context.Set<TEntity>().Where(m => m == entity).ExecuteDeleteAsync();
     }
 }

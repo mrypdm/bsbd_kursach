@@ -26,7 +26,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync();
     }
 
-    // TODO: as trigger
     public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
     {
         ArgumentNullException.ThrowIfNull(client);
@@ -45,27 +44,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         };
 
         await using var context = Factory.Create();
-
-        foreach (var book in books)
-        {
-            var currentBook = await context.Books
-                .Where(m => m.Id == book.BookId)
-                .SingleOrDefaultAsync();
-
-            if (currentBook == null)
-            {
-                throw new InvalidOperationException($"Book with id={book.BookId} does not exist");
-            }
-
-            if (currentBook.Count < book.Count)
-            {
-                throw new InvalidOperationException("Not enough books to order");
-            }
-
-            currentBook.Count -= book.Count;
-            context.Books.Update(currentBook);
-        }
-
         var entity = await context.Orders.AddAsync(order);
         await context.SaveChangesAsync();
         return entity.Entity;
@@ -79,22 +57,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         return await context.OrdersToBooks
             .Where(m => m.OrderId == order.Id)
             .SumAsync(m => m.Count * m.Book.Price);
-    }
-
-    public async Task<ICollection<Order>> GetUnpaidOrdersAsync()
-    {
-        await using var context = Factory.Create();
-        return await context.Orders
-            .Where(m => m.PaidAt == null)
-            .ToListAsync();
-    }
-
-    public async Task SetPaidAsync(Order order)
-    {
-        ArgumentNullException.ThrowIfNull(order);
-
-        order.PaidAt = DateTime.Now;
-        await base.UpdateAsync(order);
     }
 
     public override Task UpdateAsync(Order entity)

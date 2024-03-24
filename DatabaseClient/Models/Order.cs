@@ -6,15 +6,13 @@ namespace DatabaseClient.Models;
 [Serializable]
 public class Order : IEntity
 {
-    public int Id { get; set; }
-
     public int ClientId { get; set; }
 
     public DateTime CreatedAt { get; set; }
-    
-    public DateTime? PaidAt { get; set; }
 
     public virtual Client Client { get; set; }
 
     public virtual ICollection<OrdersToBook> OrdersToBooks { get; set; } = new List<OrdersToBook>();
+
+    public int Id { get; set; }
 }

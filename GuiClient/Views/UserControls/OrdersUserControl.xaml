@@ -10,6 +10,5 @@
     <StackPanel Orientation="Horizontal">
         <Button Content="Add Order" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Order by ID" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Get unpaid Orders" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
     </StackPanel>
 </UserControl>

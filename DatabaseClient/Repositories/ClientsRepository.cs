@@ -60,29 +60,4 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await context.SaveChangesAsync();
         return entity.Entity;
     }
-
-    // TODO: as trigger
-    public override async Task RemoveAsync(Client entity)
-    {
-        ArgumentNullException.ThrowIfNull(entity);
-
-        await using var context = Factory.Create();
-
-        var isUnPaidExists = await context.Orders
-            .Where(m => m.ClientId == entity.Id && m.PaidAt == null)
-            .AnyAsync();
-
-        if (isUnPaidExists)
-        {
-            throw new InvalidOperationException("User has unpaid orders");
-        }
-
-        entity.FirstName = string.Empty;
-        entity.LastName = string.Empty;
-        entity.Phone = "0000000000";
-        entity.IsDeleted = true;
-
-        context.Update(entity);
-        await context.SaveChangesAsync();
-    }
 }
