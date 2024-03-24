@@ -7,7 +7,7 @@ using DatabaseClient.Providers;
 namespace DatabaseClient.Principals;
 
 [SuppressMessage("Naming", "CA1724:Type names should not match namespaces")]
-public sealed class Principal : IDisposable, IPrincipalProvider, IPrincipal
+public sealed class Principal : IPrincipalProvider, IPrincipal, IDisposable
 {
     public Principal(string name, SecureString password, Role role)
     {

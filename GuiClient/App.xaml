@@ -5,6 +5,7 @@
         <Style x:Key="WinAll" TargetType="{x:Type Window}">
             <Setter Property="FontFamily" Value="Century Gothic" />
             <Setter Property="FontSize" Value="14" />
+            <Setter Property="Icon" Value="/assets/icon.ico" />
         </Style>
         <Style x:Key="RowControl" TargetType="{x:Type FrameworkElement}">
             <Setter Property="Margin" Value="0,0,5,0" />

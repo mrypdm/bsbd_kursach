@@ -4,11 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="Asker" SizeToContent="WidthAndHeight">
+        Title="Asker" Style="{StaticResource WinAll}"
+        MinWidth="300" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <StackPanel>
-        <TextBlock x:Name="MessageBlock" Text="Placeholder" MinWidth="150" Margin="5" />
-        <TextBox x:Name="ValueBox" MinWidth="150" Margin="5" />
-        <Button Content="Ok" Margin="5" Click="Ok" />
-        <Button Content="Cancel" Margin="5" Click="Cancel" />
+        <TextBlock x:Name="MessageBlock" Text="Placeholder" MinWidth="150" Margin="5" TextWrapping="Wrap" />
+        <TextBox x:Name="ValueBox" MinWidth="150" Margin="5" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Ok" Margin="5" Click="Ok" Style="{StaticResource RowControl}" />
+            <Button Content="Cancel" Margin="5" Click="Cancel" Style="{StaticResource RowControl}" />
+        </StackPanel>
     </StackPanel>
 </Window>
