@@ -2,9 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Input;
 using DatabaseClient.Repositories;
-using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dtos;
 using GuiClient.ViewModels.Abstraction;
@@ -12,7 +10,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class BookWindowViewModel : AuthenticatedViewModel
+public class BookWindowViewModel : EntityWindowViewModel<BookDto, BookWindow>
 {
     private readonly BooksRepository _booksRepository;
     private readonly int _id;
@@ -33,11 +31,8 @@ public class BookWindowViewModel : AuthenticatedViewModel
         Count = dto.Count;
         Price = dto.Price;
         Tags = dto.Tags;
-
-        Save = new AsyncFuncCommand<BookWindow>(SaveAsync);
+        WindowTitle = _id == -1 ? "New Book" : $"Book {_id}";
     }
-
-    public string WindowTitle => _id == -1 ? "New Book" : $"Book {_id}";
 
     public string Title { get; set; }
 
@@ -51,9 +46,7 @@ public class BookWindowViewModel : AuthenticatedViewModel
 
     public string Tags { get; set; }
 
-    public ICommand Save { get; }
-
-    private async Task SaveAsync(BookWindow window)
+    protected override async Task SaveAsync(BookWindow window)
     {
         var newTags = Tags.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries); // a b c
 

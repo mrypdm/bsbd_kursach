@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using DatabaseClient.Models;
-using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dtos;
 using GuiClient.Factories;
@@ -11,38 +8,19 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class BooksUserControlViewModel : AuthenticatedViewModel
+public class BooksUserControlViewModel(
+    ISecurityContext securityContext,
+    AllEntitiesWindowViewModelFactory factory)
+    : EntityUserControlViewModel<Book, BookDto>(securityContext, factory)
 {
-    private readonly AllEntitiesWindowViewModelFactory _factory;
-
-    public BooksUserControlViewModel(ISecurityContext securityContext, AllEntitiesWindowViewModelFactory factory)
-        : base(securityContext)
+    protected override object GetFilter(string filter)
     {
-        _factory = factory;
-        Get = new AsyncFuncCommand<string>(GetBy, allowNulls: true);
-    }
-
-    public ICommand Get { get; }
-
-    private async Task GetBy(string arg)
-    {
-        var viewModel = _factory.Create<Book, BookDto>(arg, GetFilter(arg));
-        var view = new AllEntitiesWindow(viewModel);
-        viewModel.EnrichDataGrid(view);
-
-        await viewModel.RefreshAsync();
-        view.Show();
-    }
-
-    private static object GetFilter(string arg)
-    {
-        return arg switch
+        return filter switch
         {
-            null => null,
             "count" => AskerWindow.AskInt("Enter count"),
             "tags" => AskerWindow.AskString("Enter tags, separated by comma")
                 ?.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
-            _ => AskerWindow.AskString($"Enter {arg}")
+            _ => AskerWindow.AskString($"Enter {filter}")
         };
     }
 }

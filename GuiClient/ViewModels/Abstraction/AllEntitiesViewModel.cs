@@ -17,7 +17,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public class AllEntitiesWindowViewModel<TEntity, TDto> : AuthenticatedViewModel
+public class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
@@ -25,9 +25,7 @@ public class AllEntitiesWindowViewModel<TEntity, TDto> : AuthenticatedViewModel
     private readonly DtoViewFactory _dtoFactory;
     private IReadOnlyCollection<TDto> _entities;
 
-    private string _windowTitle = $"All of {typeof(TEntity).Name}s";
-
-    protected AllEntitiesWindowViewModel(ISecurityContext securityContext,
+    protected AllEntitiesViewModel(ISecurityContext securityContext,
         BaseRepository<TEntity> baseRepository, IMapper mapper,
         DtoViewFactory dtoFactory)
         : base(securityContext)
@@ -43,11 +41,9 @@ public class AllEntitiesWindowViewModel<TEntity, TDto> : AuthenticatedViewModel
 
     protected IMapper Mapper { get; }
 
-    public string WindowTitle
-    {
-        get => _windowTitle;
-        protected set => SetField(ref _windowTitle, value);
-    }
+    protected string WindowTitlePostfix { get; set; }
+
+    public string WindowTitle => $"{typeof(TEntity).Name}s {WindowTitlePostfix}";
 
     public IReadOnlyCollection<TDto> Entities
     {
