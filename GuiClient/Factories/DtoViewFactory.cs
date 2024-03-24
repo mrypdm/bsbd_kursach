@@ -16,7 +16,7 @@ public class DtoViewFactory(ISecurityContext securityContext, DatabaseContextFac
         if (dto is BookDto bookDto)
         {
             return new BookWindow(new BookWindowViewModel(securityContext, bookDto,
-                new BooksRepository(databaseContextFactory)));
+                new BooksRepository(databaseContextFactory), new TagsRepository(databaseContextFactory)));
         }
 
         throw new InvalidOperationException("Cannot determine View");

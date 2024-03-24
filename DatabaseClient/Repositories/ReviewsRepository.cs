@@ -48,4 +48,14 @@ public class ReviewsRepository(DatabaseContextFactory factory) : BaseRepository<
         await context.SaveChangesAsync();
         return entity.Entity;
     }
+
+    public override async Task UpdateAsync(Review entity)
+    {
+        await using var context = Factory.Create();
+        await context.Reviews
+            .Where(m => m.Id == entity.Id)
+            .ExecuteUpdateAsync(o => o
+                .SetProperty(m => m.Text, entity.Text)
+                .SetProperty(m => m.Score, entity.Score));
+    }
 }

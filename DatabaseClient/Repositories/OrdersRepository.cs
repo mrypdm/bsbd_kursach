@@ -62,4 +62,9 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
             .Where(m => m.OrderId == order.Id)
             .SumAsync(m => m.Count * m.Book.Price);
     }
+
+    public override Task UpdateAsync(Order entity)
+    {
+        throw new NotSupportedException("Cannot update or delete order");
+    }
 }

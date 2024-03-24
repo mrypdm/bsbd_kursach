@@ -16,7 +16,7 @@ public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) wh
     {
         await using var context = Factory.Create();
         return await context.Set<TEntity>()
-            .Where(m => m.Id.Equals(id))
+            .Where(m => m.Id == id)
             .SingleOrDefaultAsync();
     }
 
@@ -26,14 +26,7 @@ public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) wh
         return await context.Set<TEntity>().ToArrayAsync();
     }
 
-    public virtual async Task UpdateAsync(TEntity entity)
-    {
-        ArgumentNullException.ThrowIfNull(entity);
-
-        await using var context = Factory.Create();
-        context.Set<TEntity>().Update(entity);
-        await context.SaveChangesAsync();
-    }
+    public abstract Task UpdateAsync(TEntity entity);
 
     public virtual async Task RemoveAsync(TEntity entity)
     {

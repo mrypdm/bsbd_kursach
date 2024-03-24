@@ -11,6 +11,15 @@ namespace DatabaseClient.Repositories;
 
 public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory)
 {
+    public override async Task<Book> GetById(int id)
+    {
+        await using var context = Factory.Create();
+        return await context.Books
+            .Where(m => m.Id == id)
+            .Include(m => m.Tags)
+            .SingleOrDefaultAsync();
+    }
+
     public override async Task<ICollection<Book>> GetAllAsync()
     {
         await using var context = Factory.Create();
@@ -86,6 +95,19 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         var entity = await context.Books.AddAsync(book);
         await context.SaveChangesAsync();
         return entity.Entity;
+    }
+
+    public override async Task UpdateAsync(Book entity)
+    {
+        await using var context = Factory.Create();
+        await context.Books
+            .Where(m => m.Id == entity.Id)
+            .ExecuteUpdateAsync(o => o
+                .SetProperty(m => m.Title, entity.Title)
+                .SetProperty(m => m.Author, entity.Author)
+                .SetProperty(m => m.ReleaseDate, entity.ReleaseDate)
+                .SetProperty(m => m.Count, entity.Count)
+                .SetProperty(m => m.Price, entity.Price));
     }
 
     public async Task AddTagToBookAsync(Book book, Tag tag)

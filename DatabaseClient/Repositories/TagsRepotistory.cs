@@ -46,4 +46,12 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
         await using var context = Factory.Create();
         await context.RemoveTagFromBook(book, tag);
     }
+
+    public override async Task UpdateAsync(Tag entity)
+    {
+        await using var context = Factory.Create();
+        await context.Tags
+            .Where(m => m.Id == entity.Id)
+            .ExecuteUpdateAsync(o => o.SetProperty(m => m.Title, entity.Title));
+    }
 }

@@ -11,28 +11,33 @@
         SizeToContent="WidthAndHeight">
     <StackPanel>
         <StackPanel Margin="5">
-            <TextBlock Text="Title" />
-            <TextBox Text="{Binding Title}" />
+            <TextBlock Text="Title" Margin="0,0,0,5" />
+            <TextBox Text="{Binding Title}" TextAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
-            <TextBlock Text="Author" />
-            <TextBox Text="{Binding Author}" />
+            <TextBlock Text="Author" Margin="0,0,0,5" />
+            <TextBox Text="{Binding Author}" TextAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
-            <TextBlock Text="Release date" />
+            <TextBlock Text="Release date" Margin="0,0,0,5" />
             <DatePicker SelectedDate="{Binding ReleaseDate}" />
         </StackPanel>
 
         <StackPanel Margin="5">
-            <TextBlock Text="Count" />
-            <TextBox Text="{Binding Count}" />
+            <TextBlock Text="Count" Margin="0,0,0,5" />
+            <TextBox Text="{Binding Count}" TextAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <StackPanel Margin="5">
-            <TextBlock Text="Price" />
-            <TextBox Text="{Binding Price}" />
+            <TextBlock Text="Price" Margin="0,0,0,5" />
+            <TextBox Text="{Binding Price}" TextAlignment="Center" MinHeight="15" />
+        </StackPanel>
+
+        <StackPanel Margin="5">
+            <TextBlock Text="Tags" Margin="0,0,0,5" />
+            <TextBox Text="{Binding Tags}" TextAlignment="Center" MinHeight="15" />
         </StackPanel>
 
         <Button Content="Save" Margin="5"
