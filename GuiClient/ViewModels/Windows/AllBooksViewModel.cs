@@ -28,8 +28,8 @@ public class AllBooksViewModel : AllEntitiesWindowViewModel<Book, BookDto>
         _param = param;
         _value = value;
 
-        ShowReviews = new ActionCommand(Check);
-        ShowOrders = new ActionCommand(Check);
+        ShowReviews = new ActionCommand(Placeholder);
+        ShowOrders = new ActionCommand(Placeholder);
     }
 
     public ICommand ShowReviews { get; }
@@ -43,9 +43,10 @@ public class AllBooksViewModel : AllEntitiesWindowViewModel<Book, BookDto>
         AddButton(window, "Show orders", nameof(ShowOrders));
     }
 
-    private void Check()
+    // TODO
+    private void Placeholder()
     {
-        MessageBox.Show("Biba");
+        MessageBox.Show("Not impplemeted");
     }
 
     public override async Task RefreshAsync()
