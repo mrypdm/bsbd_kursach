@@ -63,7 +63,8 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ClientId)
-                .HasConstraintName("FK_Orders_Clients");
+                .HasConstraintName("FK_Orders_Clients")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<OrdersToBook>(entity =>

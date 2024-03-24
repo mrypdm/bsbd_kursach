@@ -10,6 +10,8 @@ namespace DatabaseClient.Repositories;
 
 public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<Order>(factory)
 {
+    // Update and Delete are forbidden with trigger bsbd_prevent_ud_orders
+
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {
         ArgumentNullException.ThrowIfNull(client);
@@ -26,6 +28,8 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync();
     }
 
+    // After insert trigger bsbd_verify_order verifies, that there are enough books for the order,
+    // and then subtracts the number of books in the order from the total number
     public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
     {
         ArgumentNullException.ThrowIfNull(client);
@@ -57,15 +61,5 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         return await context.OrdersToBooks
             .Where(m => m.OrderId == order.Id)
             .SumAsync(m => m.Count * m.Book.Price);
-    }
-
-    public override Task UpdateAsync(Order entity)
-    {
-        throw new NotSupportedException();
-    }
-
-    public override Task RemoveAsync(Order entity)
-    {
-        throw new NotSupportedException();
     }
 }

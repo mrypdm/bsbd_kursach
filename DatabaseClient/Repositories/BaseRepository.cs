@@ -20,7 +20,7 @@ public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) wh
             .SingleOrDefaultAsync();
     }
 
-    public async Task<ICollection<TEntity>> GetAllAsync()
+    public virtual async Task<ICollection<TEntity>> GetAllAsync()
     {
         await using var context = Factory.Create();
         return await context.Set<TEntity>().ToArrayAsync();

@@ -9,6 +9,12 @@ namespace DatabaseClient.Repositories;
 
 public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<Client>(factory)
 {
+    // Instead of delete, the record is updated by trigger bsbd_mark_user_deleted with the parameters:
+    // FirstName = empty,
+    // LastName = empty,
+    // Phone = 0000000000,
+    // IsDeleted = true
+
     public async Task<Client> GetClientByPhoneAsync(string phone)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);

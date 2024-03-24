@@ -11,13 +11,22 @@ namespace DatabaseClient.Repositories;
 
 public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory)
 {
-    public async Task<ICollection<Book>> GetBooksByNameAsync(string title)
+    public override async Task<ICollection<Book>> GetAllAsync()
+    {
+        await using var context = Factory.Create();
+        return await context.Books
+            .Include(m => m.Tags)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Book>> GetBooksByTitleAsync(string title)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
 
         await using var context = Factory.Create();
         return await context.Books
             .Where(m => m.Title == title)
+            .Include(m => m.Tags)
             .ToListAsync();
     }
 
@@ -28,6 +37,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         await using var context = Factory.Create();
         return await context.Books
             .Where(m => m.Author == author)
+            .Include(m => m.Tags)
             .ToListAsync();
     }
 
@@ -46,7 +56,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         var command = safeTags.Aggregate(context.Books as IQueryable<Book>,
             (current, tag) => current.Where(m => m.Tags.Select(t => t.Title).Contains(tag)));
 
-        return await command.ToListAsync();
+        return await command.Include(m => m.Tags).ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
@@ -54,6 +64,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         await using var context = Factory.Create();
         return await context.Books
             .Where(m => m.Count < count)
+            .Include(m => m.Tags)
             .ToListAsync();
     }
 
