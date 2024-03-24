@@ -46,7 +46,7 @@ public class AllBooksViewModel : AllEntitiesWindowViewModel<Book, BookDto>
     // TODO
     private void Placeholder()
     {
-        MessageBox.Show("Not impplemeted");
+        MessageBox.Show("Not implemented");
     }
 
     public override async Task RefreshAsync()
