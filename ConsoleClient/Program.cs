@@ -1,5 +1,6 @@
 // This project is used for testing
 
+using ConsoleClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Options;
@@ -21,5 +22,8 @@ var reviewsRepository = new ReviewsRepository(factory);
 var ordersRepository = new OrdersRepository(factory);
 var principalsManager = new PrincipalsManager(factory);
 var reportsProvider = new ReportsProvider(factory);
+
+await Startup.ClearAllAsync(cred.Name, cred.Password);
+await Startup.InitDatabaseAsync(cred.Name, cred.Password);
 
 Logging.Close();

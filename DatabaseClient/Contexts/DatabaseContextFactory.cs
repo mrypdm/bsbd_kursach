@@ -26,7 +26,11 @@ public class DatabaseContextFactory(IPrincipalProvider principalProvider, Server
 
         if (Logging.IsInit)
         {
-            optionsBuilder = optionsBuilder.UseLoggerFactory(Logging.LoggerFactory);
+            optionsBuilder = optionsBuilder
+                .UseLoggerFactory(Logging.LoggerFactory)
+#if DEBUG
+                .EnableSensitiveDataLogging();
+#endif
         }
 
         return new DatabaseContext(optionsBuilder.Options);
