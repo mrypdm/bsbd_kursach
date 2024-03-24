@@ -48,6 +48,7 @@ public partial class App : Application
     private void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         services.AddSerilog();
+        services.AddAutoMapper(typeof(AutoMapperConfiguration));
 
         services.AddOptions<ServerOptions>(context.Configuration);
 

@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:GuiClient.ViewModels.Windows"
         mc:Ignorable="d"
         d:DataContext="{ d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=True }"
-        Title="MainWindow" Height="450" Width="950" Style="{StaticResource WinAll}">
+        Title="Main" Height="450" Width="950" Style="{StaticResource WinAll}">
     <DockPanel>
         <uc:AuthUserControl DockPanel.Dock="Top" HorizontalAlignment="Right" Height="25"
                             Margin="5,5" DataContext="{Binding AuthControlViewModel}" />
@@ -29,7 +29,7 @@
                 <uc:ReportsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
                                        DataContext="{Binding ReportsUserControlViewModel}" />
                 <uc:PrincipalsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
-                                     DataContext="{Binding PrincipalsUserControlViewModel}" />
+                                          DataContext="{Binding PrincipalsUserControlViewModel}" />
             </StackPanel>
         </ScrollViewer>
     </DockPanel>

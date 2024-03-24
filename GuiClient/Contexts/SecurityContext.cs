@@ -32,13 +32,15 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
         ArgumentNullException.ThrowIfNull(password);
 
-        var factory = new DatabaseContextFactory(new Principal(userName, password, default), options);
+        using var cred = new Principal(userName, password.Copy(), default);
+
+        var factory = new DatabaseContextFactory(cred, options);
         var usersManager = new PrincipalsManager(factory);
 
         var principal = await usersManager.GetPrincipalByName(userName);
 
         LogOff();
-        Principal = new Principal(principal.Name, password, principal.Role);
+        Principal = new Principal(principal.Name, password.Copy(), principal.Role);
     }
 
     public async Task ChangePasswordAsync(SecureString oldPassword, SecureString newPassword)
