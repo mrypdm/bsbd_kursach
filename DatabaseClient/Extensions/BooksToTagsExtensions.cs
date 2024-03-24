@@ -13,10 +13,11 @@ public static class BooksToTagsExtensions
         ArgumentNullException.ThrowIfNull(book);
         ArgumentNullException.ThrowIfNull(tag);
 
+        context.Attach(book);
+        context.Attach(tag);
+
         book.Tags.Add(tag);
-        tag.Books.Add(book);
         context.Update(book);
-        context.Update(tag);
         await context.SaveChangesAsync();
     }
 
@@ -26,10 +27,11 @@ public static class BooksToTagsExtensions
         ArgumentNullException.ThrowIfNull(book);
         ArgumentNullException.ThrowIfNull(tag);
 
+        context.Attach(book);
+        context.Attach(tag);
+
         book.Tags.Remove(tag);
-        tag.Books.Remove(book);
         context.Update(book);
-        context.Update(tag);
         await context.SaveChangesAsync();
     }
 }
