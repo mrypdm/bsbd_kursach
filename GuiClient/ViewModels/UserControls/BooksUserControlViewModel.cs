@@ -1,7 +1,7 @@
 ﻿using System;
 using DatabaseClient.Models;
 using GuiClient.Contexts;
-using GuiClient.Dtos;
+using GuiClient.Dto;
 using GuiClient.Factories;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;

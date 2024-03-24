@@ -10,7 +10,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Dtos;
+using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 

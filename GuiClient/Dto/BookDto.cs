@@ -1,7 +1,7 @@
 ﻿using System;
 using DatabaseClient.Models;
 
-namespace GuiClient.Dtos;
+namespace GuiClient.Dto;
 
 [Serializable]
 public class BookDto : IEntity

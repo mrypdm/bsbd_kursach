@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 using DatabaseClient.Models;
-using GuiClient.Dtos;
+using GuiClient.Dto;
 
 namespace GuiClient;
 
