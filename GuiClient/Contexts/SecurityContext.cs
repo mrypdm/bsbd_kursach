@@ -63,7 +63,7 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         var factory = new DatabaseContextFactory(new CredentialProvider(oldCred), options);
         var usersManager = new PrincipalsManager(factory);
 
-        await usersManager.ChangePasswordAsync(Principal.Name, oldCred.Password, newCred.Password);
+        await usersManager.ChangePasswordAsync(Principal.Name, oldCred.SecurePassword, newCred.SecurePassword);
 
         LogOff();
     }

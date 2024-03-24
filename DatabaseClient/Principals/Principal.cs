@@ -4,19 +4,30 @@ using System.Security;
 
 namespace DatabaseClient.Principals;
 
-public sealed class Principal(string name, SecureString password, Role role) : IDisposable
+public sealed class Principal : IDisposable
 {
-    public string Name { get; } = name;
+    public Principal(string name, SecureString password, Role role)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(password);
 
-    public SecureString Password { get; } = password;
+        Role = role;
+        Credential = new NetworkCredential(Name, SecurePassword);
+    }
 
-    public Role Role { get; } = role;
+    public string Name => Credential.UserName;
 
-    public NetworkCredential Credential { get; } = new(name, password);
+    public string Password => Credential.Password;
+
+    public SecureString SecurePassword => Credential.SecurePassword;
+
+    public Role Role { get; }
+
+    public NetworkCredential Credential { get; }
 
     public void Dispose()
     {
-        Password?.Dispose();
+        SecurePassword?.Dispose();
     }
 
     public override string ToString()

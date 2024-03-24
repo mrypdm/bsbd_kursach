@@ -1,18 +1,33 @@
 ﻿using System;
-using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security;
 
 namespace DatabaseClient.Extensions;
 
 public static class StringExtensions
 {
-    private const string ForbiddenCharacters = "[]'\";";
-
-    public static void ValidateForSqlInjection(this string value)
+    public static string Unsecure(this SecureString value)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(value);
-        if (value.Intersect(ForbiddenCharacters).Any())
+        if (value == null || value.Length == 0)
         {
-            throw new ArgumentException($"Invalid SQL. String cannot contains characters: {ForbiddenCharacters}");
+            return string.Empty;
         }
+
+        var ptr = IntPtr.Zero;
+        var result = string.Empty;
+        try
+        {
+            ptr = Marshal.SecureStringToGlobalAllocUnicode(value);
+            result = Marshal.PtrToStringUni(ptr)!;
+        }
+        finally
+        {
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(ptr);
+            }
+        }
+
+        return result;
     }
 }
