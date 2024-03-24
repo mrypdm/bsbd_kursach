@@ -69,7 +69,7 @@ public class PrincipalsManager(DatabaseContextFactory factory)
         return await context.Database
             .SqlQuery<DatabasePrincipal>($"select * from bsbd_principals")
             .Select(m => m.ToPrincipal())
-            .ToListAsync();
+            .ToArrayAsync();
     }
 
     public async Task<IPrincipal> GetPrincipalByName(string name)
@@ -91,7 +91,7 @@ public class PrincipalsManager(DatabaseContextFactory factory)
 
         public string PrincipalRole { get; set; }
 
-        public IPrincipal ToPrincipal()
+        public Principal ToPrincipal()
         {
             var role = Role.Unknown;
 
