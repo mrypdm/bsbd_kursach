@@ -14,8 +14,8 @@ public class DatabaseContextFactory(ICredentialProvider credentialProvider, Serv
 
         var connectionString = new SqlConnectionStringBuilder
         {
-            DataSource = options.DatabaseName,
-            InitialCatalog = options.ServerName,
+            DataSource = options.ServerName,
+            InitialCatalog = options.DatabaseName,
             UserID = credential.UserName,
             Password = credential.Password,
             Encrypt = options.Encryption

@@ -21,7 +21,8 @@ public class PrincipalsManager(DatabaseContextFactory factory)
 
         await using var context = factory.Create();
 
-        await context.Database.ExecuteSqlAsync($"exec bsbd_create_user {userName} {password.Unsecure()} {(int)role}");
+        await context.Database
+            .ExecuteSqlAsync($"exec bsbd_create_user {userName}, {password.Unsecure()}, {(int)role}");
     }
 
     public async Task RemovePrincipalAsync(string userName)
@@ -30,19 +31,20 @@ public class PrincipalsManager(DatabaseContextFactory factory)
 
         await using var context = factory.Create();
 
-        await context.Database.ExecuteSqlAsync($"exec bsbd_delete_user {userName}");
+        await context.Database
+            .ExecuteSqlAsync($"bsbd_delete_user {userName}");
     }
 
-    public async Task ChangePasswordAsync(string userName, SecureString newPassword, SecureString oldPassword)
+    public async Task ChangePasswordAsync(string userName, SecureString password, SecureString newPassword)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+        ArgumentNullException.ThrowIfNull(password);
         ArgumentNullException.ThrowIfNull(newPassword);
-        ArgumentNullException.ThrowIfNull(oldPassword);
 
         await using var context = factory.Create();
         await context.Database
             .ExecuteSqlAsync(
-                $"exec bsbd_change_user_password {userName} {newPassword.Unsecure()} {oldPassword.Unsecure()}");
+                $"exec bsbd_change_user_password {userName}, {newPassword.Unsecure()}, {password.Unsecure()}");
     }
 
     // Current context should be authorized with ALTER ANY USER rights
@@ -53,7 +55,7 @@ public class PrincipalsManager(DatabaseContextFactory factory)
 
         await using var context = factory.Create();
         await context.Database
-            .ExecuteSqlAsync($"exec bsbd_change_user_password {userName} {newPassword.Unsecure()}");
+            .ExecuteSqlAsync($"exec bsbd_change_user_password {userName}, {newPassword.Unsecure()}");
     }
 
     public async Task GetAllPrincipalsAsync()

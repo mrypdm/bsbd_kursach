@@ -1,7 +1,6 @@
 // This project is used for testing
 
 using System.Net;
-using ConsoleClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Options;
 using DatabaseClient.Principals;
