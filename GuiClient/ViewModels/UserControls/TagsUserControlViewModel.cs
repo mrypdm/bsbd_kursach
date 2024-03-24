@@ -1,6 +1,19 @@
-﻿using GuiClient.Contexts;
+﻿using DatabaseClient.Models;
+using GuiClient.Contexts;
+using GuiClient.Dtos;
+using GuiClient.Factories;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class TagsUserControlViewModel(ISecurityContext securityContext) : AuthenticatedViewModel(securityContext);
+public class TagsUserControlViewModel(
+    ISecurityContext securityContext,
+    AllEntitiesWindowViewModelFactory factory)
+    : EntityUserControlViewModel<Tag, TagDto>(securityContext, factory)
+{
+    protected override object GetFilter(string filter)
+    {
+        return AskerWindow.AskString($"Enter {filter}");
+    }
+}

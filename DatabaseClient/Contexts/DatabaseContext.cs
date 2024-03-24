@@ -93,9 +93,9 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         modelBuilder.Entity<Tag>(entity =>
         {
-            entity.HasIndex(e => e.Title, "IX_Tags_Title").IsUnique();
+            entity.HasIndex(e => e.Name, "IX_Tags_Title").IsUnique();
 
-            entity.Property(e => e.Title)
+            entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(50);
 

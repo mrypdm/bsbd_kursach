@@ -15,15 +15,32 @@ public class AllEntitiesWindowViewModelFactory(
     DatabaseContextFactory databaseContextFactory,
     DtoViewFactory dtoViewFactory)
 {
-    public AllEntitiesWindowViewModel<TEntity, TDto> Create<TEntity, TDto>(
+    public AllEntitiesViewModel<TEntity, TDto> Create<TEntity, TDto>(
         string filter, object value)
         where TEntity : class, IEntity, new()
         where TDto : class, IEntity, new()
     {
         if (typeof(TEntity) == typeof(Book))
         {
-            return new AllBooksViewModel(securityContext, new BooksRepository(databaseContextFactory), mapper,
-                dtoViewFactory, filter, value) as AllEntitiesWindowViewModel<TEntity, TDto>;
+            return new AllBooksViewModel(
+                securityContext,
+                new BooksRepository(databaseContextFactory),
+                new TagsRepository(databaseContextFactory),
+                mapper,
+                dtoViewFactory,
+                filter,
+                value) as AllEntitiesViewModel<TEntity, TDto>;
+        }
+
+        if (typeof(TEntity) == typeof(Tag))
+        {
+            return new AllTagsViewModel(
+                securityContext,
+                new TagsRepository(databaseContextFactory),
+                mapper,
+                dtoViewFactory,
+                filter,
+                value) as AllEntitiesViewModel<TEntity, TDto>;
         }
 
         throw new InvalidOperationException("Cannot determine viewmodel");

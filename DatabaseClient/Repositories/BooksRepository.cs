@@ -63,7 +63,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         await using var context = Factory.Create();
 
         var command = safeTags.Aggregate(context.Books as IQueryable<Book>,
-            (current, tag) => current.Where(m => m.Tags.Select(t => t.Title).Contains(tag)));
+            (current, tag) => current.Where(m => m.Tags.Select(t => t.Name).Contains(tag)));
 
         return await command.Include(m => m.Tags).ToListAsync();
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -46,7 +47,7 @@ public class BookWindowViewModel : EntityWindowViewModel<BookDto, BookWindow>
 
     public string Tags { get; set; }
 
-    protected override async Task SaveAsync(BookWindow window)
+    protected override async Task SaveAsync([NotNull] BookWindow window)
     {
         var newTags = Tags.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries); // a b c
 
@@ -74,7 +75,7 @@ public class BookWindowViewModel : EntityWindowViewModel<BookDto, BookWindow>
 
             await _booksRepository.UpdateAsync(book);
 
-            var currentTags = book.Tags.Select(m => m.Title).ToArray();
+            var currentTags = book.Tags.Select(m => m.Name).ToArray();
             var toDelete = currentTags.Except(newTags);
             var toAdd = newTags.Except(currentTags);
 

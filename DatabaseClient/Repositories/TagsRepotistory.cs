@@ -16,7 +16,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
 
         await using var context = Factory.Create();
         return await context.Tags
-            .Where(m => m.Title == name)
+            .Where(m => m.Name == name)
             .SingleOrDefaultAsync();
     }
 
@@ -26,7 +26,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
 
         var tag = new Tag
         {
-            Title = name
+            Name = name
         };
 
         await using var context = Factory.Create();
@@ -52,6 +52,6 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
         await using var context = Factory.Create();
         await context.Tags
             .Where(m => m.Id == entity.Id)
-            .ExecuteUpdateAsync(o => o.SetProperty(m => m.Title, entity.Title));
+            .ExecuteUpdateAsync(o => o.SetProperty(m => m.Name, entity.Name));
     }
 }

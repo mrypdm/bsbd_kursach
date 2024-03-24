@@ -10,6 +10,8 @@ public class AutoMapperConfiguration : Profile
     public AutoMapperConfiguration()
     {
         CreateMap<Book, BookDto>().ForMember(dest => dest.Tags,
-            m => m.MapFrom(src => string.Join(", ", src.Tags.Select(t => t.Title))));
+            m => m.MapFrom(src => string.Join(", ", src.Tags.Select(t => t.Name))));
+
+        CreateMap<Tag, TagDto>();
     }
 }
