@@ -9,6 +9,7 @@
              d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
         <Button Content="Add Order" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
+        <Button Content="Get all Orders" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Order by ID" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
     </StackPanel>
 </UserControl>

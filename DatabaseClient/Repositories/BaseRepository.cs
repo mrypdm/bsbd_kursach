@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -17,6 +18,12 @@ public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) wh
         return await context.Set<TEntity>()
             .Where(m => m.Id.Equals(id))
             .SingleOrDefaultAsync();
+    }
+
+    public async Task<ICollection<TEntity>> GetAllAsync()
+    {
+        await using var context = Factory.Create();
+        return await context.Set<TEntity>().ToArrayAsync();
     }
 
     public virtual async Task UpdateAsync(TEntity entity)

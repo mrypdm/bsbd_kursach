@@ -10,6 +10,7 @@
     <StackPanel Orientation="Horizontal">
         <Button Content="Add Tag" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Delete Tag" Style="{StaticResource RowControl}" Visibility="{Binding IsAdmin}" />
+        <Button Content="Get all Tags" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Tag by ID" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Tag by Name" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
     </StackPanel>

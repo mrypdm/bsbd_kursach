@@ -10,6 +10,7 @@
     <StackPanel Orientation="Horizontal">
         <Button Content="Add Book" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Delete Book" Style="{StaticResource RowControl}" Visibility="{Binding IsAdmin}" />
+        <Button Content="Get all Books" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Book by ID" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Books by Title" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Books by Author" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
