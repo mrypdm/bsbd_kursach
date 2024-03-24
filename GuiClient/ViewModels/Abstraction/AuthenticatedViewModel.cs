@@ -4,7 +4,7 @@ using DatabaseClient.Extensions;
 using GuiClient.Contexts;
 using GuiClient.Extensions;
 
-namespace GuiClient.ViewModels;
+namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class AuthenticatedViewModel : BaseViewModel
 {

@@ -15,7 +15,7 @@ using GuiClient.Contexts;
 using GuiClient.Factories;
 using GuiClient.Views.Windows;
 
-namespace GuiClient.ViewModels.Windows.Abstractions;
+namespace GuiClient.ViewModels.Abstraction;
 
 public class AllEntitiesWindowViewModel<TEntity, TDto> : AuthenticatedViewModel
     where TEntity : class, IEntity, new()

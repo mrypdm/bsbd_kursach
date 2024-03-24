@@ -1,4 +1,5 @@
-﻿using GuiClient.ViewModels.UserControls;
+﻿using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.UserControls;
 
 namespace GuiClient.ViewModels.Windows;
 

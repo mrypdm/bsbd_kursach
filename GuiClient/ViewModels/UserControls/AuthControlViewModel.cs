@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Domain;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
 

@@ -4,8 +4,8 @@ using DatabaseClient.Contexts;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 using GuiClient.Contexts;
+using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Windows;
-using GuiClient.ViewModels.Windows.Abstractions;
 
 namespace GuiClient.Factories;
 

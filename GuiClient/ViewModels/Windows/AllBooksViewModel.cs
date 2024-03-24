@@ -9,7 +9,7 @@ using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dtos;
 using GuiClient.Factories;
-using GuiClient.ViewModels.Windows.Abstractions;
+using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;

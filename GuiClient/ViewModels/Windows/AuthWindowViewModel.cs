@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;

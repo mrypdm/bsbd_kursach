@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace GuiClient.ViewModels;
+namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class BaseViewModel : INotifyPropertyChanged
 {
