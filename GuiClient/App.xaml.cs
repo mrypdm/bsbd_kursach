@@ -68,7 +68,6 @@ public partial class App : Application
         services.AddScoped<DatabaseContextFactory>();
 
         services.AddScoped<AllEntitiesWindowViewModelFactory>();
-        services.AddScoped<DtoViewFactory>();
 
         services.AddScoped<MainWindowViewModel>();
         services.AddScoped<AuthControlViewModel>();

@@ -12,8 +12,7 @@ namespace GuiClient.Factories;
 public class AllEntitiesWindowViewModelFactory(
     ISecurityContext securityContext,
     IMapper mapper,
-    DatabaseContextFactory databaseContextFactory,
-    DtoViewFactory dtoViewFactory)
+    DatabaseContextFactory databaseContextFactory)
 {
     public AllEntitiesViewModel<TEntity, TDto> Create<TEntity, TDto>(
         string filter, object value)
@@ -27,7 +26,6 @@ public class AllEntitiesWindowViewModelFactory(
                 new BooksRepository(databaseContextFactory),
                 new TagsRepository(databaseContextFactory),
                 mapper,
-                dtoViewFactory,
                 filter,
                 value) as AllEntitiesViewModel<TEntity, TDto>;
         }
@@ -38,7 +36,6 @@ public class AllEntitiesWindowViewModelFactory(
                 securityContext,
                 new TagsRepository(databaseContextFactory),
                 mapper,
-                dtoViewFactory,
                 filter,
                 value) as AllEntitiesViewModel<TEntity, TDto>;
         }

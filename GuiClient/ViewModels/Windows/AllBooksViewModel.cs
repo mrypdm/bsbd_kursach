@@ -11,7 +11,6 @@ using DatabaseClient.Repositories;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dtos;
-using GuiClient.Factories;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
@@ -25,9 +24,8 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     private readonly object _value;
 
     public AllBooksViewModel(ISecurityContext securityContext, BooksRepository booksRepository,
-        TagsRepository tagsRepository, IMapper mapper,
-        DtoViewFactory dtoFactory, string filter, object value)
-        : base(securityContext, booksRepository, mapper, dtoFactory)
+        TagsRepository tagsRepository, IMapper mapper, string filter, object value)
+        : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
@@ -92,25 +90,25 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         Entities = Mapper.Map<BookDto[]>(entities);
     }
 
-    protected override async Task UpdateAsync([NotNull] BookDto dto)
+    protected override async Task UpdateAsync([NotNull] BookDto item)
     {
-        var newTags = dto.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var newTags = item.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        if (dto.Id == -1)
+        if (item.Id == -1)
         {
-            var book = await _booksRepository.AddBookAsync(dto.Title, dto.Author, dto.ReleaseDate, dto.Price,
-                dto.Count);
+            var book = await _booksRepository.AddBookAsync(item.Title, item.Author, item.ReleaseDate, item.Price,
+                item.Count);
             await _tagsRepository.AddBookToTags(book, newTags);
             MessageBox.Show($"Book created with ID={book.Id}");
         }
         else
         {
-            var book = await _booksRepository.GetById(dto.Id);
-            book.Title = dto.Title;
-            book.Author = dto.Author;
-            book.ReleaseDate = dto.ReleaseDate;
-            book.Count = dto.Count;
-            book.Price = dto.Price;
+            var book = await _booksRepository.GetById(item.Id);
+            book.Title = item.Title;
+            book.Author = item.Author;
+            book.ReleaseDate = item.ReleaseDate;
+            book.Count = item.Count;
+            book.Price = item.Price;
 
             await _booksRepository.UpdateAsync(book);
 
@@ -121,5 +119,7 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
             await _tagsRepository.RemoveBookFromTags(book, toDelete);
             await _tagsRepository.AddBookToTags(book, toAdd);
         }
+
+        await RefreshAsync();
     }
 }

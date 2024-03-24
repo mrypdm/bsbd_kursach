@@ -6,22 +6,20 @@ using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 using GuiClient.Contexts;
-using GuiClient.Dtos;
-using GuiClient.Factories;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllTagsViewModel : AllEntitiesViewModel<Tag, TagDto>
+public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
 {
     private readonly string _filter;
     private readonly TagsRepository _tagsRepository;
     private readonly object _value;
 
     public AllTagsViewModel(ISecurityContext securityContext, TagsRepository tagsRepository, IMapper mapper,
-        DtoViewFactory dtoFactory, string filter, object value)
-        : base(securityContext, tagsRepository, mapper, dtoFactory)
+        string filter, object value)
+        : base(securityContext, tagsRepository, mapper)
     {
         _tagsRepository = tagsRepository;
         _filter = filter;
@@ -38,8 +36,8 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, TagDto>
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
-        AddText(window, nameof(TagDto.Id), true);
-        AddText(window, nameof(TagDto.Name));
+        AddText(window, nameof(Tag.Id), true);
+        AddText(window, nameof(Tag.Name));
     }
 
     public override async Task RefreshAsync()
@@ -50,28 +48,26 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, TagDto>
             return;
         }
 
-        var entity = _filter switch
+        Entities = _filter switch
         {
-            "name" => await _tagsRepository.GetTagByNameAsync((string)_value),
+            "name" => [await _tagsRepository.GetTagByNameAsync((string)_value)],
             _ => throw new InvalidOperationException("Cannot determine parameter for filter")
         };
-
-        Entities = [Mapper.Map<TagDto>(entity)];
     }
 
-    protected override async Task UpdateAsync([NotNull] TagDto dto)
+    protected override async Task UpdateAsync([NotNull] Tag item)
     {
-        if (dto.Id == -1)
+        if (item.Id == -1)
         {
-            var tag = await _tagsRepository.AddTagAsync(dto.Name);
+            var tag = await _tagsRepository.AddTagAsync(item.Name);
             MessageBox.Show($"Tag created with ID={tag.Id}");
         }
         else
         {
             await _tagsRepository.UpdateAsync(new Tag
             {
-                Id = dto.Id,
-                Name = dto.Name
+                Id = item.Id,
+                Name = item.Name
             });
         }
 

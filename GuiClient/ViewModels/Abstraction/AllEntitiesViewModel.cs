@@ -12,7 +12,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Factories;
 using GuiClient.Views.Windows;
 using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
@@ -25,17 +24,14 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     where TDto : class, IEntity, new()
 {
     private readonly BaseRepository<TEntity> _baseRepository;
-    private readonly DtoViewFactory _dtoFactory;
-    private IReadOnlyCollection<TDto> _entities;
+    private ICollection<TDto> _entities;
     private int _selectedIndex;
 
     protected AllEntitiesViewModel(ISecurityContext securityContext,
-        BaseRepository<TEntity> baseRepository, IMapper mapper,
-        DtoViewFactory dtoFactory)
+        BaseRepository<TEntity> baseRepository, IMapper mapper)
         : base(securityContext)
     {
         _baseRepository = baseRepository;
-        _dtoFactory = dtoFactory;
         Mapper = mapper;
 
         Refresh = new AsyncActionCommand(RefreshAsync);
@@ -50,7 +46,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public string WindowTitle => $"{typeof(TEntity).Name}s {WindowTitlePostfix}";
 
-    public IReadOnlyCollection<TDto> Entities
+    public ICollection<TDto> Entities
     {
         get => _entities;
         protected set => SetField(ref _entities, value);
@@ -80,13 +76,13 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     {
         if (Entities.All(m => m.Id != -1))
         {
-            Entities = Entities.Append(new TDto()).ToArray();
+            Entities = Entities.Append(new TDto { Id = -1 }).ToArray();
         }
 
         SelectedIndex = Entities.Count - 1;
     }
 
-    protected abstract Task UpdateAsync(TDto dto);
+    protected abstract Task UpdateAsync(TDto item);
 
     protected virtual async Task DeleteAsync([NotNull] TDto dto)
     {
