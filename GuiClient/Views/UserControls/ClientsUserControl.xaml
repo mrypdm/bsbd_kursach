@@ -11,8 +11,7 @@
         <Button Content="Add Client" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Delete Client" Style="{StaticResource RowControl}" Visibility="{Binding IsAdmin}" />
         <Button Content="Get all Clients" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Get Client by ID" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Get Client by Name" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
+        <Button Content="Get Clients by Name" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
         <Button Content="Get Client by Phone" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
     </StackPanel>
 </UserControl>

@@ -12,7 +12,7 @@ public class BookDto : IEntity
 
     public string Author { get; set; }
 
-    public DateTime ReleaseDate { get; set; }
+    public DateTime ReleaseDate { get; set; } = DateTime.Now;
 
     public int Count { get; set; }
 

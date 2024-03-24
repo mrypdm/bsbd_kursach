@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DatabaseClient.Models;
 using GuiClient.Commands;
@@ -17,17 +18,30 @@ public class BooksUserControlViewModel : AuthenticatedViewModel
         : base(securityContext)
     {
         _factory = factory;
-        GetAll = new AsyncActionCommand(GetAllAsync);
+        Get = new AsyncFuncCommand<string>(GetBy, allowNulls: true);
     }
 
-    public ICommand GetAll { get; }
+    public ICommand Get { get; }
 
-    private async Task GetAllAsync()
+    private async Task GetBy(string arg)
     {
-        var viewModel = _factory.Create<Book, BookDto>();
-        await viewModel.RefreshAsync();
-
+        var viewModel = _factory.Create<Book, BookDto>(arg, GetFilter(arg));
         var view = new AllEntitiesWindow(viewModel);
+        viewModel.EnrichDataGrid(view);
+
+        await viewModel.RefreshAsync();
         view.Show();
+    }
+
+    private static object GetFilter(string arg)
+    {
+        return arg switch
+        {
+            null => null,
+            "count" => AskerWindow.AskInt("Enter count"),
+            "tags" => AskerWindow.AskString("Enter tags, separated by comma")
+                ?.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
+            _ => AskerWindow.AskString($"Enter {arg}")
+        };
     }
 }

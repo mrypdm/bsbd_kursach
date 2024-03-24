@@ -6,24 +6,36 @@
         xmlns:vm="clr-namespace:GuiClient.ViewModels.Windows"
         mc:Ignorable="d"
         d:DataContext="{ d:DesignInstance Type=vm:BookWindowViewModel, IsDesignTimeCreatable=True }"
+        x:Name="CurrentWindow"
         Title="{Binding WindowTitle}" d:Height="450" MinWidth="300" Style="{StaticResource WinAll}"
         SizeToContent="WidthAndHeight">
-    <DockPanel Margin="5" LastChildFill="False">
-        <TextBlock Text="Title" DockPanel.Dock="Top" />
-        <TextBox Text="{Binding Title}" DockPanel.Dock="Top" />
+    <StackPanel>
+        <StackPanel Margin="5">
+            <TextBlock Text="Title" />
+            <TextBox Text="{Binding Title}" />
+        </StackPanel>
 
-        <TextBlock Text="Author" DockPanel.Dock="Top" />
-        <TextBox Text="{Binding Author}" DockPanel.Dock="Top" />
+        <StackPanel Margin="5">
+            <TextBlock Text="Author" />
+            <TextBox Text="{Binding Author}" />
+        </StackPanel>
 
-        <TextBlock Text="Release date" DockPanel.Dock="Top" />
-        <DatePicker SelectedDate="{Binding ReleaseDate}" DockPanel.Dock="Top" />
+        <StackPanel Margin="5">
+            <TextBlock Text="Release date" />
+            <DatePicker SelectedDate="{Binding ReleaseDate}" />
+        </StackPanel>
 
-        <TextBlock Text="Count" DockPanel.Dock="Top" />
-        <TextBox Text="{Binding Count}" DockPanel.Dock="Top" />
+        <StackPanel Margin="5">
+            <TextBlock Text="Count" />
+            <TextBox Text="{Binding Count}" />
+        </StackPanel>
 
-        <TextBlock Text="Price" DockPanel.Dock="Top" />
-        <TextBox Text="{Binding Price}" DockPanel.Dock="Top" />
+        <StackPanel Margin="5">
+            <TextBlock Text="Price" />
+            <TextBox Text="{Binding Price}" />
+        </StackPanel>
 
-        <Button Content="Save" DockPanel.Dock="Top" Margin="0,5,0,5" Command="{Binding Save}" />
-    </DockPanel>
+        <Button Content="Save" Margin="5"
+                Command="{Binding Save}" CommandParameter="{Binding ElementName=CurrentWindow}" />
+    </StackPanel>
 </Window>
