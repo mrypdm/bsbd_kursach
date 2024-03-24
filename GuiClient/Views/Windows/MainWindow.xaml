@@ -18,8 +18,6 @@
                                      DataContext="{Binding BooksUserControlViewModel}" />
                 <uc:TagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
                                     DataContext="{Binding TagsUserControlViewModel}" />
-                <uc:BooksToTagsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
-                                           DataContext="{Binding BooksToTagsUserControlViewModel}" />
                 <uc:ClientsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
                                        DataContext="{Binding ClientsUserControlViewModel}" />
                 <uc:OrdersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Height="25" Margin="5,5"
