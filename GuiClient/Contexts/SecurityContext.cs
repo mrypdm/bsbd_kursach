@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading.Tasks;
@@ -36,10 +35,10 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         var factory = new DatabaseContextFactory(new Principal(userName, password, default), options);
         var usersManager = new PrincipalsManager(factory);
 
-        var role = await usersManager.GetPrincipalRoleAsync(userName);
+        var principal = await usersManager.GetPrincipalByName(userName);
 
         LogOff();
-        Principal = new Principal(userName, password, role);
+        Principal = new Principal(principal.Name, password, principal.Role);
     }
 
     public async Task ChangePasswordAsync(SecureString oldPassword, SecureString newPassword)
@@ -52,13 +51,12 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentNullException.ThrowIfNull(oldPassword);
         ArgumentNullException.ThrowIfNull(newPassword);
 
-        var oldCred = new NetworkCredential(Principal.Name, oldPassword);
-        var newCred = new NetworkCredential(Principal.Name, newPassword);
+        using var oldCred = new Principal(Principal.Name, oldPassword.Copy(), default);
 
-        var factory = new DatabaseContextFactory(new Principal(Principal.Name, oldPassword, default), options);
+        var factory = new DatabaseContextFactory(oldCred, options);
         var usersManager = new PrincipalsManager(factory);
 
-        await usersManager.ChangePasswordAsync(Principal.Name, oldCred.SecurePassword, newCred.SecurePassword);
+        await usersManager.ChangePasswordAsync(oldCred.Name, oldCred.SecurePassword, newPassword);
 
         LogOff();
     }

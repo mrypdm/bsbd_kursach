@@ -17,7 +17,7 @@ public class PrincipalsManager(DatabaseContextFactory factory)
         return $"bsbd_{role.ToString().ToLowerInvariant()}_role";
     }
 
-    public async Task CreatePrincipalAsync(string userName, SecureString password, Role role)
+    public async Task<Principal> CreatePrincipalAsync(string userName, SecureString password, Role role)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
         ArgumentNullException.ThrowIfNull(password);
@@ -26,6 +26,8 @@ public class PrincipalsManager(DatabaseContextFactory factory)
 
         await context.Database
             .ExecuteSqlAsync($"exec bsbd_create_user {userName}, {password.Unsecure()}, {(int)role}");
+
+        return new Principal(userName, password, role);
     }
 
     public async Task RemovePrincipalAsync(string userName)
@@ -61,7 +63,7 @@ public class PrincipalsManager(DatabaseContextFactory factory)
             .ExecuteSqlAsync($"exec bsbd_change_user_password {userName}, {newPassword.Unsecure()}");
     }
 
-    public async Task<ICollection<Principal>> GetAllPrincipalsAsync()
+    public async Task<ICollection<IPrincipal>> GetAllPrincipalsAsync()
     {
         await using var context = factory.Create();
         return await context.Database
@@ -70,25 +72,13 @@ public class PrincipalsManager(DatabaseContextFactory factory)
             .ToListAsync();
     }
 
-    public async Task<Role> GetPrincipalRoleAsync(string userName)
+    public async Task<IPrincipal> GetPrincipalByName(string name)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
-
         await using var context = factory.Create();
-
-        var roles = await context.Database
-            .SqlQuery<string>($"select PrincipalRole from bsbd_principals where PrincipalName = {userName}")
-            .ToListAsync();
-
-        foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
-        {
-            if (roles.Contains(GetRoleString(role)))
-            {
-                return role;
-            }
-        }
-
-        return Role.Unknown;
+        return await context.Database
+            .SqlQuery<DatabasePrincipal>($"select * from bsbd_principals where PrincipalName = {name}")
+            .Select(m => m.ToPrincipal())
+            .SingleOrDefaultAsync();
     }
 
     [Serializable]
@@ -101,9 +91,15 @@ public class PrincipalsManager(DatabaseContextFactory factory)
 
         public string PrincipalRole { get; set; }
 
-        public Principal ToPrincipal()
+        public IPrincipal ToPrincipal()
         {
-            var role = Enum.Parse<Role>(PrincipalRole.Split("_")[1], true);
+            var role = Role.Unknown;
+
+            if (Enum.TryParse(typeof(Role), PrincipalRole.Split("_")[1], true, out var parsedRole))
+            {
+                role = (Role)parsedRole;
+            }
+
             return new Principal(PrincipalName, null, role);
         }
     }
