@@ -6,6 +6,21 @@ namespace DatabaseClient.Extensions;
 
 public static class StringExtensions
 {
+    public static SecureString AsSecure(this string value)
+    {
+        var secureString = new SecureString();
+
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            foreach (var c in value)
+            {
+                secureString.AppendChar(c);
+            }
+        }
+
+        return secureString;
+    }
+
     public static string Unsecure(this SecureString value)
     {
         if (value == null || value.Length == 0)

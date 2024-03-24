@@ -6,7 +6,7 @@ using DatabaseClient.Providers;
 
 namespace GuiClient.Contexts;
 
-public interface ISecurityContext : ICredentialProvider, INotifyPropertyChanged
+public interface ISecurityContext : IPrincipalProvider, INotifyPropertyChanged
 {
     bool IsAuthenticated { get; }
 

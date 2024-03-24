@@ -24,21 +24,16 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         private set
         {
             SetField(ref _principal, value);
-            OnPropertyChanged(nameof(Credential));
             OnPropertyChanged(nameof(IsAuthenticated));
         }
     }
-
-    public NetworkCredential Credential => Principal?.Credential;
 
     public async Task LogInAsync(string userName, SecureString password)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
         ArgumentNullException.ThrowIfNull(password);
 
-        var cred = new NetworkCredential(userName, password);
-
-        var factory = new DatabaseContextFactory(new CredentialProvider(cred), options);
+        var factory = new DatabaseContextFactory(new Principal(userName, password, default), options);
         var usersManager = new PrincipalsManager(factory);
 
         var role = await usersManager.GetPrincipalRoleAsync(userName);
@@ -60,7 +55,7 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         var oldCred = new NetworkCredential(Principal.Name, oldPassword);
         var newCred = new NetworkCredential(Principal.Name, newPassword);
 
-        var factory = new DatabaseContextFactory(new CredentialProvider(oldCred), options);
+        var factory = new DatabaseContextFactory(new Principal(Principal.Name, oldPassword, default), options);
         var usersManager = new PrincipalsManager(factory);
 
         await usersManager.ChangePasswordAsync(Principal.Name, oldCred.SecurePassword, newCred.SecurePassword);
@@ -75,6 +70,11 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+    Principal IPrincipalProvider.GetPrincipal()
+    {
+        return Principal;
+    }
 
     private void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {

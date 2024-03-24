@@ -1,8 +1,8 @@
-using System.Net;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
-using DatabaseClient.Providers;
+using DatabaseClient.Principals;
 using DatabaseClient.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,8 +12,8 @@ public static class Startup
 {
     public static async Task InitDatabaseAsync(string username, string password)
     {
-        var cred = new NetworkCredential(username, password);
-        var factory = new DatabaseContextFactory(new CredentialProvider(cred), new ServerOptions());
+        using var cred = new Principal(username, password.AsSecure(), default);
+        var factory = new DatabaseContextFactory(cred, new ServerOptions());
 
         var clientsRepository = new ClientsRepository(factory);
         var tagsRepository = new TagsRepository(factory);
@@ -81,8 +81,8 @@ public static class Startup
 
     public static async Task ClearAllAsync(string username, string password)
     {
-        var cred = new NetworkCredential(username, password);
-        var factory = new DatabaseContextFactory(new CredentialProvider(cred), new ServerOptions());
+        using var cred = new Principal(username, password.AsSecure(), default);
+        var factory = new DatabaseContextFactory(cred, new ServerOptions());
         await using var context = factory.Create();
 
         await context.Reviews.ExecuteDeleteAsync();

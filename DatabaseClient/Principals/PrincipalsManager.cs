@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -58,12 +61,12 @@ public class PrincipalsManager(DatabaseContextFactory factory)
             .ExecuteSqlAsync($"exec bsbd_change_user_password {userName}, {newPassword.Unsecure()}");
     }
 
-    public async Task GetAllPrincipalsAsync()
+    public async Task<ICollection<Principal>> GetAllPrincipalsAsync()
     {
         await using var context = factory.Create();
-
-        var roles = await context.Database
-            .SqlQuery<string>($"select * from bsbd_principals")
+        return await context.Database
+            .SqlQuery<DatabasePrincipal>($"select * from bsbd_principals")
+            .Select(m => m.ToPrincipal())
             .ToListAsync();
     }
 
@@ -86,5 +89,22 @@ public class PrincipalsManager(DatabaseContextFactory factory)
         }
 
         return Role.Unknown;
+    }
+
+    [Serializable]
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes")]
+    private sealed class DatabasePrincipal
+    {
+        public int PrincipalId { get; set; }
+
+        public string PrincipalName { get; set; }
+
+        public string PrincipalRole { get; set; }
+
+        public Principal ToPrincipal()
+        {
+            var role = Enum.Parse<Role>(PrincipalRole.Split("_")[1], true);
+            return new Principal(PrincipalName, null, role);
+        }
     }
 }

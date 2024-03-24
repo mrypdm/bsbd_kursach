@@ -1,35 +1,39 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Security;
+using DatabaseClient.Extensions;
+using DatabaseClient.Providers;
 
 namespace DatabaseClient.Principals;
 
 [SuppressMessage("Naming", "CA1724:Type names should not match namespaces")]
-public sealed class Principal : IDisposable
+public sealed class Principal : IDisposable, IPrincipalProvider
 {
     public Principal(string name, SecureString password, Role role)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        ArgumentNullException.ThrowIfNull(password);
 
+        Name = name;
+        SecurePassword = password;
         Role = role;
-        Credential = new NetworkCredential(Name, SecurePassword);
     }
 
-    public string Name => Credential.UserName;
+    public string Name { get; }
 
-    public string Password => Credential.Password;
+    public string Password => SecurePassword?.Unsecure();
 
-    public SecureString SecurePassword => Credential.SecurePassword;
+    public SecureString SecurePassword { get; }
 
     public Role Role { get; }
-
-    public NetworkCredential Credential { get; }
 
     public void Dispose()
     {
         SecurePassword?.Dispose();
+    }
+
+    public Principal GetPrincipal()
+    {
+        return this;
     }
 
     public override string ToString()

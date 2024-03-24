@@ -1,7 +1,7 @@
 // This project is used for testing
 
-using System.Net;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Options;
 using DatabaseClient.Principals;
 using DatabaseClient.Providers;
@@ -10,9 +10,9 @@ using Domain;
 
 Logging.Init();
 
-var cred = new NetworkCredential("bsbd_owner", "very_secret_Password_forOwner");
+using var cred = new Principal("bsbd_owner", "very_secret_Password_forOwner".AsSecure(), Role.Owner);
 
-var factory = new DatabaseContextFactory(new CredentialProvider(cred), new ServerOptions());
+var factory = new DatabaseContextFactory(cred, new ServerOptions());
 
 var clientsRepository = new ClientsRepository(factory);
 var tagsRepository = new TagsRepository(factory);

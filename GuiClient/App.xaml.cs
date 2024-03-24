@@ -55,7 +55,7 @@ public partial class App : Application
 
         services.AddSingleton<SecurityContext>();
         services.AddSingleton<ISecurityContext>(p => p.GetRequiredService<SecurityContext>());
-        services.AddSingleton<ICredentialProvider>(p => p.GetRequiredService<SecurityContext>());
+        services.AddSingleton<IPrincipalProvider>(p => p.GetRequiredService<SecurityContext>());
 
         services.AddScoped<DatabaseContextFactory>();
 

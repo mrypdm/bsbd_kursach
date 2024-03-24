@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Contexts;
 
-public class DatabaseContextFactory(ICredentialProvider credentialProvider, ServerOptions options)
+public class DatabaseContextFactory(IPrincipalProvider principalProvider, ServerOptions options)
 {
     public DatabaseContext Create()
     {
-        var credential = credentialProvider.Credential;
+        var credential = principalProvider.GetPrincipal();
 
         var connectionString = new SqlConnectionStringBuilder
         {
             DataSource = options.ServerName,
             InitialCatalog = options.DatabaseName,
-            UserID = credential.UserName,
+            UserID = credential.Name,
             Password = credential.Password,
             Encrypt = options.Encryption
         }.ConnectionString;
