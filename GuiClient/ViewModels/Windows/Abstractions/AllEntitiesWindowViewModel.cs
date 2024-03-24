@@ -98,6 +98,7 @@ public class AllEntitiesWindowViewModel<TEntity, TDto> : AuthenticatedViewModel
         {
             RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DataGrid), 1)
         });
+        showReviewButton.SetBinding(ButtonBase.CommandParameterProperty, new Binding());
 
         window.DataGrid.Columns.Add(new DataGridTemplateColumn
         {
