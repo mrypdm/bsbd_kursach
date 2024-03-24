@@ -8,7 +8,10 @@
              d:DataContext="{ d:DesignInstance Type=uc:AuthControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="25">
     <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding UserText}" Style="{StaticResource RowControl}" TextAlignment="Center" />
+        <Label Style="{StaticResource RowControl}" HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center">
+            <TextBlock Text="{Binding UserText}" />
+        </Label>
         <Button Content="{Binding AuthButtonText}" Style="{StaticResource RowControl}" Command="{Binding Authenticate}" />
         <Button Content="Change password" IsEnabled="{Binding ChangePasswordButtonEnabled}"
                 Style="{StaticResource RowControl}" Command="{Binding ChangePassword}" />
