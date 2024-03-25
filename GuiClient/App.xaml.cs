@@ -47,7 +47,8 @@ public partial class App : Application
 
 #if DEBUG
         var context = ApplicationHost.Services.GetService<ISecurityContext>();
-        await context.LogInAsync("bsbd_owner", "very_secret_Password_forOwner".AsSecure());
+        using var password = "very_secret_Password_forOwner".AsSecure();
+        await context.LogInAsync("bsbd_owner", password);
 #endif
 
         var window = ApplicationHost.Services.GetRequiredService<MainWindow>();

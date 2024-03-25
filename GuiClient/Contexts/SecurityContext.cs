@@ -5,19 +5,20 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
+using DatabaseClient.Models;
 using DatabaseClient.Options;
-using DatabaseClient.Principals;
 using DatabaseClient.Providers;
+using DatabaseClient.Repositories;
 
 namespace GuiClient.Contexts;
 
 public sealed class SecurityContext(ServerOptions options) : ISecurityContext
 {
-    private Principal _principal;
+    private DbPrincipal _principal;
 
     public bool IsAuthenticated => Principal is not null;
 
-    public Principal Principal
+    public DbPrincipal Principal
     {
         get => _principal;
         private set
@@ -32,15 +33,17 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
         ArgumentNullException.ThrowIfNull(password);
 
-        using var cred = new Principal(userName, password.Copy(), default);
+        using var cred = new DbPrincipal();
+        cred.Name = userName;
+        cred.SecurePassword = password.Copy();
 
         var factory = new DatabaseContextFactory(cred, options);
-        var usersManager = new PrincipalsManager(factory);
-
-        var principal = await usersManager.GetPrincipalByName(userName);
+        var repository = new PrincipalRepository(factory);
 
         LogOff();
-        Principal = new Principal(principal.Name, password.Copy(), principal.Role);
+
+        Principal = await repository.GetByName(userName);
+        Principal.SecurePassword = password.Copy();
     }
 
     public async Task ChangePasswordAsync(SecureString oldPassword, SecureString newPassword)
@@ -53,12 +56,14 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentNullException.ThrowIfNull(oldPassword);
         ArgumentNullException.ThrowIfNull(newPassword);
 
-        using var oldCred = new Principal(Principal.Name, oldPassword.Copy(), default);
+        using var oldCred = new DbPrincipal();
+        oldCred.Name = Principal.Name;
+        oldCred.SecurePassword = oldPassword.Copy();
 
         var factory = new DatabaseContextFactory(oldCred, options);
-        var usersManager = new PrincipalsManager(factory);
+        var repository = new PrincipalRepository(factory);
 
-        await usersManager.ChangePasswordAsync(oldCred.Name, oldCred.SecurePassword, newPassword);
+        await repository.ChangePasswordAsync(oldCred, newPassword);
 
         LogOff();
     }
@@ -71,7 +76,7 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    Principal IPrincipalProvider.GetPrincipal()
+    DbPrincipal IPrincipalProvider.GetPrincipal()
     {
         return Principal;
     }

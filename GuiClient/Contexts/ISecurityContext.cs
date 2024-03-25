@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Security;
 using System.Threading.Tasks;
-using DatabaseClient.Principals;
+using DatabaseClient.Models;
 using DatabaseClient.Providers;
 
 namespace GuiClient.Contexts;
@@ -10,7 +10,7 @@ public interface ISecurityContext : IPrincipalProvider, INotifyPropertyChanged
 {
     bool IsAuthenticated { get; }
 
-    Principal Principal { get; }
+    DbPrincipal Principal { get; }
 
     Task LogInAsync(string userName, SecureString password);
 

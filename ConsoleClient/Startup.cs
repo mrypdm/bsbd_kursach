@@ -2,7 +2,6 @@ using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
-using DatabaseClient.Principals;
 using DatabaseClient.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +11,10 @@ public static class Startup
 {
     public static async Task InitDatabaseAsync(string username, string password)
     {
-        using var cred = new Principal(username, password.AsSecure(), default);
+        using var cred = new DbPrincipal();
+        cred.Name = username;
+        cred.SecurePassword = password.AsSecure();
+
         var factory = new DatabaseContextFactory(cred, new ServerOptions());
 
         var clientsRepository = new ClientsRepository(factory);
@@ -81,7 +83,10 @@ public static class Startup
 
     public static async Task ClearAllAsync(string username, string password)
     {
-        using var cred = new Principal(username, password.AsSecure(), default);
+        using var cred = new DbPrincipal();
+        cred.Name = username;
+        cred.SecurePassword = password.AsSecure();
+
         var factory = new DatabaseContextFactory(cred, new ServerOptions());
         await using var context = factory.Create();
 

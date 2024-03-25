@@ -21,6 +21,10 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
     public DbSet<Tag> Tags { get; set; }
 
+    // Views
+
+    public DbSet<DbPrincipal> Principals { get; set; }
+
     // Database configuration
 
     protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
@@ -66,6 +70,8 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
                 .HasConstraintName("FK_Orders_Clients")
                 .OnDelete(DeleteBehavior.NoAction);
         });
+
+        modelBuilder.Entity<DbPrincipal>(entity => { entity.ToView("bsbd_principals"); });
 
         modelBuilder.Entity<OrdersToBook>(entity =>
         {

@@ -1,4 +1,4 @@
-﻿namespace DatabaseClient.Principals;
+﻿namespace DatabaseClient.Models;
 
 public enum Role
 {
