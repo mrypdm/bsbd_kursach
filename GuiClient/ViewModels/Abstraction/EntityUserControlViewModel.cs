@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Views.Windows;
@@ -31,7 +34,11 @@ public abstract class EntityUserControlViewModel<TViewModel, TEntity, TDto> : Au
         }
 
         var viewModel = App.ServiceProvider.GetRequiredService<TViewModel>();
-        viewModel.SetFilter(filter, value);
+
+        if (filter is not null)
+        {
+            viewModel.SetFilter(value);
+        }
 
         var view = new AllEntitiesWindow(viewModel);
 
@@ -41,5 +48,11 @@ public abstract class EntityUserControlViewModel<TViewModel, TEntity, TDto> : Au
         view.Show();
     }
 
-    protected abstract object GetFilter(string filter);
+    protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);
+
+    protected static Exception InvalidRepo(Type actual, Type expected)
+    {
+        return new InvalidOperationException(
+            $"Unexpected repository. Expected {expected?.Name}, but was {actual?.Name}");
+    }
 }

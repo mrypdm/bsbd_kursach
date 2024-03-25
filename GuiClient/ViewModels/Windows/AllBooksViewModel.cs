@@ -37,19 +37,6 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
     public ICommand ShowOrders { get; }
 
-    protected override void SetFilterInternal()
-    {
-        WindowTitlePostfix = Filter switch
-        {
-            null => string.Empty,
-            "title" => $"with Title = {FilterValue}",
-            "author" => $"with Author = {FilterValue}",
-            "count" => $"with Count < {FilterValue}",
-            "tags" => $"with Tags: {string.Join(",", (string[])FilterValue)}",
-            _ => throw new InvalidOperationException("Cannot determine parameter for filter")
-        };
-    }
-
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
@@ -68,26 +55,6 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     private void Placeholder()
     {
         MessageBox.Show("Not implemented");
-    }
-
-    public override async Task RefreshAsync()
-    {
-        if (Filter is null)
-        {
-            await base.RefreshAsync();
-            return;
-        }
-
-        var entities = Filter switch
-        {
-            "title" => await _booksRepository.GetBooksByTitleAsync((string)FilterValue),
-            "author" => await _booksRepository.GetBooksByAuthorAsync((string)FilterValue),
-            "count" => await _booksRepository.GetBooksWithCountLessThanAsync((int)FilterValue),
-            "tags" => await _booksRepository.GetBooksByTagsAsync((string[])FilterValue),
-            _ => throw new InvalidOperationException("Cannot determine parameter for filter")
-        };
-
-        Entities = Mapper.Map<BookDto[]>(entities);
     }
 
     protected override async Task UpdateAsync([NotNull] BookDto item)

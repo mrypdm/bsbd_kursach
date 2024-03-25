@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoMapper;
@@ -14,36 +13,11 @@ namespace GuiClient.ViewModels.Windows;
 public class AllTagsViewModel(ISecurityContext securityContext, ITagsRepository tagsRepository, IMapper mapper)
     : AllEntitiesViewModel<Tag, Tag>(securityContext, tagsRepository, mapper)
 {
-    protected override void SetFilterInternal()
-    {
-        WindowTitlePostfix = Filter switch
-        {
-            null => string.Empty,
-            "name" => $"with Name = {FilterValue}",
-            _ => throw new InvalidOperationException("Cannot determine parameter for filter")
-        };
-    }
-
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
         AddText(window, nameof(Tag.Id), true);
         AddText(window, nameof(Tag.Name));
-    }
-
-    public override async Task RefreshAsync()
-    {
-        if (Filter is null)
-        {
-            await base.RefreshAsync();
-            return;
-        }
-
-        Entities = Filter switch
-        {
-            "name" => [await tagsRepository.GetTagByNameAsync((string)FilterValue)],
-            _ => throw new InvalidOperationException("Cannot determine parameter for filter")
-        };
     }
 
     protected override async Task UpdateAsync([NotNull] Tag item)

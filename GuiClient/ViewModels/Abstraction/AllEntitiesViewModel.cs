@@ -23,37 +23,34 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
-    private readonly IRepository<TEntity> _baseRepository;
+    private readonly IMapper _mapper;
+    private readonly IRepository<TEntity> _repository;
     private ICollection<TDto> _entities;
     private int _selectedIndex;
 
-    protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> baseRepository,
+    private Func<IRepository<TEntity>, Task<ICollection<TEntity>>> _selector;
+
+    protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> repository,
         IMapper mapper)
         : base(securityContext)
     {
-        _baseRepository = baseRepository;
-        Mapper = mapper;
+        _repository = repository;
+        _mapper = mapper;
 
         Refresh = new AsyncActionCommand(RefreshAsync);
         Add = new ActionCommand(AddInternal);
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
+
+        _selector = async r => await r.GetAllAsync();
     }
 
-    protected IMapper Mapper { get; }
-
-    protected string WindowTitlePostfix { get; set; }
-
-    protected string Filter { get; private set; }
-
-    protected object FilterValue { get; private set; }
-
-    public string WindowTitle => $"{typeof(TEntity).Name}s {WindowTitlePostfix}";
+    public string WindowTitle => $"{typeof(TEntity).Name}s";
 
     public ICollection<TDto> Entities
     {
         get => _entities;
-        protected set => SetField(ref _entities, value);
+        private set => SetField(ref _entities, value);
     }
 
     public int SelectedIndex
@@ -70,18 +67,15 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Delete { get; }
 
-    public void SetFilter(string name, object value)
+    public void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> selector)
     {
-        Filter = name;
-        FilterValue = value;
-
-        SetFilterInternal();
+        _selector = selector;
     }
 
-    public virtual async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
-        var entities = await _baseRepository.GetAllAsync();
-        Entities = Mapper.Map<TDto[]>(entities);
+        var entities = await _selector(_repository);
+        Entities = _mapper.Map<TDto[]>(entities);
     }
 
     private void AddInternal()
@@ -96,8 +90,6 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     protected abstract Task UpdateAsync(TDto item);
 
-    protected abstract void SetFilterInternal();
-
     protected virtual async Task DeleteAsync([NotNull] TDto dto)
     {
         if (dto.Id == -1)
@@ -106,7 +98,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
             return;
         }
 
-        await _baseRepository.RemoveAsync(new TEntity { Id = dto.Id });
+        await _repository.RemoveAsync(new TEntity { Id = dto.Id });
         await RefreshAsync();
     }
 
@@ -118,7 +110,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         AddButton(window, "Delete", nameof(Delete));
     }
 
-    protected void AddButton([NotNull] AllEntitiesWindow window, string content, string commandPath)
+    protected static void AddButton([NotNull] AllEntitiesWindow window, string content, string commandPath)
     {
         var button = new FrameworkElementFactory(typeof(Button));
 
@@ -140,7 +132,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         });
     }
 
-    protected void AddText([NotNull] AllEntitiesWindow window, string value, bool readOnly = false,
+    protected static void AddText([NotNull] AllEntitiesWindow window, string value, bool readOnly = false,
         bool allowWrap = false, string header = null)
     {
         var text = new DataGridTextColumn
