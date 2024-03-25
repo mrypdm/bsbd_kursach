@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -16,21 +17,26 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     // Phone = 0000000000,
     // IsDeleted = true
 
-    public async Task<Client> GetClientByPhoneAsync(string phone)
+    public override async Task<ICollection<Client>> GetAllAsync()
+    {
+        await using var context = Factory.Create();
+        return await context.Clients
+            .Where(m => m.IsDeleted == false)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Client>> GetClientsByPhoneAsync(string phone)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
         await using var context = Factory.Create();
         return await context.Clients
             .Where(m => m.Phone == phone)
-            .SingleOrDefaultAsync();
+            .ToListAsync();
     }
 
-    public async Task<Client> GetClientByNameAsync(string firstName, string lastName)
+    public async Task<ICollection<Client>> GetClientsByNameAsync(string firstName, string lastName)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
-
         await using var context = Factory.Create();
 
         var command = context.Clients as IQueryable<Client>;
@@ -45,7 +51,15 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             command = command.Where(m => m.LastName == lastName);
         }
 
-        return await command.SingleOrDefaultAsync();
+        return await command.ToListAsync();
+    }
+
+    public async Task<ICollection<Client>> GetClientsByGender(Gender gender)
+    {
+        await using var context = Factory.Create();
+        return await context.Clients
+            .Where(m => m.Gender == gender && m.IsDeleted == false)
+            .ToArrayAsync();
     }
 
     public async Task<Client> AddClientAsync(string firstName, string lastName, string phone, Gender gender)
@@ -76,6 +90,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             .ExecuteUpdateAsync(o => o
                 .SetProperty(m => m.FirstName, entity.FirstName)
                 .SetProperty(m => m.LastName, entity.LastName)
-                .SetProperty(m => m.Phone, entity.Phone));
+                .SetProperty(m => m.Phone, entity.Phone)
+                .SetProperty(m => m.Gender, entity.Gender));
     }
 }

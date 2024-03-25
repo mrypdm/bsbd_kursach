@@ -11,8 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class EntityUserControlViewModel<TViewModel, TEntity, TDto> : AuthenticatedViewModel
-    where TViewModel : AllEntitiesViewModel<TEntity, TDto>
+public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
@@ -33,7 +32,7 @@ public abstract class EntityUserControlViewModel<TViewModel, TEntity, TDto> : Au
             return;
         }
 
-        var viewModel = App.ServiceProvider.GetRequiredService<TViewModel>();
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
 
         if (filter is not null)
         {
@@ -54,5 +53,10 @@ public abstract class EntityUserControlViewModel<TViewModel, TEntity, TDto> : Au
     {
         return new InvalidOperationException(
             $"Unexpected repository. Expected {expected?.Name}, but was {actual?.Name}");
+    }
+
+    protected static Exception InvalidFilter(string filter)
+    {
+        return new InvalidOperationException($"Unexpected filter '{filter}'");
     }
 }

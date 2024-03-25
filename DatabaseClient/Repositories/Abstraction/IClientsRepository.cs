@@ -1,13 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DatabaseClient.Models;
 
 namespace DatabaseClient.Repositories.Abstraction;
 
 public interface IClientsRepository : IRepository<Client>
 {
-    Task<Client> GetClientByPhoneAsync(string phone);
+    // can return many when clients is deleted and phone is 0000000000
+    Task<ICollection<Client>> GetClientsByPhoneAsync(string phone);
 
-    Task<Client> GetClientByNameAsync(string firstName, string lastName);
+    Task<ICollection<Client>> GetClientsByNameAsync(string firstName, string lastName);
+
+    Task<ICollection<Client>> GetClientsByGender(Gender gender);
 
     Task<Client> AddClientAsync(string firstName, string lastName, string phone, Gender gender);
 }

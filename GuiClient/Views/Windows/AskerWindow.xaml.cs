@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace GuiClient.Views.Windows;
 
@@ -54,9 +55,36 @@ public partial class AskerWindow : Window
                 return null;
             }
 
-            if (int.TryParse(input, out var count))
+            if (int.TryParse(input, out var value))
             {
-                return count;
+                return value;
+            }
+
+            MessageBox.Show("Invalid value", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    public static bool TryAskEnum<TType>(string message, out TType value) where TType : struct, Enum
+    {
+        var ans = AskEnum<TType>(message);
+        value = ans ?? default;
+        return ans != null;
+    }
+
+    public static TType? AskEnum<TType>(string message, string initialValue = "") where TType : struct, Enum
+    {
+        while (true)
+        {
+            var input = AskString(message, initialValue);
+
+            if (input == null)
+            {
+                return null;
+            }
+
+            if (Enum.TryParse(typeof(TType), input, true, out var value))
+            {
+                return (TType)value;
             }
 
             MessageBox.Show("Invalid value", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

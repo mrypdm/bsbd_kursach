@@ -9,7 +9,9 @@ using DatabaseClient.Repositories;
 using DatabaseClient.Repositories.Abstraction;
 using Domain;
 using GuiClient.Contexts;
+using GuiClient.Dto;
 using GuiClient.Extensions;
+using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.UserControls;
 using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
@@ -71,39 +73,40 @@ public partial class App : Application
         services.AddSingleton<ISecurityContext>(p => p.GetRequiredService<SecurityContext>());
         services.AddSingleton<IPrincipalProvider>(p => p.GetRequiredService<SecurityContext>());
 
-        services.AddScoped<DatabaseContextFactory>();
-        services.AddScoped<BooksRepository>();
-        services.AddScoped<IBooksRepository>(p => p.GetRequiredService<BooksRepository>());
-        services.AddScoped<IRepository<Book>>(p => p.GetRequiredService<BooksRepository>());
+        services.AddTransient<DatabaseContextFactory>();
+        services.AddTransient<BooksRepository>();
+        services.AddTransient<IBooksRepository>(p => p.GetRequiredService<BooksRepository>());
+        services.AddTransient<IRepository<Book>>(p => p.GetRequiredService<BooksRepository>());
 
-        services.AddScoped<TagsRepository>();
-        services.AddScoped<ITagsRepository>(p => p.GetRequiredService<TagsRepository>());
-        services.AddScoped<IRepository<Tag>>(p => p.GetRequiredService<TagsRepository>());
+        services.AddTransient<TagsRepository>();
+        services.AddTransient<ITagsRepository>(p => p.GetRequiredService<TagsRepository>());
+        services.AddTransient<IRepository<Tag>>(p => p.GetRequiredService<TagsRepository>());
 
-        services.AddScoped<ClientsRepository>();
-        services.AddScoped<IClientsRepository>(p => p.GetRequiredService<ClientsRepository>());
-        services.AddScoped<IRepository<Client>>(p => p.GetRequiredService<ClientsRepository>());
+        services.AddTransient<ClientsRepository>();
+        services.AddTransient<IClientsRepository>(p => p.GetRequiredService<ClientsRepository>());
+        services.AddTransient<IRepository<Client>>(p => p.GetRequiredService<ClientsRepository>());
 
-        services.AddScoped<OrdersRepository>();
-        services.AddScoped<IOrdersRepository>(p => p.GetRequiredService<OrdersRepository>());
-        services.AddScoped<IRepository<Order>>(p => p.GetRequiredService<OrdersRepository>());
+        services.AddTransient<OrdersRepository>();
+        services.AddTransient<IOrdersRepository>(p => p.GetRequiredService<OrdersRepository>());
+        services.AddTransient<IRepository<Order>>(p => p.GetRequiredService<OrdersRepository>());
 
-        services.AddScoped<ReviewsRepository>();
-        services.AddScoped<IReviewsRepository>(p => p.GetRequiredService<ReviewsRepository>());
-        services.AddScoped<IRepository<Review>>(p => p.GetRequiredService<ReviewsRepository>());
+        services.AddTransient<ReviewsRepository>();
+        services.AddTransient<IReviewsRepository>(p => p.GetRequiredService<ReviewsRepository>());
+        services.AddTransient<IRepository<Review>>(p => p.GetRequiredService<ReviewsRepository>());
 
-        services.AddScoped<MainWindowViewModel>();
-        services.AddScoped<AuthControlViewModel>();
-        services.AddScoped<BooksUserControlViewModel>();
-        services.AddScoped<TagsUserControlViewModel>();
-        services.AddScoped<BooksToTagsUserControlViewModel>();
-        services.AddScoped<ClientsUserControlViewModel>();
-        services.AddScoped<OrdersUserControlViewModel>();
-        services.AddScoped<ReviewsUserControlViewModel>();
-        services.AddScoped<ReportsUserControlViewModel>();
-        services.AddScoped<PrincipalsUserControlViewModel>();
+        services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<AuthControlViewModel>();
+        services.AddTransient<BooksUserControlViewModel>();
+        services.AddTransient<TagsUserControlViewModel>();
+        services.AddTransient<BooksToTagsUserControlViewModel>();
+        services.AddTransient<ClientsUserControlViewModel>();
+        services.AddTransient<OrdersUserControlViewModel>();
+        services.AddTransient<ReviewsUserControlViewModel>();
+        services.AddTransient<ReportsUserControlViewModel>();
+        services.AddTransient<PrincipalsUserControlViewModel>();
 
-        services.AddScoped<AllBooksViewModel>();
-        services.AddScoped<AllTagsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Book, BookDto>, AllBooksViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Tag, Tag>, AllTagsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Client, Client>, AllClientsViewModel>();
     }
 }

@@ -6,13 +6,12 @@ using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
 using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
-using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class BooksUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<AllBooksViewModel, Book, BookDto>(securityContext)
+    : EntityUserControlViewModel<Book, BookDto>(securityContext)
 {
     protected override Func<IRepository<Book>, Task<ICollection<Book>>> GetFilter(string filter)
     {
@@ -28,8 +27,7 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
                 return null;
             case "tags" when AskerWindow.TryAskString("Enter count", out var tagString):
             {
-                var tags = AskerWindow.AskString("Enter tags, separated by comma")
-                    ?.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                var tags = tagString.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
                 return async r =>
                 {
                     var repo = r as IBooksRepository ?? throw InvalidRepo(r.GetType(), typeof(IBooksRepository));
@@ -55,7 +53,7 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case "author":
                 return null;
             default:
-                throw new InvalidOperationException($"Unexpected filter '{filter}'");
+                throw InvalidFilter(filter);
         }
     }
 }

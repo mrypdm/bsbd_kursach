@@ -5,13 +5,12 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
 using GuiClient.ViewModels.Abstraction;
-using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class TagsUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<AllTagsViewModel, Tag, Tag>(securityContext)
+    : EntityUserControlViewModel<Tag, Tag>(securityContext)
 {
     protected override Func<IRepository<Tag>, Task<ICollection<Tag>>> GetFilter(string filter)
     {
@@ -20,11 +19,10 @@ public class TagsUserControlViewModel(ISecurityContext securityContext)
             "name" when AskerWindow.TryAskString("Enter tag name", out var name) => async r =>
             {
                 var repo = r as ITagsRepository ?? throw InvalidRepo(r.GetType(), typeof(ITagsRepository));
-                var entity = await repo.GetTagByNameAsync(name);
-                return [entity];
+                return [await repo.GetTagByNameAsync(name)];
             },
             "name" => null,
-            _ => throw new InvalidOperationException($"Unexpected filter '{filter}'")
+            _ => throw InvalidFilter(filter)
         };
     }
 }

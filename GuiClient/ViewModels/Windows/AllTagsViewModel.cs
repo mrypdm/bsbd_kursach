@@ -29,11 +29,7 @@ public class AllTagsViewModel(ISecurityContext securityContext, ITagsRepository 
         }
         else
         {
-            await tagsRepository.UpdateAsync(new Tag
-            {
-                Id = item.Id,
-                Name = item.Name
-            });
+            await tagsRepository.UpdateAsync(item);
         }
 
         await RefreshAsync();

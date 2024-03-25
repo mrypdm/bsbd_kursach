@@ -19,16 +19,16 @@ using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel
+public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TEntity, TDto>
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
     private readonly IMapper _mapper;
     private readonly IRepository<TEntity> _repository;
     private ICollection<TDto> _entities;
-    private int _selectedIndex;
 
-    private Func<IRepository<TEntity>, Task<ICollection<TEntity>>> _selector;
+    private Func<IRepository<TEntity>, Task<ICollection<TEntity>>> _filter;
+    private int _selectedIndex;
 
     protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> repository,
         IMapper mapper)
@@ -42,7 +42,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
 
-        _selector = async r => await r.GetAllAsync();
+        _filter = async r => await r.GetAllAsync();
     }
 
     public string WindowTitle => $"{typeof(TEntity).Name}s";
@@ -67,15 +67,23 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Delete { get; }
 
-    public void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> selector)
+    public void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter)
     {
-        _selector = selector;
+        _filter = filter;
     }
 
     public async Task RefreshAsync()
     {
-        var entities = await _selector(_repository);
+        var entities = await _filter(_repository);
         Entities = _mapper.Map<TDto[]>(entities);
+    }
+
+    public virtual void EnrichDataGrid(AllEntitiesWindow window)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+
+        AddButton(window, "Update", nameof(Update));
+        AddButton(window, "Delete", nameof(Delete));
     }
 
     private void AddInternal()
@@ -100,14 +108,6 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
         await _repository.RemoveAsync(new TEntity { Id = dto.Id });
         await RefreshAsync();
-    }
-
-    public virtual void EnrichDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-
-        AddButton(window, "Update", nameof(Update));
-        AddButton(window, "Delete", nameof(Delete));
     }
 
     protected static void AddButton([NotNull] AllEntitiesWindow window, string content, string commandPath)
