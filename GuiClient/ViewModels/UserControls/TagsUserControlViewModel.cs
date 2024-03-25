@@ -1,15 +1,13 @@
 ﻿using DatabaseClient.Models;
 using GuiClient.Contexts;
-using GuiClient.Factories;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class TagsUserControlViewModel(
-    ISecurityContext securityContext,
-    AllEntitiesWindowViewModelFactory factory)
-    : EntityUserControlViewModel<Tag, Tag>(securityContext, factory)
+public class TagsUserControlViewModel(ISecurityContext securityContext)
+    : EntityUserControlViewModel<AllTagsViewModel, Tag, Tag>(securityContext)
 {
     protected override object GetFilter(string filter)
     {

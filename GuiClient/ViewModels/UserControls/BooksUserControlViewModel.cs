@@ -2,16 +2,14 @@
 using DatabaseClient.Models;
 using GuiClient.Contexts;
 using GuiClient.Dto;
-using GuiClient.Factories;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class BooksUserControlViewModel(
-    ISecurityContext securityContext,
-    AllEntitiesWindowViewModelFactory factory)
-    : EntityUserControlViewModel<Book, BookDto>(securityContext, factory)
+public class BooksUserControlViewModel(ISecurityContext securityContext)
+    : EntityUserControlViewModel<AllBooksViewModel, Book, BookDto>(securityContext)
 {
     protected override object GetFilter(string filter)
     {

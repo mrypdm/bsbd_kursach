@@ -19,28 +19,14 @@ namespace GuiClient.ViewModels.Windows;
 public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 {
     private readonly BooksRepository _booksRepository;
-    private readonly string _filter;
     private readonly TagsRepository _tagsRepository;
-    private readonly object _value;
 
     public AllBooksViewModel(ISecurityContext securityContext, BooksRepository booksRepository,
-        TagsRepository tagsRepository, IMapper mapper, string filter, object value)
+        TagsRepository tagsRepository, IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
-        _filter = filter;
-        _value = value;
-
-        WindowTitlePostfix = _filter switch
-        {
-            null => string.Empty,
-            "title" => $"with Title = {_value}",
-            "author" => $"with Author = {_value}",
-            "count" => $"with Count < {_value}",
-            "tags" => $"with Tags: {string.Join(",", (string[])_value)}",
-            _ => throw new InvalidOperationException("Cannot determine parameter for filter")
-        };
 
         ShowReviews = new ActionCommand(Placeholder);
         ShowOrders = new ActionCommand(Placeholder);
@@ -49,6 +35,19 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     public ICommand ShowReviews { get; }
 
     public ICommand ShowOrders { get; }
+
+    protected override void SetFilterInternal()
+    {
+        WindowTitlePostfix = Filter switch
+        {
+            null => string.Empty,
+            "title" => $"with Title = {FilterValue}",
+            "author" => $"with Author = {FilterValue}",
+            "count" => $"with Count < {FilterValue}",
+            "tags" => $"with Tags: {string.Join(",", (string[])FilterValue)}",
+            _ => throw new InvalidOperationException("Cannot determine parameter for filter")
+        };
+    }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
@@ -72,18 +71,18 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
     public override async Task RefreshAsync()
     {
-        if (_filter is null)
+        if (Filter is null)
         {
             await base.RefreshAsync();
             return;
         }
 
-        var entities = _filter switch
+        var entities = Filter switch
         {
-            "title" => await _booksRepository.GetBooksByTitleAsync((string)_value),
-            "author" => await _booksRepository.GetBooksByAuthorAsync((string)_value),
-            "count" => await _booksRepository.GetBooksWithCountLessThanAsync((int)_value),
-            "tags" => await _booksRepository.GetBooksByTagsAsync((string[])_value),
+            "title" => await _booksRepository.GetBooksByTitleAsync((string)FilterValue),
+            "author" => await _booksRepository.GetBooksByAuthorAsync((string)FilterValue),
+            "count" => await _booksRepository.GetBooksWithCountLessThanAsync((int)FilterValue),
+            "tags" => await _booksRepository.GetBooksByTagsAsync((string[])FilterValue),
             _ => throw new InvalidOperationException("Cannot determine parameter for filter")
         };
 

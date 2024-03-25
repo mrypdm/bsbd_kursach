@@ -13,6 +13,8 @@
         <Button Content="Add" Command="{Binding Add}" Margin="0,5,0,0" />
         <Separator Height="5" Foreground="Black" />
         <DataGrid x:Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Entities}" MinColumnWidth="125"
-                  MinRowHeight="30" SelectedIndex="{Binding SelectedIndex}" />
+                  MinRowHeight="30" SelectedIndex="{Binding SelectedIndex}" CanUserAddRows="False"
+                  CanUserDeleteRows="False" CanUserResizeColumns="True" CanUserSortColumns="True"
+                  CanUserReorderColumns="False" />
     </StackPanel>
 </Window>

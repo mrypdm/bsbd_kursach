@@ -44,6 +44,10 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     protected string WindowTitlePostfix { get; set; }
 
+    protected string Filter { get; private set; }
+
+    protected object FilterValue { get; private set; }
+
     public string WindowTitle => $"{typeof(TEntity).Name}s {WindowTitlePostfix}";
 
     public ICollection<TDto> Entities
@@ -66,6 +70,14 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Delete { get; }
 
+    public void SetFilter(string name, object value)
+    {
+        Filter = name;
+        FilterValue = value;
+
+        SetFilterInternal();
+    }
+
     public virtual async Task RefreshAsync()
     {
         var entities = await _baseRepository.GetAllAsync();
@@ -83,6 +95,8 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     }
 
     protected abstract Task UpdateAsync(TDto item);
+
+    protected abstract void SetFilterInternal();
 
     protected virtual async Task DeleteAsync([NotNull] TDto dto)
     {
@@ -119,10 +133,10 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         {
             Header = "",
             IsReadOnly = true,
-            CanUserSort = false,
-            CanUserResize = false,
-            CanUserReorder = false,
-            CellTemplate = new DataTemplate { VisualTree = button }
+            CellTemplate = new DataTemplate
+            {
+                VisualTree = button
+            }
         });
     }
 
@@ -133,9 +147,6 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         {
             Header = header ?? value,
             IsReadOnly = readOnly,
-            CanUserSort = true,
-            CanUserResize = true,
-            CanUserReorder = false,
             Binding = new Binding($"{value}"),
             ElementStyle = new Style(typeof(TextBlock))
             {

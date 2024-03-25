@@ -11,24 +11,15 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
+public class AllTagsViewModel(ISecurityContext securityContext, TagsRepository tagsRepository, IMapper mapper)
+    : AllEntitiesViewModel<Tag, Tag>(securityContext, tagsRepository, mapper)
 {
-    private readonly string _filter;
-    private readonly TagsRepository _tagsRepository;
-    private readonly object _value;
-
-    public AllTagsViewModel(ISecurityContext securityContext, TagsRepository tagsRepository, IMapper mapper,
-        string filter, object value)
-        : base(securityContext, tagsRepository, mapper)
+    protected override void SetFilterInternal()
     {
-        _tagsRepository = tagsRepository;
-        _filter = filter;
-        _value = value;
-
-        WindowTitlePostfix = _filter switch
+        WindowTitlePostfix = Filter switch
         {
             null => string.Empty,
-            "name" => $"with Name = {_value}",
+            "name" => $"with Name = {FilterValue}",
             _ => throw new InvalidOperationException("Cannot determine parameter for filter")
         };
     }
@@ -42,15 +33,15 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
 
     public override async Task RefreshAsync()
     {
-        if (_filter is null)
+        if (Filter is null)
         {
             await base.RefreshAsync();
             return;
         }
 
-        Entities = _filter switch
+        Entities = Filter switch
         {
-            "name" => [await _tagsRepository.GetTagByNameAsync((string)_value)],
+            "name" => [await tagsRepository.GetTagByNameAsync((string)FilterValue)],
             _ => throw new InvalidOperationException("Cannot determine parameter for filter")
         };
     }
@@ -59,12 +50,12 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
     {
         if (item.Id == -1)
         {
-            var tag = await _tagsRepository.AddTagAsync(item.Name);
+            var tag = await tagsRepository.AddTagAsync(item.Name);
             MessageBox.Show($"Tag created with ID={tag.Id}");
         }
         else
         {
-            await _tagsRepository.UpdateAsync(new Tag
+            await tagsRepository.UpdateAsync(new Tag
             {
                 Id = item.Id,
                 Name = item.Name
