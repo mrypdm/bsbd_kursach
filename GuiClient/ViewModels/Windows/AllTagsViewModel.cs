@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoMapper;
 using DatabaseClient.Models;
-using DatabaseClient.Repositories;
+using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllTagsViewModel(ISecurityContext securityContext, TagsRepository tagsRepository, IMapper mapper)
+public class AllTagsViewModel(ISecurityContext securityContext, ITagsRepository tagsRepository, IMapper mapper)
     : AllEntitiesViewModel<Tag, Tag>(securityContext, tagsRepository, mapper)
 {
     protected override void SetFilterInternal()

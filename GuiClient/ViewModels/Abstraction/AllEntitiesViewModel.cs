@@ -9,7 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AutoMapper;
 using DatabaseClient.Models;
-using DatabaseClient.Repositories;
+using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Views.Windows;
@@ -23,12 +23,12 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
-    private readonly BaseRepository<TEntity> _baseRepository;
+    private readonly IRepository<TEntity> _baseRepository;
     private ICollection<TDto> _entities;
     private int _selectedIndex;
 
-    protected AllEntitiesViewModel(ISecurityContext securityContext,
-        BaseRepository<TEntity> baseRepository, IMapper mapper)
+    protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> baseRepository,
+        IMapper mapper)
         : base(securityContext)
     {
         _baseRepository = baseRepository;

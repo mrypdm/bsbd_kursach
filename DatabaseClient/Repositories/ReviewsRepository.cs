@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ReviewsRepository(DatabaseContextFactory factory) : BaseRepository<Review>(factory)
+public class ReviewsRepository(DatabaseContextFactory factory) : BaseRepository<Review>(factory), IReviewsRepository
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {

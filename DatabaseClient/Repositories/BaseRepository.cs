@@ -4,15 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory) where TEntity : class, IEntity
+public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory)
+    : IRepository<TEntity> where TEntity : class, IEntity
 {
     protected DatabaseContextFactory Factory { get; } = factory;
 
-    public virtual async Task<TEntity> GetById(int id)
+    public virtual async Task<TEntity> GetByIdAsync(int id)
     {
         await using var context = Factory.Create();
         return await context.Set<TEntity>()

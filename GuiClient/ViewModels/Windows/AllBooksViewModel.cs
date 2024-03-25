@@ -8,6 +8,7 @@ using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories;
+using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dto;
@@ -18,10 +19,10 @@ namespace GuiClient.ViewModels.Windows;
 
 public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 {
-    private readonly BooksRepository _booksRepository;
+    private readonly IBooksRepository _booksRepository;
     private readonly TagsRepository _tagsRepository;
 
-    public AllBooksViewModel(ISecurityContext securityContext, BooksRepository booksRepository,
+    public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
         TagsRepository tagsRepository, IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
@@ -102,7 +103,7 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         }
         else
         {
-            var book = await _booksRepository.GetById(item.Id);
+            var book = await _booksRepository.GetByIdAsync(item.Id);
             book.Title = item.Title;
             book.Author = item.Author;
             book.ReleaseDate = item.ReleaseDate;

@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<Order>(factory)
+public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<Order>(factory), IOrdersRepository
 {
     // Update and Delete are forbidden with trigger bsbd_prevent_ud_orders
 

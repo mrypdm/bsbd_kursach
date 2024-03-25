@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory)
+public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory), IBooksRepository
 {
-    public override async Task<Book> GetById(int id)
+    public override async Task<Book> GetByIdAsync(int id)
     {
         await using var context = Factory.Create();
         return await context.Books

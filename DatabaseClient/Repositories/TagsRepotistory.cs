@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag>(factory)
+public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag>(factory), ITagsRepository
 {
     public async Task<Tag> GetTagByNameAsync(string name)
     {

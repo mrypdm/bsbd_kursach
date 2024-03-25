@@ -3,11 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<Client>(factory)
+public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<Client>(factory), IClientsRepository
 {
     // Instead of delete, the record is updated by trigger bsbd_mark_user_deleted with the parameters:
     // FirstName = empty,

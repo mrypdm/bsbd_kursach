@@ -2,9 +2,11 @@ using System;
 using System.Windows;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
+using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
+using DatabaseClient.Repositories.Abstraction;
 using Domain;
 using GuiClient.Contexts;
 using GuiClient.Extensions;
@@ -71,10 +73,24 @@ public partial class App : Application
 
         services.AddScoped<DatabaseContextFactory>();
         services.AddScoped<BooksRepository>();
+        services.AddScoped<IBooksRepository>(p => p.GetRequiredService<BooksRepository>());
+        services.AddScoped<IRepository<Book>>(p => p.GetRequiredService<BooksRepository>());
+
         services.AddScoped<TagsRepository>();
+        services.AddScoped<ITagsRepository>(p => p.GetRequiredService<TagsRepository>());
+        services.AddScoped<IRepository<Tag>>(p => p.GetRequiredService<TagsRepository>());
+
         services.AddScoped<ClientsRepository>();
+        services.AddScoped<IClientsRepository>(p => p.GetRequiredService<ClientsRepository>());
+        services.AddScoped<IRepository<Client>>(p => p.GetRequiredService<ClientsRepository>());
+
         services.AddScoped<OrdersRepository>();
+        services.AddScoped<IOrdersRepository>(p => p.GetRequiredService<OrdersRepository>());
+        services.AddScoped<IRepository<Order>>(p => p.GetRequiredService<OrdersRepository>());
+
         services.AddScoped<ReviewsRepository>();
+        services.AddScoped<IReviewsRepository>(p => p.GetRequiredService<ReviewsRepository>());
+        services.AddScoped<IRepository<Review>>(p => p.GetRequiredService<ReviewsRepository>());
 
         services.AddScoped<MainWindowViewModel>();
         services.AddScoped<AuthControlViewModel>();
