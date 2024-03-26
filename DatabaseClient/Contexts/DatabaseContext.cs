@@ -73,7 +73,8 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
                 .IsRequired()
                 .HasMaxLength(128)
                 .UseCollation("Latin1_General_100_CI_AS_KS_WS_SC");
-            entity.Property(e => e.Role)
+            entity.Property(e => e.RoleString)
+                .HasColumnName("Role")
                 .IsRequired()
                 .HasMaxLength(128)
                 .UseCollation("Latin1_General_100_CI_AS_KS_WS_SC");

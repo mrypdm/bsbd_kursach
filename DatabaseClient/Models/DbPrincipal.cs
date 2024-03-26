@@ -15,7 +15,6 @@ public sealed class DbPrincipal : IEntity, IPrincipalProvider, IDisposable
 
     public string Name { get; set; }
 
-    [Column("Role")]
     public string RoleString
     {
         get => $"bsbd_{Role.ToString().ToLowerInvariant()}_role";
