@@ -20,7 +20,8 @@ public class ClientsUserControlViewModel(ISecurityContext securityContext)
             case "phone" when AskerWindow.TryAskString("Enter phone in format 0123456789", out var phone):
                 return async r =>
                 {
-                    var repo = r as IClientsRepository ?? throw InvalidRepo(r.GetType(), typeof(IClientsRepository));
+                    var repo = r as IClientsRepository
+                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IClientsRepository));
                     return await repo.GetClientsByPhoneAsync(phone);
                 };
             case "phone":
@@ -30,7 +31,8 @@ public class ClientsUserControlViewModel(ISecurityContext securityContext)
                 var names = name.Split(",", StringSplitOptions.TrimEntries);
                 return async r =>
                 {
-                    var repo = r as IClientsRepository ?? throw InvalidRepo(r.GetType(), typeof(IClientsRepository));
+                    var repo = r as IClientsRepository
+                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IClientsRepository));
                     return await repo.GetClientsByNameAsync(names.ElementAtOrDefault(0), names.ElementAtOrDefault(1));
                 };
             }
@@ -40,14 +42,15 @@ public class ClientsUserControlViewModel(ISecurityContext securityContext)
             {
                 return async r =>
                 {
-                    var repo = r as IClientsRepository ?? throw InvalidRepo(r.GetType(), typeof(IClientsRepository));
+                    var repo = r as IClientsRepository
+                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IClientsRepository));
                     return await repo.GetClientsByGender(gender);
                 };
             }
             case "gender":
                 return null;
             default:
-                throw InvalidFilter(filter);
+                throw GuiExceptions.InvalidFilter(filter);
         }
     }
 }

@@ -18,11 +18,12 @@ public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
         {
             "name" when AskerWindow.TryAskString("Enter name", out var name) => async r =>
             {
-                var repo = r as IPrincipalRepository ?? throw InvalidRepo(r.GetType(), typeof(IPrincipalRepository));
+                var repo = r as IPrincipalRepository
+                    ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IPrincipalRepository));
                 return [await repo.GetByName(name)];
             },
             "name" => null,
-            _ => throw InvalidFilter(filter)
+            _ => throw GuiExceptions.InvalidFilter(filter)
         };
     }
 }

@@ -1,34 +1,32 @@
-﻿using GuiClient.ViewModels.Abstraction;
+﻿using DatabaseClient.Models;
+using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.UserControls;
 
 namespace GuiClient.ViewModels.Windows;
 
 public class MainWindowViewModel(
     AuthControlViewModel authControlViewModel,
-    BooksUserControlViewModel booksUserControlViewModel,
-    TagsUserControlViewModel tagsUserControlViewModel,
-    BooksToTagsUserControlViewModel booksToTagsUserControlViewModel,
-    ClientsUserControlViewModel clientsUserControlViewModel,
-    OrdersUserControlViewModel ordersUserControlViewModel,
-    ReviewsUserControlViewModel reviewsUserControlViewModel,
+    IEntityViewModel<Book> booksUserControlViewModel,
+    IEntityViewModel<Tag> tagsUserControlViewModel,
+    IEntityViewModel<Client> clientsUserControlViewModel,
+    IEntityViewModel<Order> ordersUserControlViewModel,
+    IEntityViewModel<Review> reviewsUserControlViewModel,
     ReportsUserControlViewModel reportsUserControlViewModel,
-    PrincipalsUserControlViewModel principalsUserControlViewModel) : BaseViewModel
+    IEntityViewModel<DbPrincipal> principalsUserControlViewModel) : BaseViewModel
 {
     public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
 
-    public BooksUserControlViewModel BooksUserControlViewModel { get; } = booksUserControlViewModel;
+    public IEntityViewModel<Book> BooksUserControlViewModel { get; } = booksUserControlViewModel;
 
-    public TagsUserControlViewModel TagsUserControlViewModel { get; } = tagsUserControlViewModel;
+    public IEntityViewModel<Tag> TagsUserControlViewModel { get; } = tagsUserControlViewModel;
 
-    public BooksToTagsUserControlViewModel BooksToTagsUserControlViewModel { get; } = booksToTagsUserControlViewModel;
+    public IEntityViewModel<Client> ClientsUserControlViewModel { get; } = clientsUserControlViewModel;
 
-    public ClientsUserControlViewModel ClientsUserControlViewModel { get; } = clientsUserControlViewModel;
+    public IEntityViewModel<Order> OrdersUserControlViewModel { get; } = ordersUserControlViewModel;
 
-    public OrdersUserControlViewModel OrdersUserControlViewModel { get; } = ordersUserControlViewModel;
-
-    public ReviewsUserControlViewModel ReviewsUserControlViewModel { get; } = reviewsUserControlViewModel;
+    public IEntityViewModel<Review> ReviewsUserControlViewModel { get; } = reviewsUserControlViewModel;
 
     public ReportsUserControlViewModel ReportsUserControlViewModel { get; } = reportsUserControlViewModel;
 
-    public PrincipalsUserControlViewModel PrincipalsUserControlViewModel { get; } = principalsUserControlViewModel;
+    public IEntityViewModel<DbPrincipal> PrincipalsUserControlViewModel { get; } = principalsUserControlViewModel;
 }

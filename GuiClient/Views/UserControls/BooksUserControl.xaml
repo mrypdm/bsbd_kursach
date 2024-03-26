@@ -9,18 +9,18 @@
     <StackPanel Orientation="Horizontal">
         <Button Content="Get all Books" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" />
+                Command="{Binding ShowEntities}" />
         <Button Content="Get Books by Title" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="title" />
+                Command="{Binding ShowEntities}" CommandParameter="title" />
         <Button Content="Get Books by Author" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="author" />
+                Command="{Binding ShowEntities}" CommandParameter="author" />
         <Button Content="Get Books by Tags" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="tags" />
+                Command="{Binding ShowEntities}" CommandParameter="tags" />
         <Button Content="Get Books with Count" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="count" />
+                Command="{Binding ShowEntities}" CommandParameter="count" />
     </StackPanel>
 </UserControl>

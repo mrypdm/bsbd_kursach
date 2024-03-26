@@ -11,17 +11,33 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel
+public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel, IEntityViewModel<TEntity>
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
     protected EntityUserControlViewModel(ISecurityContext securityContext)
         : base(securityContext)
     {
-        Get = new AsyncFuncCommand<string>(GetBy, allowNulls: true);
+        ShowEntities = new AsyncFuncCommand<string>(GetBy, allowNulls: true);
     }
 
-    public ICommand Get { get; }
+    public ICommand ShowEntities { get; }
+
+    public async Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter)
+    {
+        filter ??= r => r.GetAllAsync();
+
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
+
+        viewModel.SetFilter(filter);
+
+        var view = new AllEntitiesWindow(viewModel);
+
+        viewModel.EnrichDataGrid(view);
+        await viewModel.RefreshAsync();
+
+        view.Show();
+    }
 
     private async Task GetBy(string filter)
     {
@@ -32,31 +48,8 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
             return;
         }
 
-        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
-
-        if (filter is not null)
-        {
-            viewModel.SetFilter(value);
-        }
-
-        var view = new AllEntitiesWindow(viewModel);
-
-        viewModel.EnrichDataGrid(view);
-        await viewModel.RefreshAsync();
-
-        view.Show();
+        await ShowBy(value);
     }
 
     protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);
-
-    protected static Exception InvalidRepo(Type actual, Type expected)
-    {
-        return new InvalidOperationException(
-            $"Unexpected repository. Expected {expected?.Name}, but was {actual?.Name}");
-    }
-
-    protected static Exception InvalidFilter(string filter)
-    {
-        return new InvalidOperationException($"Unexpected filter '{filter}'");
-    }
 }

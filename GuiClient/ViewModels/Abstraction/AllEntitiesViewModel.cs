@@ -42,7 +42,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
 
-        _filter = async r => await r.GetAllAsync();
+        _filter = r => r.GetAllAsync();
     }
 
     public string WindowTitle => $"{typeof(TEntity).Name}s";
@@ -82,7 +82,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     {
         ArgumentNullException.ThrowIfNull(window);
 
-        if (IsWorker)
+        if (IsAdmin)
         {
             AddButton(window, "Update", nameof(Update));
             AddButton(window, "Delete", nameof(Delete));

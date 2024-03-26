@@ -1,6 +1,18 @@
-﻿using GuiClient.Contexts;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using DatabaseClient.Models;
+using DatabaseClient.Repositories.Abstraction;
+using GuiClient.Contexts;
 using GuiClient.ViewModels.Abstraction;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class ReviewsUserControlViewModel(ISecurityContext securityContext) : AuthenticatedViewModel(securityContext);
+public class ReviewsUserControlViewModel(ISecurityContext securityContext)
+    : EntityUserControlViewModel<Review, Review>(securityContext)
+{
+    protected override Func<IRepository<Review>, Task<ICollection<Review>>> GetFilter(string filter)
+    {
+        throw new NotImplementedException();
+    }
+}

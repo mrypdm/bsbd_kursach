@@ -9,15 +9,15 @@
     <StackPanel Orientation="Horizontal">
         <Button Content="Get all Clients" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" />
+                Command="{Binding ShowEntities}" />
         <Button Content="Get Clients by Name" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="name" />
+                Command="{Binding ShowEntities}" CommandParameter="name" />
         <Button Content="Get Client by Phone" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="phone" />
+                Command="{Binding ShowEntities}" CommandParameter="phone" />
         <Button Content="Get Client by Gender" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding Get}" CommandParameter="gender" />
+                Command="{Binding ShowEntities}" CommandParameter="gender" />
     </StackPanel>
 </UserControl>

@@ -18,11 +18,12 @@ public class TagsUserControlViewModel(ISecurityContext securityContext)
         {
             "name" when AskerWindow.TryAskString("Enter tag name", out var name) => async r =>
             {
-                var repo = r as ITagsRepository ?? throw InvalidRepo(r.GetType(), typeof(ITagsRepository));
+                var repo = r as ITagsRepository
+                    ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(ITagsRepository));
                 return [await repo.GetTagByNameAsync(name)];
             },
             "name" => null,
-            _ => throw InvalidFilter(filter)
+            _ => throw GuiExceptions.InvalidFilter(filter)
         };
     }
 }
