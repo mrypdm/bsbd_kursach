@@ -11,14 +11,37 @@ namespace DatabaseClient.Repositories;
 
 public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<Order>(factory), IOrdersRepository
 {
-    // Update and Delete are forbidden with trigger bsbd_prevent_ud_orders
+    // Can only delete OrderToBooks entity when deleting whole order
+
+    public override async Task<ICollection<Order>> GetAllAsync()
+    {
+        await using var context = Factory.Create();
+        return await context.Orders
+            .Include(m => m.Client)
+            .Include(m => m.OrdersToBooks)
+            .ToListAsync();
+    }
+
+    public override async Task<Order> GetByIdAsync(int id)
+    {
+        await using var context = Factory.Create();
+        return await context.Orders
+            .Where(m => m.Id == id)
+            .Include(m => m.Client)
+            .Include(m => m.OrdersToBooks)
+            .SingleOrDefaultAsync();
+    }
 
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
     {
         ArgumentNullException.ThrowIfNull(client);
 
         await using var context = Factory.Create();
-        return await context.Orders.Where(m => m.ClientId == client.Id).ToListAsync();
+        return await context.Orders
+            .Where(m => m.ClientId == client.Id)
+            .Include(m => m.Client)
+            .Include(m => m.OrdersToBooks)
+            .ToListAsync();
     }
 
     public async Task<ICollection<Order>> GetOrdersForBookAsync(Book book)
@@ -26,7 +49,12 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = Factory.Create();
-        return await context.OrdersToBooks.Where(m => m.BookId == book.Id).Select(m => m.Order).ToListAsync();
+        return await context.OrdersToBooks
+            .Where(m => m.BookId == book.Id)
+            .Select(m => m.Order)
+            .Include(m => m.Client)
+            .Include(m => m.OrdersToBooks)
+            .ToListAsync();
     }
 
     // After insert trigger bsbd_verify_order verifies, that there are enough books for the order,
@@ -64,8 +92,9 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
             .SumAsync(m => m.Count * m.Book.Price);
     }
 
+    // Update are forbidden with trigger bsbd_prevent_update_orders
     public override Task UpdateAsync(Order entity)
     {
-        throw new NotSupportedException("Cannot update or delete order");
+        throw new NotSupportedException("Cannot update order");
     }
 }

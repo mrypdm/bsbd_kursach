@@ -12,6 +12,8 @@ namespace DatabaseClient.Repositories;
 
 public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory), IBooksRepository
 {
+    // bsbd_mark_book_as_deleted prevents deletion and marks books as deleted and removes book from tags
+
     public override async Task<Book> GetByIdAsync(int id)
     {
         await using var context = Factory.Create();

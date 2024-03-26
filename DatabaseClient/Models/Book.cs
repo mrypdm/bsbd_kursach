@@ -18,6 +18,8 @@ public class Book : IEntity
 
     public int Price { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<OrdersToBook> OrdersToBooks { get; set; } = new List<OrdersToBook>();
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
