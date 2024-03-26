@@ -8,15 +8,20 @@
              d:DataContext="{ d:DesignInstance Type=vm:BooksUserControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Get all Books" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get all Books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" />
-        <Button Content="Get Books by Title" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Books by Title" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="title" />
-        <Button Content="Get Books by Author" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Books by Author" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="author" />
-        <Button Content="Get Books by Tags" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Books by Tags" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="tags" />
-        <Button Content="Get Books with Count" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Books with Count" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="count" />
     </StackPanel>
 </UserControl>

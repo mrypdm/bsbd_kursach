@@ -8,12 +8,17 @@
              d:DataContext="{ d:DesignInstance Type=vm:ReportsUserControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Revenue of Genders" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Top money clients" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
+        <Button Content="Revenue of Genders" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Top money clients" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Button Content="Count of clients by Gender" Style="{StaticResource RowControl}"
-                Visibility="{Binding IsWorker}" />
-        <Button Content="Top sold books" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Top score books" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Top money books" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Top sold books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Top score books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Top money books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </StackPanel>
 </UserControl>

@@ -15,6 +15,6 @@
         <DataGrid x:Name="DataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Entities}" MinColumnWidth="125"
                   MinRowHeight="30" SelectedIndex="{Binding SelectedIndex}" CanUserAddRows="False"
                   CanUserDeleteRows="False" CanUserResizeColumns="True" CanUserSortColumns="True"
-                  CanUserReorderColumns="False" />
+                  CanUserReorderColumns="False" CellStyle="{StaticResource CenteredDataGrid}" />
     </StackPanel>
 </Window>

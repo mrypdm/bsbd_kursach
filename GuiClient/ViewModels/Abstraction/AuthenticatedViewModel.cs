@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Windows;
 using DatabaseClient.Extensions;
 using GuiClient.Contexts;
-using GuiClient.Extensions;
 
 namespace GuiClient.ViewModels.Abstraction;
 
@@ -21,9 +19,9 @@ public abstract class AuthenticatedViewModel : BaseViewModel
 
     protected ISecurityContext SecurityContext { get; }
 
-    public Visibility IsOwner => SecurityContext.Principal.IsOwner().AsVisibility();
+    public bool IsOwner => SecurityContext.Principal.IsOwner();
 
-    public Visibility IsAdmin => SecurityContext.Principal.IsAdmin().AsVisibility();
+    public bool IsAdmin => SecurityContext.Principal.IsAdmin();
 
-    public Visibility IsWorker => SecurityContext.Principal.IsWorker().AsVisibility();
+    public bool IsWorker => SecurityContext.Principal.IsWorker();
 }

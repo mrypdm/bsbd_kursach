@@ -8,11 +8,11 @@
              d:DataContext="{ d:DesignInstance Type=vm:PrincipalsUserControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Add Principal" Style="{StaticResource RowControl}" Visibility="{Binding IsOwner}" />
-        <Button Content="Delete Principal" Style="{StaticResource RowControl}" Visibility="{Binding IsOwner}" />
-        <Button Content="Change Principal password (force)" Style="{StaticResource RowControl}"
-                Visibility="{Binding IsOwner}" />
-        <Button Content="Get all Principals" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Get Principal by name" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
+        <Button Content="Get all Principals" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding Get}" />
+        <Button Content="Get Principal by name" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding Get}" CommandParameter="name" />
     </StackPanel>
 </UserControl>

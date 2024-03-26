@@ -40,8 +40,13 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
-        AddButton(window, "Show reviews", nameof(ShowReviews));
-        AddButton(window, "Show orders", nameof(ShowOrders));
+
+        if (IsWorker)
+        {
+            AddButton(window, "Show reviews", nameof(ShowReviews));
+            AddButton(window, "Show orders", nameof(ShowOrders));
+        }
+
         AddText(window, nameof(BookDto.Id), true);
         AddText(window, nameof(BookDto.Title));
         AddText(window, nameof(BookDto.Author));

@@ -8,13 +8,17 @@
              d:DataContext="{ d:DesignInstance Type=vm:ClientsUserControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Get all Clients" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get all Clients" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" />
-        <Button Content="Get Clients by Name" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Clients by Name" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="name" />
-        <Button Content="Get Client by Phone" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Client by Phone" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="phone" />
-        <Button Content="Get Client by Gender" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}"
+        <Button Content="Get Client by Gender" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding Get}" CommandParameter="gender" />
     </StackPanel>
 </UserControl>

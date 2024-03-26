@@ -8,8 +8,11 @@
              d:DataContext="{ d:DesignInstance Type=vm:ReviewsUserControlViewModel, IsDesignTimeCreatable=True }"
              d:DesignHeight="50">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Add Review" Style="{StaticResource RowControl}" Visibility="{Binding IsWorker}" />
-        <Button Content="Update review" Style="{StaticResource RowControl}" Visibility="{Binding IsAdmin}" />
-        <Button Content="Delete review" Style="{StaticResource RowControl}" Visibility="{Binding IsAdmin}" />
+        <Button Content="Add Review" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Update review" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Button Content="Delete review" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </StackPanel>
 </UserControl>

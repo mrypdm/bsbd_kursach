@@ -82,8 +82,11 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     {
         ArgumentNullException.ThrowIfNull(window);
 
-        AddButton(window, "Update", nameof(Update));
-        AddButton(window, "Delete", nameof(Delete));
+        if (IsWorker)
+        {
+            AddButton(window, "Update", nameof(Update));
+            AddButton(window, "Delete", nameof(Delete));
+        }
     }
 
     private void AddInternal()
@@ -144,7 +147,8 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
             {
                 Setters =
                 {
-                    new Setter(TextBlock.TextWrappingProperty, allowWrap ? TextWrapping.Wrap : TextWrapping.NoWrap)
+                    new Setter(TextBlock.TextWrappingProperty, allowWrap ? TextWrapping.Wrap : TextWrapping.NoWrap),
+                    new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Center)
                 }
             }
         };

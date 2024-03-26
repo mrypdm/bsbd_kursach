@@ -16,23 +16,24 @@ public sealed class DbPrincipal : IEntity, IPrincipalProvider, IDisposable
     public string Name { get; set; }
 
     [Column("Role")]
-    public string RoleString { get; set; }
-
-    [NotMapped]
-    public Role Role
+    public string RoleString
     {
-        get
+        get => $"bsbd_{Role.ToString().ToLowerInvariant()}_role";
+        set
         {
             var role = Role.Unknown;
 
-            if (Enum.TryParse(typeof(Role), RoleString.Split("_")[1], true, out var parsedRole))
+            if (Enum.TryParse(typeof(Role), value?.Split("_")[1], true, out var parsedRole))
             {
                 role = (Role)parsedRole;
             }
 
-            return role;
+            Role = role;
         }
     }
+
+    [NotMapped]
+    public Role Role { get; set; }
 
     [NotMapped]
     public SecureString SecurePassword
