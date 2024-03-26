@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
@@ -18,12 +19,11 @@ public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
         {
             "name" when AskerWindow.TryAskString("Enter name", out var name) => async r =>
             {
-                var repo = r as IPrincipalRepository
-                    ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IPrincipalRepository));
+                var repo = r.Cast<DbPrincipal, IPrincipalRepository>();
                 return [await repo.GetByName(name)];
             },
             "name" => null,
-            _ => throw GuiExceptions.InvalidFilter(filter)
+            _ => throw InvalidFilter(filter)
         };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
@@ -18,12 +19,11 @@ public class TagsUserControlViewModel(ISecurityContext securityContext)
         {
             "name" when AskerWindow.TryAskString("Enter tag name", out var name) => async r =>
             {
-                var repo = r as ITagsRepository
-                    ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(ITagsRepository));
+                var repo = r.Cast<Tag, ITagsRepository>();
                 return [await repo.GetTagByNameAsync(name)];
             },
             "name" => null,
-            _ => throw GuiExceptions.InvalidFilter(filter)
+            _ => throw InvalidFilter(filter)
         };
     }
 }

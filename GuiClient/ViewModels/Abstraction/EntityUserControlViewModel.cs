@@ -52,4 +52,9 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
     }
 
     protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);
+    
+    protected static Exception InvalidFilter(string filter)
+    {
+        return new InvalidOperationException($"Unexpected filter '{filter}'");
+    }
 }

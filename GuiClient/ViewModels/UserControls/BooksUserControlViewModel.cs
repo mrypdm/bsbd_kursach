@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
@@ -20,8 +21,7 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case "count" when AskerWindow.TryAskInt("Enter count", out var count):
                 return async r =>
                 {
-                    var repo = r as IBooksRepository
-                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IBooksRepository));
+                    var repo = r.Cast<Book, IBooksRepository>();
                     return await repo.GetBooksWithCountLessThanAsync(count);
                 };
             case "count":
@@ -31,8 +31,7 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
                 var tags = tagString.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
                 return async r =>
                 {
-                    var repo = r as IBooksRepository
-                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IBooksRepository));
+                    var repo = r.Cast<Book, IBooksRepository>();
                     return await repo.GetBooksByTagsAsync(tags);
                 };
             }
@@ -41,8 +40,7 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case "title" when AskerWindow.TryAskString("Enter title", out var value):
                 return async r =>
                 {
-                    var repo = r as IBooksRepository
-                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IBooksRepository));
+                    var repo = r.Cast<Book, IBooksRepository>();
                     return await repo.GetBooksByTitleAsync(value);
                 };
             case "title":
@@ -50,14 +48,13 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case "author" when AskerWindow.TryAskString("Enter author", out var value):
                 return async r =>
                 {
-                    var repo = r as IBooksRepository
-                        ?? throw GuiExceptions.InvalidRepo(r.GetType(), typeof(IBooksRepository));
+                    var repo = r.Cast<Book, IBooksRepository>();
                     return await repo.GetBooksByAuthorAsync(value);
                 };
             case "author":
                 return null;
             default:
-                throw GuiExceptions.InvalidFilter(filter);
+                throw InvalidFilter(filter);
         }
     }
 }
