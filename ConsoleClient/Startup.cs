@@ -3,7 +3,6 @@ using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleClient;
 
@@ -79,22 +78,5 @@ public static class Startup
                 Count = 2
             }
         });
-    }
-
-    public static async Task ClearAllAsync(string username, string password)
-    {
-        using var cred = new DbPrincipal();
-        cred.Name = username;
-        cred.SecurePassword = password.AsSecure();
-
-        var factory = new DatabaseContextFactory(cred, new ServerOptions());
-        await using var context = factory.Create();
-
-        await context.Reviews.ExecuteDeleteAsync();
-        await context.OrdersToBooks.ExecuteDeleteAsync();
-        await context.Books.ExecuteDeleteAsync();
-        await context.Clients.ExecuteDeleteAsync();
-        await context.Orders.ExecuteDeleteAsync();
-        await context.Tags.ExecuteDeleteAsync();
     }
 }

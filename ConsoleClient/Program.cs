@@ -25,7 +25,6 @@ var ordersRepository = new OrdersRepository(factory);
 var principalsManager = new PrincipalRepository(factory);
 var reportsProvider = new ReportsProvider(factory);
 
-await Startup.ClearAllAsync(cred.Name, cred.Password);
 await Startup.InitDatabaseAsync(cred.Name, cred.Password);
 
 Logging.Close();

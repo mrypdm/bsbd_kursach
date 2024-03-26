@@ -1,0 +1,36 @@
+USE [bsbd_kursach]
+GO
+
+/****** Object:  Table [dbo].[BooksToTags]    Script Date: 26.03.2024 20:18:02 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[BooksToTags](
+	[TagId] [int] NOT NULL,
+	[BookId] [int] NOT NULL,
+ CONSTRAINT [PK_BooksToTags] PRIMARY KEY CLUSTERED 
+(
+	[TagId] ASC,
+	[BookId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[BooksToTags]  WITH CHECK ADD  CONSTRAINT [FK_BooksToTags_Books] FOREIGN KEY([BookId])
+REFERENCES [dbo].[Books] ([Id])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[BooksToTags] CHECK CONSTRAINT [FK_BooksToTags_Books]
+GO
+
+ALTER TABLE [dbo].[BooksToTags]  WITH CHECK ADD  CONSTRAINT [FK_BooksToTags_Tags] FOREIGN KEY([TagId])
+REFERENCES [dbo].[Tags] ([Id])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[BooksToTags] CHECK CONSTRAINT [FK_BooksToTags_Tags]
+GO
