@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 ALTER TABLE [dbo].[OrdersToBooks] DROP CONSTRAINT [FK_OrdersToBooks_Orders]
 GO
 

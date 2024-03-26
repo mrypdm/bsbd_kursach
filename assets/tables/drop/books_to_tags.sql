@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 ALTER TABLE [dbo].[BooksToTags] DROP CONSTRAINT [FK_BooksToTags_Tags]
 GO
 

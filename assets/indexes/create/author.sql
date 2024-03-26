@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 SET ANSI_PADDING ON
 GO
 

@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 

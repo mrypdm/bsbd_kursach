@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 /****** Object:  Table [dbo].[Books]    Script Date: 26.03.2024 20:18:10 ******/
 SET ANSI_NULLS ON
 GO

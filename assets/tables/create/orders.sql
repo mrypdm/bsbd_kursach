@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 /****** Object:  Table [dbo].[Orders]    Script Date: 26.03.2024 20:18:41 ******/
 SET ANSI_NULLS ON
 GO
@@ -24,4 +21,7 @@ REFERENCES [dbo].[Clients] ([Id])
 GO
 
 ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK_Orders_Clients]
+GO
+
+ALTER TABLE [dbo].[Orders] ADD  CONSTRAINT [DF_Orders_CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
 GO

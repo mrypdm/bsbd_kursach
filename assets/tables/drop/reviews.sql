@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 ALTER TABLE [dbo].[Reviews] DROP CONSTRAINT [FK_Review_Clients]
 GO
 

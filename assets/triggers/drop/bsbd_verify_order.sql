@@ -1,0 +1,1 @@
+drop trigger bsbd_verify_order

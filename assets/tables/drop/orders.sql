@@ -1,4 +1,4 @@
-USE [bsbd_kursach]
+ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [DF_Orders_CreatedAt]
 GO
 
 ALTER TABLE [dbo].[Orders] DROP CONSTRAINT [FK_Orders_Clients]

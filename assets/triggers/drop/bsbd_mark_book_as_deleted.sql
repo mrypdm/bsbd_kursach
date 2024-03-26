@@ -1,0 +1,1 @@
+﻿drop trigger bsbd_mark_book_as_deleted

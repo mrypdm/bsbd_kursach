@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 ALTER TABLE [dbo].[Clients] DROP CONSTRAINT [CK_Clients]
 GO
 

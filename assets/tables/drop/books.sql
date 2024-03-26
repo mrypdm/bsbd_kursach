@@ -1,6 +1,3 @@
-USE [bsbd_kursach]
-GO
-
 ALTER TABLE [dbo].[Books] DROP CONSTRAINT [DF_Books_IsDeleted]
 GO
 
