@@ -51,7 +51,7 @@ public partial class App : Application
         await context.LogInAsync("bsbd_owner", password);
 #endif
 
-        var window = ApplicationHost.Services.GetRequiredService<MainWindow>();
+        var window = ServiceProvider.GetRequiredService<MainWindow>();
         window.Show();
     }
 

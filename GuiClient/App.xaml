@@ -8,9 +8,10 @@
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Icon" Value="/assets/icon.ico" />
         </Style>
-        <Style x:Key="RowControl" TargetType="{x:Type FrameworkElement}">
+        <Style x:Key="RowControl" TargetType="{x:Type ContentControl}">
             <Setter Property="Margin" Value="0,0,5,0" />
             <Setter Property="MinWidth" Value="150" />
+            <Setter Property="Padding" Value="5" />
         </Style>
         <Style x:Key="DockStack" TargetType="{x:Type StackPanel}">
             <Setter Property="Margin" Value="0,0,0,5" />

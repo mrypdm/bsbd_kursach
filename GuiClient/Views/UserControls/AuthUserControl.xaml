@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:uc="clr-namespace:GuiClient.ViewModels.UserControls"
              mc:Ignorable="d"
-             d:DataContext="{ d:DesignInstance Type=uc:AuthControlViewModel, IsDesignTimeCreatable=True }"
-             d:DesignHeight="25">
+             d:DataContext="{ d:DesignInstance Type=uc:AuthControlViewModel, IsDesignTimeCreatable=True }">
     <StackPanel Orientation="Horizontal">
         <Label Style="{StaticResource RowControl}" HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center">

@@ -118,6 +118,8 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         var button = new FrameworkElementFactory(typeof(Button));
 
         button.SetValue(ContentControl.ContentProperty, content);
+        button.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
+        button.SetValue(Control.PaddingProperty, new Thickness(5));
         button.SetBinding(ButtonBase.CommandProperty, new Binding($"DataContext.{commandPath}")
         {
             RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DataGrid), 1)
