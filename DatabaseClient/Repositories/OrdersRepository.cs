@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
@@ -64,22 +65,30 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(booksToOrder);
 
-        var books = booksToOrder.Where(m => m is not null).ToList();
-        if (books.Count == 0)
+        await using var context = Factory.Create();
+        var orderId = await context.Database
+            .SqlQuery<int>(
+                $"""
+                 insert into Orders (ClientId)
+                 output inserted.Id
+                 values ({client.Id})
+                 """)
+            .GetInserted();
+
+        foreach (var book in booksToOrder)
         {
-            throw new ArgumentException("Books to order are empty");
+            await context.Database.ExecuteSqlAsync(
+                $"""
+                 insert into OrdersToBooks(OrderId, BookId, Count)
+                 values({orderId}, {book.BookId}, {book.Count})
+                 """
+            );
         }
 
-        var order = new Order
-        {
-            ClientId = client.Id,
-            OrdersToBooks = books
-        };
-
-        await using var context = Factory.Create();
-        var entity = await context.Orders.AddAsync(order);
-        await context.SaveChangesAsync();
-        return entity.Entity;
+        return await context.Orders
+            .Where(m => m.Id == orderId)
+            .Include(m => m.OrdersToBooks)
+            .SingleAsync();
     }
 
     public async Task<int> GetOrderTotalPrice(Order order)

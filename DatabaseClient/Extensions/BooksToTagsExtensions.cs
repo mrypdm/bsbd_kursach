@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Extensions;
 
@@ -13,12 +14,11 @@ public static class BooksToTagsExtensions
         ArgumentNullException.ThrowIfNull(book);
         ArgumentNullException.ThrowIfNull(tag);
 
-        context.Attach(book);
-        context.Attach(tag);
-
-        book.Tags.Add(tag);
-        context.Update(book);
-        await context.SaveChangesAsync();
+        await context.Database.ExecuteSqlAsync(
+            $"""
+             insert into BooksToTags (TagId, BookId)
+             values  ({tag.Id}, {book.Id})
+             """);
     }
 
     public static async Task RemoveTagFromBook(this DatabaseContext context, Book book, Tag tag)
@@ -27,11 +27,10 @@ public static class BooksToTagsExtensions
         ArgumentNullException.ThrowIfNull(book);
         ArgumentNullException.ThrowIfNull(tag);
 
-        context.Attach(book);
-        context.Attach(tag);
-
-        book.Tags.Remove(tag);
-        context.Update(book);
-        await context.SaveChangesAsync();
+        await context.Database.ExecuteSqlAsync(
+            $"""
+             delete from BooksToTags
+             where BookId = {book.Id} and TagId = {tag.Id}
+             """);
     }
 }
