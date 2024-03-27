@@ -12,13 +12,9 @@ namespace GuiClient.ViewModels.UserControls;
 public class ReviewsUserControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<Review, ReviewDto>(securityContext)
 {
-    protected override Func<IRepository<Review>, Task<ICollection<Review>>> GetFilter(string filter)
+    protected override (Func<IRepository<Review>, Task<ICollection<Review>>>, Func<Task<ReviewDto>>) GetFilter(
+        string filterName)
     {
-        return null;
-    }
-
-    protected override Func<Task<ReviewDto>> GetFactory(string filter)
-    {
-        return null;
+        return (null, null);
     }
 }

@@ -14,46 +14,44 @@ namespace GuiClient.ViewModels.UserControls;
 public class ClientsUserControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<Client, Client>(securityContext)
 {
-    protected override Func<IRepository<Client>, Task<ICollection<Client>>> GetFilter(string filter)
+    protected override (Func<IRepository<Client>, Task<ICollection<Client>>>, Func<Task<Client>>) GetFilter(
+        string filterName)
     {
-        switch (filter)
+        switch (filterName)
         {
+            case null:
+                return (null, () => Task.FromResult(new Client { Id = -1 }));
             case "phone" when AskerWindow.TryAskString("Enter phone in format 0123456789", out var phone):
-                return async r =>
+                return (async r =>
                 {
                     var repo = r.Cast<Client, IClientsRepository>();
                     return await repo.GetClientsByPhoneAsync(phone);
-                };
+                }, null);
             case "phone":
-                return null;
+                return (null, null);
             case "name" when AskerWindow.TryAskString("Enter name in format 'First Name, Last Name'", out var name):
             {
                 var names = name.Split(",", StringSplitOptions.TrimEntries);
-                return async r =>
+                return (async r =>
                 {
                     var repo = r.Cast<Client, IClientsRepository>();
                     return await repo.GetClientsByNameAsync(names.ElementAtOrDefault(0), names.ElementAtOrDefault(1));
-                };
+                }, null);
             }
             case "name":
-                return null;
+                return (null, null);
             case "gender" when AskerWindow.TryAskEnum<Gender>("Enter gender: Male/Female", out var gender):
             {
-                return async r =>
+                return (async r =>
                 {
                     var repo = r.Cast<Client, IClientsRepository>();
                     return await repo.GetClientsByGender(gender);
-                };
+                }, null);
             }
             case "gender":
-                return null;
+                return (null, null);
             default:
-                throw InvalidFilter(filter);
+                throw InvalidFilter(filterName);
         }
-    }
-
-    protected override Func<Task<Client>> GetFactory(string filter)
-    {
-        return () => Task.FromResult(new Client { Id = -1 });
     }
 }

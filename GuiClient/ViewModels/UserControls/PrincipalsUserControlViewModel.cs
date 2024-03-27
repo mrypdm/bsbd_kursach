@@ -13,22 +13,19 @@ namespace GuiClient.ViewModels.UserControls;
 public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<DbPrincipal, DbPrincipal>(securityContext)
 {
-    protected override Func<IRepository<DbPrincipal>, Task<ICollection<DbPrincipal>>> GetFilter(string filter)
+    protected override (Func<IRepository<DbPrincipal>, Task<ICollection<DbPrincipal>>>, Func<Task<DbPrincipal>>)
+        GetFilter(string filterName)
     {
-        return filter switch
+        return filterName switch
         {
-            "name" when AskerWindow.TryAskString("Enter name", out var name) => async r =>
+            null => (null, null),
+            "name" when AskerWindow.TryAskString("Enter name", out var name) => (async r =>
             {
                 var repo = r.Cast<DbPrincipal, IPrincipalRepository>();
                 return [await repo.GetByName(name)];
-            },
-            "name" => null,
-            _ => throw InvalidFilter(filter)
+            }, null),
+            "name" => (null, null),
+            _ => throw InvalidFilter(filterName)
         };
-    }
-
-    protected override Func<Task<DbPrincipal>> GetFactory(string filter)
-    {
-        return null;
     }
 }

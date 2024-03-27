@@ -38,21 +38,20 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
         view.Show();
     }
 
-    private async Task GetBy(string filter)
+    private async Task GetBy(string filterName)
     {
-        var value = filter == null ? null : GetFilter(filter);
+        var (filter, factory) = GetFilter(filterName);
 
-        if (filter is not null && value is null)
+        if (filterName is not null && filter is null)
         {
             return;
         }
 
-        await ShowBy(value, GetFactory(filter));
+        await ShowBy(filter, factory);
     }
 
-    protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);
-
-    protected abstract Func<Task<TDto>> GetFactory(string filter);
+    protected abstract (Func<IRepository<TEntity>, Task<ICollection<TEntity>>>, Func<Task<TDto>>) GetFilter(
+        string filterName);
 
     protected static Exception InvalidFilter(string filter)
     {

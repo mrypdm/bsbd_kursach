@@ -13,14 +13,10 @@ namespace GuiClient.ViewModels.UserControls;
 public class OrdersUserControlViewModel(ISecurityContext securityContext, IClientsRepository clientsRepository)
     : EntityUserControlViewModel<Order, OrderDto>(securityContext)
 {
-    protected override Func<IRepository<Order>, Task<ICollection<Order>>> GetFilter(string filter)
+    protected override (Func<IRepository<Order>, Task<ICollection<Order>>>, Func<Task<OrderDto>>) GetFilter(
+        string filterName)
     {
-        return null;
-    }
-
-    protected override Func<Task<OrderDto>> GetFactory(string filter)
-    {
-        return async () =>
+        return (null, async () =>
         {
             if (!AskerWindow.TryAskInt("Enter client ID", out var clientId))
             {
@@ -37,6 +33,6 @@ public class OrdersUserControlViewModel(ISecurityContext securityContext, IClien
                 Client = client.ToString(),
                 CreatedAt = DateTime.Now
             };
-        };
+        });
     }
 }
