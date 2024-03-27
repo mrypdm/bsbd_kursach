@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using GuiClient.Commands;
@@ -14,8 +15,8 @@ public class AuthControlViewModel : AuthenticatedViewModel
     public AuthControlViewModel(ISecurityContext securityContext)
         : base(securityContext)
     {
-        Authenticate = new ActionCommand(AuthenticateInternal);
-        ChangePassword = new ActionCommand(ChangePasswordInternal);
+        Authenticate = new AsyncActionCommand(AuthenticateInternal);
+        ChangePassword = new AsyncActionCommand(ChangePasswordInternal);
 
         SecurityContext.PropertyChanged += (_, _) =>
         {
@@ -37,7 +38,7 @@ public class AuthControlViewModel : AuthenticatedViewModel
 
     public ICommand ChangePassword { get; }
 
-    private void AuthenticateInternal()
+    private async Task AuthenticateInternal()
     {
         if (SecurityContext.IsAuthenticated)
         {
@@ -50,11 +51,11 @@ public class AuthControlViewModel : AuthenticatedViewModel
             return;
         }
 
-        SecurityContext.LogInAsync(userName, password);
+        await SecurityContext.LogInAsync(userName, password);
         password.Dispose();
     }
 
-    private void ChangePasswordInternal()
+    private async Task ChangePasswordInternal()
     {
         if (!SecurityContext.IsAuthenticated)
         {
@@ -66,7 +67,7 @@ public class AuthControlViewModel : AuthenticatedViewModel
             return;
         }
 
-        SecurityContext.ChangePasswordAsync(password, newPassword);
+        await SecurityContext.ChangePasswordAsync(password, newPassword);
         password.Dispose();
         newPassword.Dispose();
 

@@ -17,6 +17,9 @@
         <TextBlock x:Name="NewPasswordCaption" Text="New password" Margin="5" />
         <PasswordBox x:Name="NewPasswordBox" Margin="5,5" />
 
+        <TextBlock x:Name="RoleSelectorCaption" Text="Role" Margin="5" />
+        <ComboBox x:Name="RoleSelector" Margin="5" />
+
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
             <Button Content="Cancel" Margin="5" Click="Cancel" MinWidth="50" Padding="5" IsCancel="True" />
             <Button Content="Ok" Margin="5" Click="Ok" MinWidth="50" Padding="5" IsDefault="True" />

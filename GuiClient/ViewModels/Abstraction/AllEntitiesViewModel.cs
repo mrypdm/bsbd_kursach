@@ -62,7 +62,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Refresh { get; }
 
-    public ICommand Add { get; }
+    public ICommand Add { get; protected set; }
 
     public ICommand Update { get; }
 
