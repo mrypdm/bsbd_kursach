@@ -49,9 +49,8 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = Factory.Create();
-        return await context.OrdersToBooks
-            .Where(m => m.BookId == book.Id)
-            .Select(m => m.Order)
+        return await context.Orders
+            .Where(m => m.OrdersToBooks.Any(otb => otb.BookId == book.Id))
             .Include(m => m.Client)
             .Include(m => m.OrdersToBooks)
             .ToListAsync();

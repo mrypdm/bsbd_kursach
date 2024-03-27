@@ -18,6 +18,8 @@ public class ReviewsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Reviews
             .Where(m => m.ClientId == client.Id)
+            .Include(m => m.Book)
+            .Include(m => m.Client)
             .ToListAsync();
     }
 
@@ -28,6 +30,8 @@ public class ReviewsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Reviews
             .Where(m => m.BookId == book.Id)
+            .Include(m => m.Book)
+            .Include(m => m.Client)
             .ToListAsync();
     }
 

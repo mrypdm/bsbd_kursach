@@ -26,6 +26,8 @@ public interface IAllEntitiesViewModel<TEntity, TDto> where TEntity : IEntity
 
     void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter);
 
+    void SetDefaultDto(Func<TDto> factory);
+
     Task RefreshAsync();
 
     void EnrichDataGrid(AllEntitiesWindow window);

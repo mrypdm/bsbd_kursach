@@ -25,4 +25,9 @@ public class Book : IEntity
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
+    public override string ToString()
+    {
+        return $"{Author} - {Title}";
+    }
 }

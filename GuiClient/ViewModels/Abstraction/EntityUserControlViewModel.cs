@@ -11,7 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel, IEntityViewModel<TEntity>
+public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel,
+    IEntityViewModel<TEntity, TDto>
     where TEntity : class, IEntity, new()
     where TDto : class, IEntity, new()
 {
@@ -23,13 +24,14 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
 
     public ICommand ShowEntities { get; }
 
-    public async Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter)
+    public async Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<TDto> dtoFactory)
     {
         filter ??= r => r.GetAllAsync();
 
         var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
 
         viewModel.SetFilter(filter);
+        viewModel.SetDefaultDto(dtoFactory);
 
         var view = new AllEntitiesWindow(viewModel);
 
@@ -48,11 +50,11 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
             return;
         }
 
-        await ShowBy(value);
+        await ShowBy(value, () => new TDto());
     }
 
     protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);
-    
+
     protected static Exception InvalidFilter(string filter)
     {
         return new InvalidOperationException($"Unexpected filter '{filter}'");

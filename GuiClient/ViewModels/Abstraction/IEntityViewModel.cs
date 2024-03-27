@@ -7,9 +7,9 @@ using DatabaseClient.Repositories.Abstraction;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IEntityViewModel<TEntity> where TEntity : IEntity
+public interface IEntityViewModel<TEntity, in TDto> where TEntity : IEntity
 {
     ICommand ShowEntities { get; }
 
-    Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter);
+    Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<TDto> dtoFactory);
 }

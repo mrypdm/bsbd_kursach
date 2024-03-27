@@ -23,4 +23,9 @@ public class Client : IEntity
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName} / {Phone}";
+    }
 }

@@ -28,6 +28,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     private ICollection<TDto> _entities;
 
     private Func<IRepository<TEntity>, Task<ICollection<TEntity>>> _filter;
+    private Func<TDto> _factory;
     private int _selectedIndex;
 
     protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> repository,
@@ -38,7 +39,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         _mapper = mapper;
 
         Refresh = new AsyncActionCommand(RefreshAsync);
-        Add = new ActionCommand(AddInternal);
+        Add = new ActionCommand(AddInternal, () => _factory != null);
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
 
@@ -72,6 +73,11 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         _filter = filter;
     }
 
+    public void SetDefaultDto(Func<TDto> factory)
+    {
+        _factory = factory;
+    }
+
     public async Task RefreshAsync()
     {
         var entities = await _filter(_repository);
@@ -93,7 +99,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     {
         if (Entities.All(m => m.Id != -1))
         {
-            Entities = Entities.Append(new TDto { Id = -1 }).ToArray();
+            Entities = Entities.Append(_factory()).ToArray();
         }
 
         SelectedIndex = Entities.Count - 1;

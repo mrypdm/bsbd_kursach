@@ -7,9 +7,8 @@
              mc:Ignorable="d"
              d:DataContext="{ d:DesignInstance Type=vm:OrdersUserControlViewModel, IsDesignTimeCreatable=True }">
     <StackPanel Orientation="Horizontal">
-        <Button Content="Add Order" Style="{StaticResource RowControl}"
-                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Button Content="Get all Orders" Style="{StaticResource RowControl}"
-                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding ShowEntities}" />
     </StackPanel>
 </UserControl>

@@ -14,6 +14,7 @@ using GuiClient.Contexts;
 using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
@@ -29,8 +30,8 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
 
-        ShowReviews = new ActionCommand(Placeholder);
-        ShowOrders = new ActionCommand(Placeholder);
+        ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync);
+        ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync);
     }
 
     public ICommand ShowReviews { get; }
@@ -54,12 +55,6 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         AddText(window, nameof(BookDto.Count));
         AddText(window, nameof(BookDto.Price));
         AddText(window, nameof(BookDto.Tags), allowWrap: true);
-    }
-
-    // TODO
-    private void Placeholder()
-    {
-        MessageBox.Show("Not implemented");
     }
 
     protected override async Task UpdateAsync([NotNull] BookDto item)
@@ -93,5 +88,32 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         }
 
         await RefreshAsync();
+    }
+
+    private async Task ShowReviewsAsync(BookDto book)
+    {
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
+
+        await allReviews.ShowBy(r =>
+        {
+            var repo = r.Cast<Review, IReviewsRepository>();
+            return repo.GetReviewForBooksAsync(new Book { Id = book.Id });
+        }, () => new ReviewDto
+        {
+            Id = -1,
+            BookId = book.Id,
+            Book = book.ToString()
+        });
+    }
+
+    private async Task ShowOrdersAsync(BookDto book)
+    {
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, Order>>();
+
+        await allReviews.ShowBy(r =>
+        {
+            var repo = r.Cast<Order, IOrdersRepository>();
+            return repo.GetOrdersForBookAsync(new Book { Id = book.Id });
+        }, null);
     }
 }
