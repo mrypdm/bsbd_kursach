@@ -18,7 +18,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         await using var context = Factory.Create();
         return await context.Books
-            .Where(m => m.Id == id)
+            .Where(m => m.Id == id && !m.IsDeleted)
             .Include(m => m.Tags)
             .SingleOrDefaultAsync();
     }
