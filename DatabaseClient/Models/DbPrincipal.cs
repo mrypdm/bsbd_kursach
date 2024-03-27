@@ -7,7 +7,7 @@ using DatabaseClient.Providers;
 namespace DatabaseClient.Models;
 
 [Serializable]
-public sealed class DbPrincipal : IEntity, IPrincipalProvider, IDisposable
+public sealed class DbPrincipal : IPrincipalProvider, IDisposable
 {
     private SecureString _password;
 

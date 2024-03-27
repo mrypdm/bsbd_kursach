@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace DatabaseClient.Models;
 
 [Serializable]
-public class Order : IEntity
+public class Order
 {
     public int ClientId { get; set; }
 

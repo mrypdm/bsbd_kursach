@@ -6,7 +6,7 @@ namespace DatabaseClient.Models;
 
 [Serializable]
 [SuppressMessage("Naming", "CA1724:Type names should not match namespaces")]
-public class Client : IEntity
+public class Client
 {
     public int Id { get; set; }
 

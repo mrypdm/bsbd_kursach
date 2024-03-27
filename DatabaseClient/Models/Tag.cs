@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace DatabaseClient.Models;
 
 [Serializable]
-public class Tag : IEntity
+public class Tag
 {
     public int Id { get; set; }
 
