@@ -64,7 +64,7 @@ public class ReviewsRepository(DatabaseContextFactory factory) : IReviewsReposit
 
     public Task<Review> GetByIdAsync(int id)
     {
-        throw new NotSupportedException();
+        throw new NotSupportedException("Use GetByIdAsync(int bookId, int clientId)");
     }
 
     public async Task<ICollection<Review>> GetAllAsync()

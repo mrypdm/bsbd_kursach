@@ -17,6 +17,14 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     // Phone = 0000000000,
     // IsDeleted = true
 
+    public override async Task<Client> GetByIdAsync(int id)
+    {
+        await using var context = Factory.Create();
+        return await context.Clients
+            .Where(m => m.Id == id)
+            .SingleOrDefaultAsync();
+    }
+
     public override async Task<ICollection<Client>> GetAllAsync()
     {
         await using var context = Factory.Create();

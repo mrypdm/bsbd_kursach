@@ -11,6 +11,14 @@ namespace DatabaseClient.Repositories;
 
 public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag>(factory), ITagsRepository
 {
+    public override async Task<Tag> GetByIdAsync(int id)
+    {
+        await using var context = Factory.Create();
+        return await context.Tags
+            .Where(m => m.Id == id)
+            .SingleOrDefaultAsync();
+    }
+
     public async Task<Tag> GetTagByNameAsync(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
