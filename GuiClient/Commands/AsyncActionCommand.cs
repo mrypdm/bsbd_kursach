@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Domain;
 
 namespace GuiClient.Commands;
 
@@ -27,6 +28,7 @@ public class AsyncActionCommand(Func<Task> action, Func<bool> canExecute = null)
         catch (Exception e)
         {
             MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Logging.Logger.Error(e, "{Message}", e.Message);
         }
     }
 }

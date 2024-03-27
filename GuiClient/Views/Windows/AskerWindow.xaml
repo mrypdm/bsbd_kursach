@@ -10,8 +10,8 @@
         <TextBlock x:Name="MessageBlock" Text="Placeholder" MinWidth="150" Margin="5" TextWrapping="Wrap" />
         <TextBox x:Name="ValueBox" MinWidth="150" Margin="5" TextWrapping="Wrap" />
         <StackPanel Orientation="Horizontal">
-            <Button Content="Ok" Margin="5" Click="Ok" Style="{StaticResource RowControl}" />
-            <Button Content="Cancel" Margin="5" Click="Cancel" Style="{StaticResource RowControl}" />
+            <Button Content="Ok" Margin="5" Click="Ok" Style="{StaticResource RowControl}" IsDefault="True" />
+            <Button Content="Cancel" Margin="5" Click="Cancel" Style="{StaticResource RowControl}" IsCancel="True" />
         </StackPanel>
     </StackPanel>
 </Window>

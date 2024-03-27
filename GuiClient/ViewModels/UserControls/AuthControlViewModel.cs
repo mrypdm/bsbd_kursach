@@ -1,11 +1,11 @@
 using System;
+using System.Windows.Forms;
 using System.Windows.Input;
-using Domain;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.ViewModels.Abstraction;
-using GuiClient.ViewModels.Windows;
 using GuiClient.Views.Windows;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace GuiClient.ViewModels.UserControls;
 
@@ -45,21 +45,32 @@ public class AuthControlViewModel : AuthenticatedViewModel
             return;
         }
 
-        var viewModel = new AuthWindowViewModel(SecurityContext, false);
-        var window = new AuthWindow(viewModel);
-        window.ShowDialog();
+        if (!CredAsker.AskForLogin(out var userName, out var password))
+        {
+            return;
+        }
+
+        SecurityContext.LogInAsync(userName, password);
+        password.Dispose();
     }
 
     private void ChangePasswordInternal()
     {
         if (!SecurityContext.IsAuthenticated)
         {
-            Logging.Logger.Error("Something wrong. User can change password while unauthenticated");
             throw new InvalidOperationException("Attempt to change password for null user");
         }
 
-        var viewModel = new AuthWindowViewModel(SecurityContext, true);
-        var window = new AuthWindow(viewModel);
-        window.ShowDialog();
+        if (!CredAsker.AskForChangePassword(SecurityContext.Principal.Name, out var password, out var newPassword))
+        {
+            return;
+        }
+
+        SecurityContext.ChangePasswordAsync(password, newPassword);
+        password.Dispose();
+        newPassword.Dispose();
+
+        MessageBox.Show("Password changed. Please authenticate with new password", "Info",
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 }
