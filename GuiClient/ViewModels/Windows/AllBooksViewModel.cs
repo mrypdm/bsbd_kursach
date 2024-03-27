@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,13 +23,15 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly TagsRepository _tagsRepository;
+    private readonly IClientsRepository _clientsRepository;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
-        TagsRepository tagsRepository, IMapper mapper)
+        TagsRepository tagsRepository, IClientsRepository clientsRepository, IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
+        _clientsRepository = clientsRepository;
 
         ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync);
         ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync);
@@ -94,26 +97,42 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     {
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
 
-        await allReviews.ShowBy(r =>
-        {
-            var repo = r.Cast<Review, IReviewsRepository>();
-            return repo.GetReviewForBooksAsync(new Book { Id = book.Id });
-        }, () => new ReviewDto
-        {
-            Id = -1,
-            BookId = book.Id,
-            Book = book.ToString()
-        });
+        await allReviews.ShowBy(
+            r =>
+            {
+                var repo = r.Cast<Review, IReviewsRepository>();
+                return repo.GetReviewForBooksAsync(new Book { Id = book.Id });
+            },
+            async () =>
+            {
+                if (!AskerWindow.TryAskInt("Enter client ID", out var clientId))
+                {
+                    return null;
+                }
+
+                var client = await _clientsRepository.GetByIdAsync(clientId)
+                    ?? throw new KeyNotFoundException($"Cannot find client with Id={clientId}");
+
+                return new ReviewDto
+                {
+                    BookId = book.Id,
+                    Book = book.ToString(),
+                    ClientId = client.Id,
+                    Client = client.ToString()
+                };
+            });
     }
 
     private async Task ShowOrdersAsync(BookDto book)
     {
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, Order>>();
 
-        await allReviews.ShowBy(r =>
-        {
-            var repo = r.Cast<Order, IOrdersRepository>();
-            return repo.GetOrdersForBookAsync(new Book { Id = book.Id });
-        }, null);
+        await allReviews.ShowBy(
+            r =>
+            {
+                var repo = r.Cast<Order, IOrdersRepository>();
+                return repo.GetOrdersForBookAsync(new Book { Id = book.Id });
+            },
+            null);
     }
 }

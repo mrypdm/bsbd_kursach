@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -12,9 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel,
-    IEntityViewModel<TEntity, TDto>
-    where TEntity : class, IEntity, new()
-    where TDto : class, IEntity, new()
+    IEntityViewModel<TEntity, TDto> where TDto : new()
 {
     protected EntityUserControlViewModel(ISecurityContext securityContext)
         : base(securityContext)
@@ -24,7 +21,7 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
 
     public ICommand ShowEntities { get; }
 
-    public async Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<TDto> dtoFactory)
+    public async Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<Task<TDto>> dtoFactory)
     {
         filter ??= r => r.GetAllAsync();
 
@@ -50,7 +47,7 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
             return;
         }
 
-        await ShowBy(value, () => new TDto());
+        await ShowBy(value, () => Task.FromResult(new TDto()));
     }
 
     protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);

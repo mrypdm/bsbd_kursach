@@ -1,6 +1,6 @@
 create trigger bsbd_mark_user_deleted on Clients instead of delete as
 begin
-	update Clients
+    update Clients
     set
         FirstName = '',
         LastName = '',

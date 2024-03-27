@@ -11,4 +11,6 @@ public interface IReviewsRepository : IRepository<Review>
     Task<ICollection<Review>> GetReviewForBooksAsync(Book book);
 
     Task<Review> AddReviewAsync(Client client, Book book, int score, string text = null);
+
+    Task<Review> GetByIdAsync(int bookId, int clientId);
 }

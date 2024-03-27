@@ -1,13 +1,10 @@
 ﻿using System;
-using DatabaseClient.Models;
 
 namespace GuiClient.Dto;
 
 [Serializable]
-public class ReviewDto : IEntity
+public class ReviewDto
 {
-    public int Id { get; set; } = -1;
-
     public int BookId { get; init; }
 
     public int ClientId { get; init; }

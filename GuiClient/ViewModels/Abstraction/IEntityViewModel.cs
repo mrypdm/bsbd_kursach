@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IEntityViewModel<TEntity, in TDto> where TEntity : IEntity
+public interface IEntityViewModel<TEntity, TDto>
 {
     ICommand ShowEntities { get; }
 
-    Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<TDto> dtoFactory);
+    Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<Task<TDto>> dtoFactory);
 }

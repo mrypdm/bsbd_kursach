@@ -1,10 +1,9 @@
 ﻿using System;
-using DatabaseClient.Models;
 
 namespace GuiClient.Dto;
 
 [Serializable]
-public class BookDto : IEntity
+public class BookDto
 {
     public int Id { get; set; } = -1;
 
@@ -19,4 +18,9 @@ public class BookDto : IEntity
     public int Price { get; set; }
 
     public string Tags { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Author} - {Title}";
+    }
 }

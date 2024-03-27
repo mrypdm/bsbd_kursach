@@ -1,5 +1,4 @@
 ﻿using System;
-using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 
 namespace DatabaseClient.Extensions;
@@ -7,7 +6,6 @@ namespace DatabaseClient.Extensions;
 public static class RepositoryExtensions
 {
     public static TRepo Cast<TEntity, TRepo>(this IRepository<TEntity> repository)
-        where TEntity : IEntity
     {
         if (repository is TRepo casted)
         {

@@ -1,4 +1,4 @@
-/****** Object:  Table [dbo].[Reviews]    Script Date: 26.03.2024 20:18:59 ******/
+/****** Object:  Table [dbo].[Reviews]    Script Date: 27.03.2024 10:45:50 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6,14 +6,14 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Reviews](
-	[Id] [int] IDENTITY NOT NULL,
-	[ClientId] [int] NOT NULL,
-	[BookId] [int] NOT NULL,
-	[Score] [int] NOT NULL,
-	[Text] [nvarchar](max) NULL,
+    [ClientId] [int] NOT NULL,
+    [BookId] [int] NOT NULL,
+    [Score] [int] NOT NULL,
+    [Text] [nvarchar](max) NULL,
  CONSTRAINT [PK_Reviews] PRIMARY KEY CLUSTERED 
 (
-	[Id] ASC
+    [ClientId] ASC,
+    [BookId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
@@ -33,3 +33,4 @@ GO
 
 ALTER TABLE [dbo].[Reviews] CHECK CONSTRAINT [FK_Review_Clients]
 GO
+

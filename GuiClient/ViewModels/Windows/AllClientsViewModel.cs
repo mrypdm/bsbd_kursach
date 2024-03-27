@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,12 +19,15 @@ namespace GuiClient.ViewModels.Windows;
 
 public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
 {
-    private readonly IClientsRepository _repository;
+    private readonly IClientsRepository _clientsRepository;
+    private readonly IBooksRepository _booksRepository;
 
-    public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository, IMapper mapper)
+    public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository,
+        IBooksRepository booksRepository, IMapper mapper)
         : base(securityContext, repository, mapper)
     {
-        _repository = repository;
+        _clientsRepository = repository;
+        _booksRepository = booksRepository;
 
         ShowReviews = new AsyncFuncCommand<Client>(ShowReviewsAsync);
         ShowOrders = new AsyncFuncCommand<Client>(ShowOrdersAsync);
@@ -54,12 +58,12 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
     {
         if (item.Id == -1)
         {
-            var tag = await _repository.AddClientAsync(item.FirstName, item.LastName, item.Phone, item.Gender);
+            var tag = await _clientsRepository.AddClientAsync(item.FirstName, item.LastName, item.Phone, item.Gender);
             MessageBox.Show($"Client created with ID={tag.Id}");
         }
         else
         {
-            await _repository.UpdateAsync(item);
+            await _clientsRepository.UpdateAsync(item);
         }
 
         await RefreshAsync();
@@ -69,31 +73,47 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
     {
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
 
-        await allReviews.ShowBy(r =>
-        {
-            var repo = r.Cast<Review, IReviewsRepository>();
-            return repo.GetReviewForClientAsync(new Client { Id = client.Id });
-        }, () => new ReviewDto
-        {
-            Id = -1,
-            ClientId = client.Id,
-            Client = client.ToString()
-        });
+        await allReviews.ShowBy(
+            r =>
+            {
+                var repo = r.Cast<Review, IReviewsRepository>();
+                return repo.GetReviewForClientAsync(new Client { Id = client.Id });
+            },
+            async () =>
+            {
+                if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
+                {
+                    return null;
+                }
+
+                var book = await _booksRepository.GetByIdAsync(bookId)
+                    ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
+
+                return new ReviewDto
+                {
+                    BookId = book.Id,
+                    Book = book.ToString(),
+                    ClientId = client.Id,
+                    Client = client.ToString()
+                };
+            });
     }
 
     private async Task ShowOrdersAsync(Client client)
     {
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, Order>>();
 
-        await allReviews.ShowBy(r =>
-        {
-            var repo = r.Cast<Order, IOrdersRepository>();
-            return repo.GetOrdersForClientAsync(new Client { Id = client.Id });
-        }, () => new Order
-        {
-            Id = -1,
-            ClientId = client.Id,
-            CreatedAt = DateTime.Now
-        });
+        await allReviews.ShowBy(
+            r =>
+            {
+                var repo = r.Cast<Order, IOrdersRepository>();
+                return repo.GetOrdersForClientAsync(new Client { Id = client.Id });
+            },
+            () => Task.FromResult(new Order
+            {
+                Id = -1,
+                ClientId = client.Id,
+                CreatedAt = DateTime.Now
+            }));
     }
 }

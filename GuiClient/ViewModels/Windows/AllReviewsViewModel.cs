@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoMapper;
@@ -17,7 +18,6 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
-        AddText(window, nameof(ReviewDto.Id), true);
         AddText(window, nameof(ReviewDto.BookId), true);
         AddText(window, nameof(ReviewDto.Book), true);
         AddText(window, nameof(ReviewDto.ClientId), true);
@@ -26,27 +26,51 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
         AddText(window, nameof(ReviewDto.Text));
     }
 
+    protected override async Task AddAsync()
+    {
+        var item = await DtoFactory();
+
+        var currentItem = Entities
+            .FirstOrDefault(m => m.BookId == item.BookId && m.ClientId == item.ClientId);
+
+        if (currentItem is null)
+        {
+            Entities = Entities.Append(item).ToList();
+            SelectedItem = item;
+            return;
+        }
+
+        SelectedItem = currentItem;
+    }
+
     protected override async Task UpdateAsync([NotNull] ReviewDto item)
     {
-        if (item.Id == -1)
+        var review = await repository.GetByIdAsync(item.BookId, item.ClientId);
+
+        if (review == null)
         {
-            var review = await repository.AddReviewAsync(
+            review = await repository.AddReviewAsync(
                 new Client { Id = item.ClientId },
                 new Book { Id = item.BookId },
                 item.Score,
                 item.Text);
-            MessageBox.Show($"Review created with ID={review.Id}");
+            MessageBox.Show($"Review created for book with ID={review.BookId} for client with ID={review.ClientId}");
         }
         else
         {
-            await repository.UpdateAsync(new Review
-            {
-                Id = item.Id,
-                Score = item.Score,
-                Text = item.Text
-            });
+            review.Score = item.Score;
+            review.Text = item.Text;
+
+            await repository.UpdateAsync(review);
         }
 
+        await RefreshAsync();
+    }
+
+    protected override async Task DeleteAsync([NotNull] ReviewDto item)
+    {
+        var review = await repository.GetByIdAsync(item.BookId, item.ClientId);
+        await repository.RemoveAsync(review);
         await RefreshAsync();
     }
 }

@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IAllEntitiesViewModel<TEntity, TDto> where TEntity : IEntity
+public interface IAllEntitiesViewModel<TEntity, TDto>
 {
     ICollection<TDto> Entities { get; }
 
-    int SelectedIndex { get; set; }
+    TDto SelectedItem { get; set; }
 
     string WindowTitle { get; }
 
@@ -26,7 +25,7 @@ public interface IAllEntitiesViewModel<TEntity, TDto> where TEntity : IEntity
 
     void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter);
 
-    void SetDefaultDto(Func<TDto> factory);
+    void SetDefaultDto(Func<Task<TDto>> factory);
 
     Task RefreshAsync();
 

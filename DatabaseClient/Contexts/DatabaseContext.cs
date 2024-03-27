@@ -93,6 +93,8 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         modelBuilder.Entity<Review>(entity =>
         {
+            entity.HasKey(e => new { e.BookId, e.ClientId });
+
             entity.HasOne(d => d.Book).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.BookId)
                 .HasConstraintName("FK_Review_Books");

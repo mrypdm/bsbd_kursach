@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AutoMapper;
-using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -20,16 +19,14 @@ using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TEntity, TDto>
-    where TEntity : class, IEntity, new()
-    where TDto : class, IEntity, new()
+
 {
     private readonly IMapper _mapper;
     private readonly IRepository<TEntity> _repository;
     private ICollection<TDto> _entities;
 
     private Func<IRepository<TEntity>, Task<ICollection<TEntity>>> _filter;
-    private Func<TDto> _factory;
-    private int _selectedIndex;
+    private TDto _selectedItem;
 
     protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> repository,
         IMapper mapper)
@@ -39,25 +36,27 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         _mapper = mapper;
 
         Refresh = new AsyncActionCommand(RefreshAsync);
-        Add = new ActionCommand(AddInternal, () => _factory != null);
+        Add = new AsyncActionCommand(AddAsync, () => DtoFactory != null);
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
 
         _filter = r => r.GetAllAsync();
     }
 
+    protected Func<Task<TDto>> DtoFactory { get; private set; }
+
     public string WindowTitle => $"{typeof(TEntity).Name}s";
 
     public ICollection<TDto> Entities
     {
         get => _entities;
-        private set => SetField(ref _entities, value);
+        protected set => SetField(ref _entities, value);
     }
 
-    public int SelectedIndex
+    public TDto SelectedItem
     {
-        get => _selectedIndex;
-        set => SetField(ref _selectedIndex, value);
+        get => _selectedItem;
+        set => SetField(ref _selectedItem, value);
     }
 
     public ICommand Refresh { get; }
@@ -73,9 +72,9 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         _filter = filter;
     }
 
-    public void SetDefaultDto(Func<TDto> factory)
+    public void SetDefaultDto(Func<Task<TDto>> factory)
     {
-        _factory = factory;
+        DtoFactory = factory;
     }
 
     public async Task RefreshAsync()
@@ -95,27 +94,19 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         }
     }
 
-    private void AddInternal()
+    protected virtual async Task AddAsync()
     {
-        if (Entities.All(m => m.Id != -1))
-        {
-            Entities = Entities.Append(_factory()).ToArray();
-        }
-
-        SelectedIndex = Entities.Count - 1;
+        var item = await DtoFactory();
+        Entities = Entities.Append(item).ToArray();
+        SelectedItem = item;
     }
 
     protected abstract Task UpdateAsync(TDto item);
 
-    protected virtual async Task DeleteAsync([NotNull] TDto dto)
+    protected virtual async Task DeleteAsync([NotNull] TDto item)
     {
-        if (dto.Id == -1)
-        {
-            Entities = Entities.ExceptBy([-1], m => m.Id).ToArray();
-            return;
-        }
-
-        await _repository.RemoveAsync(new TEntity { Id = dto.Id });
+        var entity = _mapper.Map<TEntity>(item);
+        await _repository.RemoveAsync(entity);
         await RefreshAsync();
     }
 
