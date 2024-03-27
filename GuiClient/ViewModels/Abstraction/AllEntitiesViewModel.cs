@@ -90,7 +90,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
         if (IsAdmin)
         {
-            AddButton(window, "Update", nameof(Update));
+            AddButton(window, "Delete", nameof(Delete));
         }
     }
 
