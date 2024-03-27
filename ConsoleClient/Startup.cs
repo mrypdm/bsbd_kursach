@@ -3,18 +3,21 @@ using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleClient;
 
 public static class Startup
 {
-    public static async Task InitDatabaseAsync(string username, string password)
+    public static DbPrincipal Cred { get; } = new()
     {
-        using var cred = new DbPrincipal();
-        cred.Name = username;
-        cred.SecurePassword = password.AsSecure();
+        Name = "bsbd_owner",
+        SecurePassword = "very_secret_Password_forOwner".AsSecure()
+    };
 
-        var factory = new DatabaseContextFactory(cred, new ServerOptions());
+    public static async Task InitDatabaseAsync()
+    {
+        var factory = new DatabaseContextFactory(Cred, new ServerOptions());
 
         var clientsRepository = new ClientsRepository(factory);
         var tagsRepository = new TagsRepository(factory);
@@ -78,5 +81,17 @@ public static class Startup
                 Count = 2
             }
         });
+    }
+
+    public static async Task ClearAllAsync()
+    {
+        var factory = new DatabaseContextFactory(Cred, new ServerOptions());
+        await using var context = factory.Create();
+
+        await context.Reviews.ExecuteDeleteAsync();
+        await context.Orders.ExecuteDeleteAsync();
+        await context.Books.ExecuteDeleteAsync();
+        await context.Clients.ExecuteDeleteAsync();
+        await context.Tags.ExecuteDeleteAsync();
     }
 }

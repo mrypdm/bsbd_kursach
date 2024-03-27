@@ -2,8 +2,6 @@
 
 using ConsoleClient;
 using DatabaseClient.Contexts;
-using DatabaseClient.Extensions;
-using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
@@ -11,11 +9,7 @@ using Domain;
 
 Logging.Init();
 
-using var cred = new DbPrincipal();
-cred.Name = "bsbd_owner";
-cred.SecurePassword = "very_secret_Password_forOwner".AsSecure();
-
-var factory = new DatabaseContextFactory(cred, new ServerOptions());
+var factory = new DatabaseContextFactory(Startup.Cred, new ServerOptions());
 
 var clientsRepository = new ClientsRepository(factory);
 var tagsRepository = new TagsRepository(factory);
@@ -25,6 +19,7 @@ var ordersRepository = new OrdersRepository(factory);
 var principalsManager = new PrincipalRepository(factory);
 var reportsProvider = new ReportsProvider(factory);
 
-await Startup.InitDatabaseAsync(cred.Name, cred.Password);
+await Startup.ClearAllAsync();
+await Startup.InitDatabaseAsync();
 
 Logging.Close();

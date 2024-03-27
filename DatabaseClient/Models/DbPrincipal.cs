@@ -11,8 +11,6 @@ public sealed class DbPrincipal : IEntity, IPrincipalProvider, IDisposable
 {
     private SecureString _password;
 
-    public int Id { get; set; }
-
     public string Name { get; set; }
 
     public string RoleString
@@ -52,6 +50,8 @@ public sealed class DbPrincipal : IEntity, IPrincipalProvider, IDisposable
     {
         _password?.Dispose();
     }
+
+    public int Id { get; set; }
 
     public DbPrincipal GetPrincipal()
     {

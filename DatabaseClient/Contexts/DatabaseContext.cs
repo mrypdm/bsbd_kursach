@@ -31,8 +31,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
     {
         modelBuilder.Entity<Book>(entity =>
         {
-            entity.ToTable(tb => tb.HasTrigger("bsbd_mark_book_as_deleted"));
-
             entity.HasIndex(e => e.Author, "IX_Books_Author");
 
             entity.HasIndex(e => e.Title, "IX_Books_Title");
@@ -47,43 +45,24 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.ToTable(tb => tb.HasTrigger("bsbd_mark_user_deleted"));
-
             entity.HasIndex(e => e.Phone, "IX_Clients_Phone")
                 .IsUnique()
                 .HasFilter("([Phone]<>'0000000000')");
 
             entity.Property(e => e.FirstName)
-                .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(100)
+                .IsRequired();
             entity.Property(e => e.LastName)
-                .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(100)
+                .IsRequired();
             entity.Property(e => e.Phone)
                 .IsRequired()
                 .HasMaxLength(10)
                 .IsFixedLength();
         });
 
-        modelBuilder.Entity<DbPrincipal>(entity =>
-        {
-            entity.HasNoKey().ToView("bsbd_principals");
-
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(128)
-                .UseCollation("Latin1_General_100_CI_AS_KS_WS_SC");
-            entity.Property(e => e.RoleString)
-                .HasColumnName("Role")
-                .IsRequired()
-                .HasMaxLength(128)
-                .UseCollation("Latin1_General_100_CI_AS_KS_WS_SC");
-        });
-
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.ToTable(tb => tb.HasTrigger("bsbd_prevent_update_orders"));
-
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
@@ -92,15 +71,15 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
                 .HasConstraintName("FK_Orders_Clients");
         });
 
+        modelBuilder.Entity<DbPrincipal>(entity =>
+        {
+            entity.ToView("bsbd_principals");
+            entity.Property(m => m.RoleString).HasColumnName("Role");
+        });
+
         modelBuilder.Entity<OrdersToBook>(entity =>
         {
             entity.HasKey(e => new { e.OrderId, e.BookId });
-
-            entity.ToTable(tb =>
-            {
-                tb.HasTrigger("bsbd_delete_order");
-                tb.HasTrigger("bsbd_verify_order");
-            });
 
             entity.HasOne(d => d.Book).WithMany(p => p.OrdersToBooks)
                 .HasForeignKey(d => d.BookId)

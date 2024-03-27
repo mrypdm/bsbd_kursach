@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Orders](
-	[Id] [int] IDENTITY(0,1) NOT NULL,
+	[Id] [int] IDENTITY NOT NULL,
 	[ClientId] [int] NOT NULL,
 	[CreatedAt] [datetime2](7) NOT NULL,
  CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED 

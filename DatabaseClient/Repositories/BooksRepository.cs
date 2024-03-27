@@ -27,6 +27,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         await using var context = Factory.Create();
         return await context.Books
+            .Where(m => !m.IsDeleted)
             .Include(m => m.Tags)
             .ToListAsync();
     }
@@ -37,7 +38,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
         await using var context = Factory.Create();
         return await context.Books
-            .Where(m => m.Title == title)
+            .Where(m => m.Title == title && !m.IsDeleted)
             .Include(m => m.Tags)
             .ToListAsync();
     }
@@ -48,7 +49,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
         await using var context = Factory.Create();
         return await context.Books
-            .Where(m => m.Author == author)
+            .Where(m => m.Author == author && !m.IsDeleted)
             .Include(m => m.Tags)
             .ToListAsync();
     }
@@ -65,7 +66,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
         await using var context = Factory.Create();
 
-        var command = safeTags.Aggregate(context.Books as IQueryable<Book>,
+        var command = safeTags.Aggregate(context.Books.Where(m => !m.IsDeleted),
             (current, tag) => current.Where(m => m.Tags.Select(t => t.Name).Contains(tag)));
 
         return await command.Include(m => m.Tags).ToListAsync();
@@ -75,7 +76,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         await using var context = Factory.Create();
         return await context.Books
-            .Where(m => m.Count < count)
+            .Where(m => m.Count < count && !m.IsDeleted)
             .Include(m => m.Tags)
             .ToListAsync();
     }

@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Reviews](
-	[Id] [int] IDENTITY(0,1) NOT NULL,
+	[Id] [int] IDENTITY NOT NULL,
 	[ClientId] [int] NOT NULL,
 	[BookId] [int] NOT NULL,
 	[Score] [int] NOT NULL,

@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[Books](
-	[Id] [int] IDENTITY(0,1) NOT NULL,
+	[Id] [int] IDENTITY NOT NULL,
 	[Title] [nvarchar](200) NOT NULL,
 	[Author] [nvarchar](50) NOT NULL,
 	[ReleaseDate] [datetime2](7) NOT NULL,

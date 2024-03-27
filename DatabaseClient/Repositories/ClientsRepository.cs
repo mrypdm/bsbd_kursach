@@ -21,7 +21,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     {
         await using var context = Factory.Create();
         return await context.Clients
-            .Where(m => m.IsDeleted == false)
+            .Where(m => !m.IsDeleted)
             .ToListAsync();
     }
 
@@ -58,7 +58,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     {
         await using var context = Factory.Create();
         return await context.Clients
-            .Where(m => m.Gender == gender && m.IsDeleted == false)
+            .Where(m => m.Gender == gender && !m.IsDeleted)
             .ToArrayAsync();
     }
 
