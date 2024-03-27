@@ -66,11 +66,4 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
 
         await RefreshAsync();
     }
-
-    protected override async Task DeleteAsync([NotNull] ReviewDto item)
-    {
-        var review = await repository.GetByIdAsync(item.BookId, item.ClientId);
-        await repository.RemoveAsync(review);
-        await RefreshAsync();
-    }
 }

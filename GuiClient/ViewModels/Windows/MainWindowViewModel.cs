@@ -10,7 +10,7 @@ public class MainWindowViewModel(
     IEntityViewModel<Book, BookDto> booksUserControlViewModel,
     IEntityViewModel<Tag, Tag> tagsUserControlViewModel,
     IEntityViewModel<Client, Client> clientsUserControlViewModel,
-    IEntityViewModel<Order, Order> ordersUserControlViewModel,
+    IEntityViewModel<Order, OrderDto> ordersUserControlViewModel,
     ReportsUserControlViewModel reportsUserControlViewModel,
     IEntityViewModel<DbPrincipal, DbPrincipal> principalsUserControlViewModel) : BaseViewModel
 {
@@ -22,7 +22,7 @@ public class MainWindowViewModel(
 
     public IEntityViewModel<Client, Client> ClientsUserControlViewModel { get; } = clientsUserControlViewModel;
 
-    public IEntityViewModel<Order, Order> OrdersUserControlViewModel { get; } = ordersUserControlViewModel;
+    public IEntityViewModel<Order, OrderDto> OrdersUserControlViewModel { get; } = ordersUserControlViewModel;
 
     public ReportsUserControlViewModel ReportsUserControlViewModel { get; } = reportsUserControlViewModel;
 

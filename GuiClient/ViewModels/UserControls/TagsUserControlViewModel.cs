@@ -26,4 +26,9 @@ public class TagsUserControlViewModel(ISecurityContext securityContext)
             _ => throw InvalidFilter(filter)
         };
     }
+
+    protected override Func<Task<Tag>> GetFactory(string filter)
+    {
+        return () => Task.FromResult(new Tag { Id = -1 });
+    }
 }

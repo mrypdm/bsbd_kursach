@@ -5,7 +5,10 @@ using System.Windows.Input;
 
 namespace GuiClient.Commands;
 
-public class AsyncFuncCommand<TParam>(Func<TParam, Task> action, Func<bool> canExecute = null, bool allowNulls = false)
+public class AsyncFuncCommand<TParam>(
+    Func<TParam, Task> action,
+    Func<TParam, bool> canExecute = null,
+    bool allowNulls = false)
     : ICommand
 {
     public event EventHandler CanExecuteChanged
@@ -16,16 +19,26 @@ public class AsyncFuncCommand<TParam>(Func<TParam, Task> action, Func<bool> canE
 
     public bool CanExecute(object parameter)
     {
-        return canExecute?.Invoke() ?? true;
+        if (canExecute == null)
+        {
+            return true;
+        }
+
+        if (parameter is not TParam && parameter != null)
+        {
+            throw new InvalidOperationException(
+                $"{typeof(TParam).Name} was expected. But was {parameter.GetType().Name}");
+        }
+
+        return canExecute((TParam)parameter);
     }
 
     public async void Execute(object parameter)
     {
         if (parameter is not TParam && (parameter != null || !allowNulls))
         {
-            MessageBox.Show($"{typeof(TParam).Name} was expected. But was {parameter?.GetType().Name ?? "<null>"}",
-                "DEV_ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Environment.Exit(1);
+            throw new InvalidOperationException(
+                $"{typeof(TParam).Name} was expected. But was {parameter?.GetType().Name ?? "<null>"}");
         }
 
         try

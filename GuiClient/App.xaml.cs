@@ -105,7 +105,7 @@ public partial class App : Application
         services.AddTransient<IEntityViewModel<Book, BookDto>, BooksUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Tag, Tag>, TagsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Client, Client>, ClientsUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<Order, Order>, OrdersUserControlViewModel>();
+        services.AddTransient<IEntityViewModel<Order, OrderDto>, OrdersUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Review, ReviewDto>, ReviewsUserControlViewModel>();
         services.AddTransient<ReportsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<DbPrincipal, DbPrincipal>, PrincipalsUserControlViewModel>();
@@ -114,7 +114,8 @@ public partial class App : Application
         services.AddTransient<IAllEntitiesViewModel<Tag, Tag>, AllTagsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Client, Client>, AllClientsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Review, ReviewDto>, AllReviewsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Order, Order>, AllOrdersViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Order, OrderDto>, AllOrdersViewModel>();
         services.AddTransient<IAllEntitiesViewModel<DbPrincipal, DbPrincipal>, AllPrincipalsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Order, BookInOrderDto>, AllBooksInOrderViewModel>();
     }
 }

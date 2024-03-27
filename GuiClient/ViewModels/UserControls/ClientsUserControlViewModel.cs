@@ -51,4 +51,9 @@ public class ClientsUserControlViewModel(ISecurityContext securityContext)
                 throw InvalidFilter(filter);
         }
     }
+
+    protected override Func<Task<Client>> GetFactory(string filter)
+    {
+        return () => Task.FromResult(new Client { Id = -1 });
+    }
 }

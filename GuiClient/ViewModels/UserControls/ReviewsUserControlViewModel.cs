@@ -14,6 +14,11 @@ public class ReviewsUserControlViewModel(ISecurityContext securityContext)
 {
     protected override Func<IRepository<Review>, Task<ICollection<Review>>> GetFilter(string filter)
     {
-        throw new NotImplementedException();
+        return null;
+    }
+
+    protected override Func<Task<ReviewDto>> GetFactory(string filter)
+    {
+        return null;
     }
 }

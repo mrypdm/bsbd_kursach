@@ -57,4 +57,9 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
                 throw InvalidFilter(filter);
         }
     }
+
+    protected override Func<Task<BookDto>> GetFactory(string filter)
+    {
+        return () => Task.FromResult(new BookDto { Id = -1 });
+    }
 }

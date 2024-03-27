@@ -58,8 +58,9 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
     {
         if (item.Id == -1)
         {
-            var tag = await _clientsRepository.AddClientAsync(item.FirstName, item.LastName, item.Phone, item.Gender);
-            MessageBox.Show($"Client created with ID={tag.Id}");
+            var client =
+                await _clientsRepository.AddClientAsync(item.FirstName, item.LastName, item.Phone, item.Gender);
+            MessageBox.Show($"Client created with ID={client.Id}");
         }
         else
         {
@@ -101,18 +102,19 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
 
     private async Task ShowOrdersAsync(Client client)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, Order>>();
+        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, OrderDto>>();
 
-        await allReviews.ShowBy(
+        await allOrders.ShowBy(
             r =>
             {
                 var repo = r.Cast<Order, IOrdersRepository>();
                 return repo.GetOrdersForClientAsync(new Client { Id = client.Id });
             },
-            () => Task.FromResult(new Order
+            () => Task.FromResult(new OrderDto
             {
                 Id = -1,
                 ClientId = client.Id,
+                Client = client.ToString(),
                 CreatedAt = DateTime.Now
             }));
     }

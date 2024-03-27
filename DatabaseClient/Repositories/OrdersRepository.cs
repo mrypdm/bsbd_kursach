@@ -19,6 +19,7 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
         return await context.Orders
             .Include(m => m.Client)
             .Include(m => m.OrdersToBooks)
+            .ThenInclude(m => m.Book)
             .ToListAsync();
     }
 
@@ -29,6 +30,7 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
             .Where(m => m.Id == id)
             .Include(m => m.Client)
             .Include(m => m.OrdersToBooks)
+            .ThenInclude(m => m.Book)
             .SingleOrDefaultAsync();
     }
 
@@ -41,6 +43,7 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
             .Where(m => m.ClientId == client.Id)
             .Include(m => m.Client)
             .Include(m => m.OrdersToBooks)
+            .ThenInclude(m => m.Book)
             .ToListAsync();
     }
 
@@ -53,6 +56,7 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
             .Where(m => m.OrdersToBooks.Any(otb => otb.BookId == book.Id))
             .Include(m => m.Client)
             .Include(m => m.OrdersToBooks)
+            .ThenInclude(m => m.Book)
             .ToListAsync();
     }
 

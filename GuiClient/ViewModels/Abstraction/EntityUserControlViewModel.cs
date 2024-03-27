@@ -47,10 +47,12 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
             return;
         }
 
-        await ShowBy(value, () => Task.FromResult(new TDto()));
+        await ShowBy(value, GetFactory(filter));
     }
 
     protected abstract Func<IRepository<TEntity>, Task<ICollection<TEntity>>> GetFilter(string filter);
+
+    protected abstract Func<Task<TDto>> GetFactory(string filter);
 
     protected static Exception InvalidFilter(string filter)
     {

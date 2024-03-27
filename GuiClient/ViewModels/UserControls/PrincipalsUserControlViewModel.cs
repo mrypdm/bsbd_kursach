@@ -26,4 +26,9 @@ public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
             _ => throw InvalidFilter(filter)
         };
     }
+
+    protected override Func<Task<DbPrincipal>> GetFactory(string filter)
+    {
+        return null;
+    }
 }

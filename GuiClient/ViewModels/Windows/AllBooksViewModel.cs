@@ -125,9 +125,9 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
     private async Task ShowOrdersAsync(BookDto book)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, Order>>();
+        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, OrderDto>>();
 
-        await allReviews.ShowBy(
+        await allOrders.ShowBy(
             r =>
             {
                 var repo = r.Cast<Order, IOrdersRepository>();

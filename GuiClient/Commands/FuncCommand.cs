@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace GuiClient.Commands;
 
-public class FuncCommand<TParam>(Action<TParam> action, Func<bool> canExecute = null, bool allowNulls = false)
+public class FuncCommand<TParam>(Action<TParam> action, Func<TParam, bool> canExecute = null, bool allowNulls = false)
     : ICommand
 {
     public event EventHandler CanExecuteChanged
@@ -15,16 +15,26 @@ public class FuncCommand<TParam>(Action<TParam> action, Func<bool> canExecute = 
 
     public bool CanExecute(object parameter)
     {
-        return canExecute?.Invoke() ?? true;
+        if (canExecute == null)
+        {
+            return true;
+        }
+
+        if (parameter is not TParam && parameter != null)
+        {
+            throw new InvalidOperationException(
+                $"{typeof(TParam).Name} was expected. But was {parameter.GetType().Name}");
+        }
+
+        return canExecute((TParam)parameter);
     }
 
     public void Execute(object parameter)
     {
         if (parameter is not TParam && (parameter != null || !allowNulls))
         {
-            MessageBox.Show($"{typeof(TParam).Name} was expected. But was {parameter?.GetType().Name ?? "<null>"}",
-                "DEV_ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            Environment.Exit(1);
+            throw new InvalidOperationException(
+                $"{typeof(TParam).Name} was expected. But was {parameter?.GetType().Name ?? "<null>"}");
         }
 
         try

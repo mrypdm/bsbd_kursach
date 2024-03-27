@@ -19,13 +19,10 @@ using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TEntity, TDto>
-
 {
-    private readonly IMapper _mapper;
     private readonly IRepository<TEntity> _repository;
     private ICollection<TDto> _entities;
 
-    private Func<IRepository<TEntity>, Task<ICollection<TEntity>>> _filter;
     private TDto _selectedItem;
 
     protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> repository,
@@ -33,17 +30,21 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         : base(securityContext)
     {
         _repository = repository;
-        _mapper = mapper;
+        Mapper = mapper;
 
         Refresh = new AsyncActionCommand(RefreshAsync);
         Add = new AsyncActionCommand(AddAsync, () => DtoFactory != null);
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
 
-        _filter = r => r.GetAllAsync();
+        Filter = r => r.GetAllAsync();
     }
 
+    protected IMapper Mapper { get; }
+
     protected Func<Task<TDto>> DtoFactory { get; private set; }
+
+    protected Func<IRepository<TEntity>, Task<ICollection<TEntity>>> Filter { get; private set; }
 
     public string WindowTitle => $"{typeof(TEntity).Name}s";
 
@@ -65,11 +66,11 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Update { get; }
 
-    public ICommand Delete { get; }
+    public ICommand Delete { get; protected init; }
 
     public void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter)
     {
-        _filter = filter;
+        Filter = filter;
     }
 
     public void SetDefaultDto(Func<Task<TDto>> factory)
@@ -77,10 +78,10 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         DtoFactory = factory;
     }
 
-    public async Task RefreshAsync()
+    public virtual async Task RefreshAsync()
     {
-        var entities = await _filter(_repository);
-        Entities = _mapper.Map<TDto[]>(entities);
+        var entities = await Filter(_repository);
+        Entities = Mapper.Map<TDto[]>(entities);
     }
 
     public virtual void EnrichDataGrid(AllEntitiesWindow window)
@@ -105,7 +106,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     protected virtual async Task DeleteAsync([NotNull] TDto item)
     {
-        var entity = _mapper.Map<TEntity>(item);
+        var entity = Mapper.Map<TEntity>(item);
         await _repository.RemoveAsync(entity);
         await RefreshAsync();
     }
