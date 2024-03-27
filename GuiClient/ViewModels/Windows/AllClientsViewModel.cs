@@ -43,6 +43,7 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
 
         if (IsWorker)
         {
+            AddButton(window, "Update", nameof(Update));
             AddButton(window, "Show reviews", nameof(ShowReviews));
             AddButton(window, "Show orders", nameof(ShowOrders));
         }

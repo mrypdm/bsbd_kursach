@@ -47,6 +47,7 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
         if (IsWorker)
         {
+            AddButton(window, "Update", nameof(Update));
             AddButton(window, "Show reviews", nameof(ShowReviews));
             AddButton(window, "Show orders", nameof(ShowOrders));
         }

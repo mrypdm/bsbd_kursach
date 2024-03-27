@@ -18,6 +18,12 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
+
+        if (IsAdmin)
+        {
+            AddButton(window, "Update", nameof(Update));
+        }
+
         AddText(window, nameof(ReviewDto.BookId), true);
         AddText(window, nameof(ReviewDto.Book), true);
         AddText(window, nameof(ReviewDto.ClientId), true);

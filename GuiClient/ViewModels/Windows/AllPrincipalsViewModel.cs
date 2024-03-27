@@ -37,6 +37,7 @@ public class AllPrincipalsViewModel : AllEntitiesViewModel<DbPrincipal, DbPrinci
 
         AddText(window, nameof(DbPrincipal.Id), true);
         AddText(window, nameof(DbPrincipal.Name), true);
+        AddText(window, nameof(DbPrincipal.Role), true);
     }
 
     protected override Task UpdateAsync(DbPrincipal item)

@@ -16,6 +16,12 @@ public class AllTagsViewModel(ISecurityContext securityContext, ITagsRepository 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
+
+        if (IsWorker)
+        {
+            AddButton(window, "Update", nameof(Update));
+        }
+
         AddText(window, nameof(Tag.Id), true);
         AddText(window, nameof(Tag.Name));
     }
