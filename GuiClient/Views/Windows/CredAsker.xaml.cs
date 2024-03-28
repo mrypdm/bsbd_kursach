@@ -14,7 +14,7 @@ public partial class CredAsker : Window
         {
             Role.Worker.ToString(),
             Role.Admin.ToString(),
-            Role.Owner.ToString()
+            Role.Security.ToString()
         };
         RoleSelector.SelectedIndex = 0;
     }

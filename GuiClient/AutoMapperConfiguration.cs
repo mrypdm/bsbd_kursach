@@ -12,9 +12,17 @@ public class AutoMapperConfiguration : Profile
         CreateMap<Book, BookDto>()
             .ForMember(d => d.Tags, m => m.MapFrom(s => string.Join(", ", s.Tags.Select(t => t.Name))));
 
+        CreateMap<BookDto, Book>()
+            .ForMember(d => d.Reviews, m => m.Ignore())
+            .ForMember(d => d.OrdersToBooks, m => m.Ignore())
+            .ForMember(d => d.Tags, m => m.Ignore());
+
         CreateMap<Order, OrderDto>()
             .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()))
             .ForMember(d => d.TotalSum, m => m.MapFrom(s => s.OrdersToBooks.Sum(t => t.Count * t.Book.Price)));
+
+        CreateMap<OrderDto, Order>()
+            .ForMember(d => d.Client, m => m.Ignore());
 
         CreateMap<OrdersToBook, BookInOrderDto>()
             .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()))
@@ -24,8 +32,16 @@ public class AutoMapperConfiguration : Profile
         CreateMap<Client, ClientDto>()
             .ForMember(d => d.OrdersCount, m => m.MapFrom(s => s.Orders.Count));
 
+        CreateMap<ClientDto, Client>()
+            .ForMember(d => d.Orders, m => m.Ignore())
+            .ForMember(d => d.Reviews, m => m.Ignore());
+
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()))
             .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()));
+
+        CreateMap<ReviewDto, Review>()
+            .ForMember(d => d.Client, m => m.Ignore())
+            .ForMember(d => d.Book, m => m.Ignore());
     }
 }

@@ -28,6 +28,6 @@ public class Book
 
     public override string ToString()
     {
-        return $"{Author} - {Title}";
+        return $"{(IsDeleted ? "(DELETED) " : "")}{Author} - {Title}";
     }
 }

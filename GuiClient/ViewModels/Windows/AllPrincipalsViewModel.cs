@@ -21,7 +21,7 @@ public class AllPrincipalsViewModel : AllEntitiesViewModel<DbPrincipal, DbPrinci
         : base(securityContext, repository, mapper)
     {
         _repository = repository;
-        Add = new AsyncActionCommand(AddPrincipalAsync, () => IsOwner);
+        Add = new AsyncActionCommand(AddPrincipalAsync, () => IsSecurity);
         ChangePasswordForce = new AsyncFuncCommand<DbPrincipal>(ChangePasswordForceAsync);
     }
 
@@ -29,7 +29,7 @@ public class AllPrincipalsViewModel : AllEntitiesViewModel<DbPrincipal, DbPrinci
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        if (IsOwner)
+        if (IsSecurity)
         {
             AddButton(window, "Delete", nameof(Delete));
             AddButton(window, "Change password (force)", nameof(ChangePasswordForce));

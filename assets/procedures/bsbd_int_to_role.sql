@@ -3,7 +3,7 @@
 begin
     if @roleNumber = 0
     begin
-        return 'bsbd_owner_role'
+        return 'bsbd_security_role'
     end
 
     if @roleNumber = 1
@@ -18,4 +18,3 @@ begin
 
     return null
 end
-go

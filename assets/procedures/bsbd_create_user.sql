@@ -25,7 +25,3 @@
         'alter role [' + @roleString + '] ' +
         'add member [' + @userName + ']'
     exec (@addToRoleSql)
-go
-
-grant alter, execute on bsbd_create_user to bsbd_owner_role
-go

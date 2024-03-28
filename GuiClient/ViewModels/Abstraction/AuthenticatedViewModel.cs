@@ -11,7 +11,7 @@ public abstract class AuthenticatedViewModel : BaseViewModel
         SecurityContext = securityContext ?? throw new ArgumentNullException(nameof(securityContext));
         SecurityContext.PropertyChanged += (_, _) =>
         {
-            OnPropertyChanged(nameof(IsOwner));
+            OnPropertyChanged(nameof(IsSecurity));
             OnPropertyChanged(nameof(IsAdmin));
             OnPropertyChanged(nameof(IsWorker));
         };
@@ -19,7 +19,7 @@ public abstract class AuthenticatedViewModel : BaseViewModel
 
     protected ISecurityContext SecurityContext { get; }
 
-    public bool IsOwner => SecurityContext.Principal.IsOwner();
+    public bool IsSecurity => SecurityContext.Principal.IsSecurity();
 
     public bool IsAdmin => SecurityContext.Principal.IsAdmin();
 

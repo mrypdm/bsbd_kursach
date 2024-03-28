@@ -23,7 +23,7 @@ public sealed class BookDto : NotifyPropertyChanged
 
     public int Price { get; set; }
 
-    public string Tags { get; set; }
+    public string Tags { get; set; } = string.Empty;
 
     public int? Sales
     {

@@ -26,10 +26,3 @@
     end
 
     exec (@changePasswordSql)
-go
-
-grant alter, execute on bsbd_change_user_password to bsbd_owner_role
-go
-
-grant execute on bsbd_change_user_password to bsbd_readonly_role
-go

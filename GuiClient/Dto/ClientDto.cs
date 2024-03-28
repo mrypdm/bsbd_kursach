@@ -26,6 +26,6 @@ public class ClientDto : NotifyPropertyChanged
 
     public override string ToString()
     {
-        return $"{FirstName} {LastName} / {Phone}";
+        return Phone != "0000000000" ? $"{FirstName} {LastName} / {Phone}" : "DELETED CLIENT";
     }
 }

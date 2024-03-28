@@ -26,6 +26,6 @@ public class Client
 
     public override string ToString()
     {
-        return $"{FirstName} {LastName} / {Phone}";
+        return IsDeleted ? "DELETED CLIENT" : $"{FirstName} {LastName} / {Phone}";
     }
 }

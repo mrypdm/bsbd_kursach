@@ -8,8 +8,3 @@
     declare @deleteUserSql nvarchar(max)
     set @deleteUserSql = 'drop user [' + @userName + ']'
     exec (@deleteUserSql)
-go
-
-grant alter, execute on bsbd_delete_user to bsbd_owner_role
-go
-

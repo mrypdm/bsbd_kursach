@@ -2,7 +2,7 @@
 
 public enum Role
 {
-    Owner,
+    Security,
     Admin,
     Worker,
     Unknown
