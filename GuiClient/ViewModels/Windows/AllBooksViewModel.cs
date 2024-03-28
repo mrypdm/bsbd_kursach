@@ -26,7 +26,6 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     private readonly IBooksRepository _booksRepository;
     private readonly TagsRepository _tagsRepository;
     private readonly IClientsRepository _clientsRepository;
-    private readonly ReportsProvider _reportsProvider;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
         TagsRepository tagsRepository, IClientsRepository clientsRepository, ReportsProvider reportsProvider,
@@ -36,19 +35,18 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
         _clientsRepository = clientsRepository;
-        _reportsProvider = reportsProvider;
 
         ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync, item => item?.Id != -1);
         ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync, item => item?.Id != -1);
 
         ShowRevenue = new AsyncFuncCommand<BookDto>(
-            async item => { item.Revenue = await _reportsProvider.RevenueOfBook(new Book { Id = item.Id }); },
+            async item => { item.Revenue = await reportsProvider.RevenueOfBook(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
         ShowScore = new AsyncFuncCommand<BookDto>(
-            async item => { item.Score = await _reportsProvider.AverageScoreOfBook(new Book { Id = item.Id }); },
+            async item => { item.Score = await reportsProvider.AverageScoreOfBook(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Score: null });
         ShowSales = new AsyncFuncCommand<BookDto>(
-            async item => { item.Sales = await _reportsProvider.CountOfSales(new Book { Id = item.Id }); },
+            async item => { item.Sales = await reportsProvider.CountOfSales(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Sales: null });
     }
 

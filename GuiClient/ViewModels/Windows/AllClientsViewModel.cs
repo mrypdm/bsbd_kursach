@@ -23,7 +23,6 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
 {
     private readonly IClientsRepository _clientsRepository;
     private readonly IBooksRepository _booksRepository;
-    private readonly ReportsProvider _reportsProvider;
 
     public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository,
         IBooksRepository booksRepository, ReportsProvider reportsProvider, IMapper mapper)
@@ -31,13 +30,12 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
     {
         _clientsRepository = repository;
         _booksRepository = booksRepository;
-        _reportsProvider = reportsProvider;
 
         ShowReviews = new AsyncFuncCommand<ClientDto>(ShowReviewsAsync, item => item?.Id != -1);
         ShowOrders = new AsyncFuncCommand<ClientDto>(ShowOrdersAsync, item => item?.Id != -1);
 
         ShowRevenue = new AsyncFuncCommand<ClientDto>(
-            async item => { item.Revenue = await _reportsProvider.RevenueOfClient(new Client { Id = item.Id }); },
+            async item => { item.Revenue = await reportsProvider.RevenueOfClient(new Client { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
     }
 
