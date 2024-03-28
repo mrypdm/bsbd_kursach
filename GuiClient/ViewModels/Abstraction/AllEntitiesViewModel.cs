@@ -11,6 +11,7 @@ using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Converters;
 using GuiClient.Views.Windows;
 using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
@@ -110,11 +111,25 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         await RefreshAsync();
     }
 
-    protected static void AddButton([NotNull] AllEntitiesWindow window, string content, string commandPath)
+    protected static void AddButton([NotNull] AllEntitiesWindow window, string content, string commandPath,
+        bool contentIsPath = false, string header = null)
     {
         var button = new FrameworkElementFactory(typeof(Button));
 
-        button.SetValue(ContentControl.ContentProperty, content);
+        if (contentIsPath)
+        {
+            header ??= content;
+            button.SetBinding(ContentControl.ContentProperty, new Binding(content)
+            {
+                Converter = NullToStringConverter.Instance
+            });
+        }
+        else
+        {
+            header ??= "";
+            button.SetValue(ContentControl.ContentProperty, content);
+        }
+
         button.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
         button.SetValue(Control.PaddingProperty, new Thickness(5));
         button.SetBinding(ButtonBase.CommandProperty, new Binding($"DataContext.{commandPath}")
@@ -125,7 +140,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
         window.DataGrid.Columns.Add(new DataGridTemplateColumn
         {
-            Header = "",
+            Header = header,
             IsReadOnly = true,
             CellTemplate = new DataTemplate
             {
@@ -141,7 +156,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         {
             Header = header ?? value,
             IsReadOnly = readOnly,
-            Binding = new Binding($"{value}"),
+            Binding = new Binding(value),
             ElementStyle = new Style(typeof(TextBlock))
             {
                 Setters =

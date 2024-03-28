@@ -14,7 +14,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.OrdersToBooks
-            .Where(m => m.BookId == book.Id)
+            .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
             .SumAsync(m => m.Count);
     }
 
@@ -22,7 +22,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.OrdersToBooks
-            .Where(m => m.BookId == book.Id)
+            .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
             .SumAsync(m => m.Count * m.Book.Price);
     }
 
@@ -30,7 +30,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Reviews
-            .Where(m => m.BookId == book.Id)
+            .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
             .AverageAsync(m => m.Score);
     }
 
@@ -38,7 +38,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Orders
-            .Where(m => m.ClientId == client.Id)
+            .Where(m => m.ClientId == client.Id && !m.Client.IsDeleted)
             .SelectMany(m => m.OrdersToBooks)
             .SumAsync(m => m.Count * m.Book.Price);
     }
@@ -47,7 +47,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Orders
-            .Where(m => m.Client.Gender == gender)
+            .Where(m => m.Client.Gender == gender && !m.Client.IsDeleted)
             .SelectMany(m => m.OrdersToBooks)
             .SumAsync(m => m.Count * m.Book.Price);
     }
@@ -56,6 +56,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Books
+            .Where(m => !m.IsDeleted)
             .Select(m => new
             {
                 Book = m,
@@ -71,6 +72,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Books
+            .Where(m => !m.IsDeleted)
             .Select(m => new
             {
                 Book = m,
@@ -86,6 +88,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Books
+            .Where(m => !m.IsDeleted)
             .Select(m => new
             {
                 Book = m,
@@ -101,6 +104,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Clients
+            .Where(m => !m.IsDeleted)
             .Select(m => new
             {
                 Client = m,
@@ -118,6 +122,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Clients
+            .Where(m => !m.IsDeleted)
             .GroupBy(m => m.Gender)
             .Select(m => new GenderCount(m.Key, m.Count()))
             .ToListAsync();
@@ -127,6 +132,7 @@ public class ReportsProvider(DatabaseContextFactory factory)
     {
         await using var context = factory.Create();
         return await context.Clients
+            .Where(m => !m.IsDeleted)
             .GroupBy(m => m.Gender)
             .Select(m => new
             {

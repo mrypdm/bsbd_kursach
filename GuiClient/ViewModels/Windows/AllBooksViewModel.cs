@@ -40,24 +40,32 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
         ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync, item => item?.Id != -1);
         ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync, item => item?.Id != -1);
+
+        ShowRevenue = new AsyncFuncCommand<BookDto>(
+            async item => { item.Revenue = await _reportsProvider.RevenueOfBook(new Book { Id = item.Id }); },
+            item => item is { Id: not -1, Revenue: null });
+        ShowScore = new AsyncFuncCommand<BookDto>(
+            async item => { item.Score = await _reportsProvider.AverageScoreOfBook(new Book { Id = item.Id }); },
+            item => item is { Id: not -1, Score: null });
+        ShowSales = new AsyncFuncCommand<BookDto>(
+            async item => { item.Sales = await _reportsProvider.CountOfSales(new Book { Id = item.Id }); },
+            item => item is { Id: not -1, Sales: null });
     }
 
     public ICommand ShowReviews { get; }
 
     public ICommand ShowOrders { get; }
 
+    public ICommand ShowRevenue { get; }
+
+    public ICommand ShowScore { get; }
+
+    public ICommand ShowSales { get; }
+
     public override async Task RefreshAsync()
     {
         var entities = await Filter(_booksRepository);
         var dtos = Mapper.Map<BookDto[]>(entities);
-
-        for (var i = 0; i < entities.Count; ++i)
-        {
-            dtos[i].Score = await _reportsProvider.AverageScoreOfBook(entities.ElementAt(i));
-            dtos[i].Revenue = await _reportsProvider.RevenueOfBook(entities.ElementAt(i));
-            dtos[i].Sold = await _reportsProvider.CountOfSales(entities.ElementAt(i));
-        }
-
         Entities = new ObservableCollection<BookDto>(dtos);
     }
 
@@ -78,9 +86,9 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         AddText(window, nameof(BookDto.ReleaseDate));
         AddText(window, nameof(BookDto.Count));
         AddText(window, nameof(BookDto.Price));
-        AddText(window, nameof(BookDto.Sold), true);
-        AddText(window, nameof(BookDto.Revenue), true);
-        AddText(window, nameof(BookDto.Score), true);
+        AddButton(window, nameof(BookDto.Sales), nameof(ShowSales), true);
+        AddButton(window, nameof(BookDto.Revenue), nameof(ShowRevenue), true);
+        AddButton(window, nameof(BookDto.Score), nameof(ShowScore), true);
         AddText(window, nameof(BookDto.Tags), allowWrap: true);
     }
 
