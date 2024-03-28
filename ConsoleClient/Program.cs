@@ -17,7 +17,6 @@ var booksRepository = new BooksRepository(factory);
 var reviewsRepository = new ReviewsRepository(factory);
 var ordersRepository = new OrdersRepository(factory);
 var principalsManager = new PrincipalRepository(factory);
-var reportsProvider = new ReportsProvider(factory);
 
 await Startup.ClearAllAsync();
 await Startup.InitDatabaseAsync();
