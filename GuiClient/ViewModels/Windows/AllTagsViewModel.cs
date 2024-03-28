@@ -24,7 +24,7 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
     {
         _tagsRepository = tagsRepository;
 
-        ShowBooks = new AsyncFuncCommand<Tag>(ShowBooksAsync);
+        ShowBooks = new AsyncFuncCommand<Tag>(ShowBooksAsync, item => item?.Id != -1);
     }
 
     public ICommand ShowBooks { get; }

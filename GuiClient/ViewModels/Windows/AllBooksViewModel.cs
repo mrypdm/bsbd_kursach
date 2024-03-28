@@ -26,20 +26,20 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     private readonly IBooksRepository _booksRepository;
     private readonly TagsRepository _tagsRepository;
     private readonly IClientsRepository _clientsRepository;
-    private readonly ReportsProvider _reportProvider;
+    private readonly ReportsProvider _reportsProvider;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
-        TagsRepository tagsRepository, IClientsRepository clientsRepository, ReportsProvider reportProvider,
+        TagsRepository tagsRepository, IClientsRepository clientsRepository, ReportsProvider reportsProvider,
         IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
         _clientsRepository = clientsRepository;
-        _reportProvider = reportProvider;
+        _reportsProvider = reportsProvider;
 
-        ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync);
-        ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync);
+        ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync, item => item?.Id != -1);
+        ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync, item => item?.Id != -1);
     }
 
     public ICommand ShowReviews { get; }
@@ -53,9 +53,9 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
         for (var i = 0; i < entities.Count; ++i)
         {
-            dtos[i].Score = await _reportProvider.AverageScoreOfBook(entities.ElementAt(i));
-            dtos[i].Revenue = await _reportProvider.RevenueOfBook(entities.ElementAt(i));
-            dtos[i].Sold = await _reportProvider.CountOfSales(entities.ElementAt(i));
+            dtos[i].Score = await _reportsProvider.AverageScoreOfBook(entities.ElementAt(i));
+            dtos[i].Revenue = await _reportsProvider.RevenueOfBook(entities.ElementAt(i));
+            dtos[i].Sold = await _reportsProvider.CountOfSales(entities.ElementAt(i));
         }
 
         Entities = new ObservableCollection<BookDto>(dtos);

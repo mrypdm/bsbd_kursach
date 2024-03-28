@@ -6,21 +6,22 @@ using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
+using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class ClientsUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<Client, Client>(securityContext)
+    : EntityUserControlViewModel<Client, ClientDto>(securityContext)
 {
-    protected override (Func<IRepository<Client>, Task<ICollection<Client>>>, Func<Task<Client>>) GetFilter(
+    protected override (Func<IRepository<Client>, Task<ICollection<Client>>>, Func<Task<ClientDto>>) GetFilter(
         string filterName)
     {
         switch (filterName)
         {
             case null:
-                return (null, () => Task.FromResult(new Client { Id = -1 }));
+                return (null, () => Task.FromResult(new ClientDto { Id = -1 }));
             case "phone" when AskerWindow.TryAskString("Enter phone in format 0123456789", out var phone):
                 return (async r =>
                 {

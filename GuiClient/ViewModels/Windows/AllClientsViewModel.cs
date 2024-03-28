@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
+using DatabaseClient.Providers;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -17,25 +20,40 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
+public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
 {
     private readonly IClientsRepository _clientsRepository;
     private readonly IBooksRepository _booksRepository;
+    private readonly ReportsProvider _reportsProvider;
 
     public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository,
-        IBooksRepository booksRepository, IMapper mapper)
+        IBooksRepository booksRepository, ReportsProvider reportsProvider, IMapper mapper)
         : base(securityContext, repository, mapper)
     {
         _clientsRepository = repository;
         _booksRepository = booksRepository;
+        _reportsProvider = reportsProvider;
 
-        ShowReviews = new AsyncFuncCommand<Client>(ShowReviewsAsync);
-        ShowOrders = new AsyncFuncCommand<Client>(ShowOrdersAsync);
+        ShowReviews = new AsyncFuncCommand<ClientDto>(ShowReviewsAsync, item => item?.Id != -1);
+        ShowOrders = new AsyncFuncCommand<ClientDto>(ShowOrdersAsync, item => item?.Id != -1);
     }
 
     public ICommand ShowOrders { get; }
 
     public ICommand ShowReviews { get; }
+
+    public override async Task RefreshAsync()
+    {
+        var entities = await Filter(_clientsRepository);
+        var dtos = Mapper.Map<ClientDto[]>(entities);
+
+        for (var i = 0; i < entities.Count; ++i)
+        {
+            dtos[i].Revenue = await _reportsProvider.RevenueOfClient(entities.ElementAt(i));
+        }
+
+        Entities = new ObservableCollection<ClientDto>(dtos);
+    }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
@@ -48,14 +66,16 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
             AddButton(window, "Show orders", nameof(ShowOrders));
         }
 
-        AddText(window, nameof(Client.Id), true);
-        AddText(window, nameof(Client.FirstName));
-        AddText(window, nameof(Client.LastName));
-        AddText(window, nameof(Client.Phone));
-        AddText(window, nameof(Client.Gender));
+        AddText(window, nameof(ClientDto.Id), true);
+        AddText(window, nameof(ClientDto.FirstName));
+        AddText(window, nameof(ClientDto.LastName));
+        AddText(window, nameof(ClientDto.Phone));
+        AddText(window, nameof(ClientDto.Gender));
+        AddText(window, nameof(ClientDto.OrdersCount), true);
+        AddText(window, nameof(ClientDto.Revenue), true);
     }
 
-    protected override async Task UpdateAsync([NotNull] Client item)
+    protected override async Task UpdateAsync([NotNull] ClientDto item)
     {
         if (item.Id == -1)
         {
@@ -65,13 +85,17 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
         }
         else
         {
-            await _clientsRepository.UpdateAsync(item);
+            var client = await _clientsRepository.GetByIdAsync(item.Id);
+            client.FirstName = item.FirstName;
+            client.LastName = item.LastName;
+            client.Phone = item.Phone;
+            await _clientsRepository.UpdateAsync(client);
         }
 
         await RefreshAsync();
     }
 
-    private async Task ShowReviewsAsync(Client client)
+    private async Task ShowReviewsAsync(ClientDto client)
     {
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
 
@@ -101,7 +125,7 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, Client>
             });
     }
 
-    private async Task ShowOrdersAsync(Client client)
+    private async Task ShowOrdersAsync(ClientDto client)
     {
         var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, OrderDto>>();
 

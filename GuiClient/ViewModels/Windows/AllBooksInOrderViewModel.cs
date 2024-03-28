@@ -23,6 +23,7 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
         : base(securityContext, ordersRepository, mapper)
     {
         _ordersRepository = ordersRepository;
+        Add = new AsyncActionCommand(AddAsync, () => Entities.Count == 0 || Entities.First().OrderId == -1);
         Delete = new AsyncFuncCommand<BookInOrderDto>(DeleteAsync, item => item?.OrderId == -1);
     }
 
@@ -64,6 +65,6 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
 
     protected override Task UpdateAsync([NotNull] BookInOrderDto item)
     {
-        throw new NotSupportedException("Cannot delete book from existing order");
+        throw new NotSupportedException("Cannot update book in existing order");
     }
 }

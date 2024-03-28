@@ -32,6 +32,8 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
         _ordersRepository = ordersRepository;
         _booksRepository = booksRepository;
 
+        Update = new AsyncFuncCommand<OrderDto>(UpdateAsync, item => item?.Id == -1);
+
         ShowBooks = new AsyncFuncCommand<OrderDto>(ShowBooksAsync);
     }
 
@@ -40,6 +42,7 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
         base.EnrichDataGrid(window);
+        AddButton(window, "Update", nameof(Update));
         AddButton(window, "Manage books", nameof(ShowBooks));
         AddText(window, nameof(OrderDto.Id), true);
         AddText(window, nameof(OrderDto.ClientId), true);
