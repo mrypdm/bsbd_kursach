@@ -2,8 +2,10 @@
 
 namespace GuiClient.Dto;
 
-public class ClientDto
+public class ClientDto : NotifyPropertyChanged
 {
+    private int? _revenue;
+
     public int Id { get; set; }
 
     public string FirstName { get; set; }
@@ -16,7 +18,11 @@ public class ClientDto
 
     public int OrdersCount { get; set; }
 
-    public int Revenue { get; set; }
+    public int? Revenue
+    {
+        get => _revenue;
+        set => SetField(ref _revenue, value);
+    }
 
     public override string ToString()
     {

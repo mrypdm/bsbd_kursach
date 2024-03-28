@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -36,22 +35,22 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
 
         ShowReviews = new AsyncFuncCommand<ClientDto>(ShowReviewsAsync, item => item?.Id != -1);
         ShowOrders = new AsyncFuncCommand<ClientDto>(ShowOrdersAsync, item => item?.Id != -1);
+
+        ShowRevenue = new AsyncFuncCommand<ClientDto>(
+            async item => { item.Revenue = await _reportsProvider.RevenueOfClient(new Client { Id = item.Id }); },
+            item => item is { Id: not -1, Revenue: null });
     }
 
     public ICommand ShowOrders { get; }
 
     public ICommand ShowReviews { get; }
 
+    public ICommand ShowRevenue { get; }
+
     public override async Task RefreshAsync()
     {
         var entities = await Filter(_clientsRepository);
         var dtos = Mapper.Map<ClientDto[]>(entities);
-
-        for (var i = 0; i < entities.Count; ++i)
-        {
-            dtos[i].Revenue = await _reportsProvider.RevenueOfClient(entities.ElementAt(i));
-        }
-
         Entities = new ObservableCollection<ClientDto>(dtos);
     }
 
@@ -72,7 +71,7 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
         AddText(window, nameof(ClientDto.Phone));
         AddText(window, nameof(ClientDto.Gender));
         AddText(window, nameof(ClientDto.OrdersCount), true);
-        AddText(window, nameof(ClientDto.Revenue), true);
+        AddButton(window, nameof(ClientDto.Revenue), nameof(ShowRevenue), true);
     }
 
     protected override async Task UpdateAsync([NotNull] ClientDto item)

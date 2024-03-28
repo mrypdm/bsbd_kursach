@@ -47,7 +47,6 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
     protected override async Task AddAsync()
     {
         var item = await DtoFactory();
-        item.PropertyChanged += (_, _) => OnPropertyChanged(nameof(Entities));
         Entities.Add(item);
         SelectedItem = item;
     }
