@@ -1,0 +1,1 @@
+drop trigger bsbd_prevent_update_books_in_order

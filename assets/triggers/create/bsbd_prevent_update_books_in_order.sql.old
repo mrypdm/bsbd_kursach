@@ -1,0 +1,4 @@
+﻿create trigger bsbd_prevent_update_books_in_order on OrdersToBooks instead of update as
+begin
+    rollback transaction
+end

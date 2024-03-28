@@ -1,1 +1,0 @@
-drop trigger bsbd_mark_user_deleted

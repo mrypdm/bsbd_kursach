@@ -1,4 +1,4 @@
-create trigger bsbd_delete_order on OrdersToBooks after delete as
+create trigger bsbd_on_delete_order on OrdersToBooks after delete as
 begin
     if exists(select Id from Orders intersect select OrderId as Id from deleted)
     begin

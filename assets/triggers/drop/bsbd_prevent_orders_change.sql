@@ -1,0 +1,1 @@
+﻿drop trigger bsbd_prevent_orders_change
