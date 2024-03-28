@@ -8,6 +8,7 @@ using System.Windows.Input;
 using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
+using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
@@ -24,14 +25,17 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     private readonly IBooksRepository _booksRepository;
     private readonly TagsRepository _tagsRepository;
     private readonly IClientsRepository _clientsRepository;
+    private readonly ReportsProvider _reportProvider;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
-        TagsRepository tagsRepository, IClientsRepository clientsRepository, IMapper mapper)
+        TagsRepository tagsRepository, IClientsRepository clientsRepository, ReportsProvider reportProvider,
+        IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
         _clientsRepository = clientsRepository;
+        _reportProvider = reportProvider;
 
         ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync);
         ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync);
@@ -40,6 +44,21 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     public ICommand ShowReviews { get; }
 
     public ICommand ShowOrders { get; }
+
+    public override async Task RefreshAsync()
+    {
+        var entities = await Filter(_booksRepository);
+        var dtos = Mapper.Map<BookDto[]>(entities);
+
+        for (var i = 0; i < entities.Count; ++i)
+        {
+            dtos[i].Score = await _reportProvider.AverageScoreOfBook(entities.ElementAt(i));
+            dtos[i].Revenue = await _reportProvider.RevenueOfBook(entities.ElementAt(i));
+            dtos[i].Sold = await _reportProvider.CountOfSales(entities.ElementAt(i));
+        }
+
+        Entities = dtos;
+    }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
@@ -58,6 +77,9 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         AddText(window, nameof(BookDto.ReleaseDate));
         AddText(window, nameof(BookDto.Count));
         AddText(window, nameof(BookDto.Price));
+        AddText(window, nameof(BookDto.Sold), true);
+        AddText(window, nameof(BookDto.Revenue), true);
+        AddText(window, nameof(BookDto.Score), true);
         AddText(window, nameof(BookDto.Tags), allowWrap: true);
     }
 

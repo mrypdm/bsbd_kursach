@@ -18,6 +18,22 @@ public class ReportsProvider(DatabaseContextFactory factory)
             .SumAsync(m => m.Count);
     }
 
+    public async Task<int> RevenueOfBook(Book book)
+    {
+        await using var context = factory.Create();
+        return await context.OrdersToBooks
+            .Where(m => m.BookId == book.Id)
+            .SumAsync(m => m.Count * m.Book.Price);
+    }
+
+    public async Task<double> AverageScoreOfBook(Book book)
+    {
+        await using var context = factory.Create();
+        return await context.Reviews
+            .Where(m => m.BookId == book.Id)
+            .AverageAsync(m => m.Score);
+    }
+
     public async Task<int> RevenueOfClient(Client client)
     {
         await using var context = factory.Create();
@@ -34,14 +50,6 @@ public class ReportsProvider(DatabaseContextFactory factory)
             .Where(m => m.Client.Gender == gender)
             .SelectMany(m => m.OrdersToBooks)
             .SumAsync(m => m.Count * m.Book.Price);
-    }
-
-    public async Task<double> AverageScoreOfBook(Book book)
-    {
-        await using var context = factory.Create();
-        return await context.Reviews
-            .Where(m => m.BookId == book.Id)
-            .AverageAsync(m => m.Score);
     }
 
     public async Task<ICollection<ScoredBook>> MostScoredBooks(int topCount = 10)

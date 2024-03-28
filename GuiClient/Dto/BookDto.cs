@@ -19,6 +19,12 @@ public class BookDto
 
     public string Tags { get; set; }
 
+    public int Sold { get; set; }
+
+    public int Revenue { get; set; }
+
+    public double Score { get; set; }
+
     public override string ToString()
     {
         return $"{Author} - {Title}";

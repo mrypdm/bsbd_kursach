@@ -99,6 +99,8 @@ public partial class App : Application
         services.AddTransient<IPrincipalRepository>(p => p.GetRequiredService<PrincipalRepository>());
         services.AddTransient<IRepository<DbPrincipal>>(p => p.GetRequiredService<PrincipalRepository>());
 
+        services.AddTransient<ReportsProvider>();
+
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<AuthControlViewModel>();
 
