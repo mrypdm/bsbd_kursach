@@ -9,7 +9,6 @@ using System.Windows.Input;
 using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
-using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
@@ -28,8 +27,7 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
     private readonly IClientsRepository _clientsRepository;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
-        TagsRepository tagsRepository, IClientsRepository clientsRepository, ReportsProvider reportsProvider,
-        IMapper mapper)
+        TagsRepository tagsRepository, IClientsRepository clientsRepository, IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
@@ -40,13 +38,13 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync, item => item?.Id != -1);
 
         ShowRevenue = new AsyncFuncCommand<BookDto>(
-            async item => { item.Revenue = await reportsProvider.RevenueOfBook(new Book { Id = item.Id }); },
+            async item => { item.Revenue = await _booksRepository.RevenueOfBook(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
         ShowScore = new AsyncFuncCommand<BookDto>(
-            async item => { item.Score = await reportsProvider.AverageScoreOfBook(new Book { Id = item.Id }); },
+            async item => { item.Score = await _booksRepository.ScoreOfBook(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Score: null });
         ShowSales = new AsyncFuncCommand<BookDto>(
-            async item => { item.Sales = await reportsProvider.CountOfSales(new Book { Id = item.Id }); },
+            async item => { item.Sales = await _booksRepository.CountOfSales(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Sales: null });
     }
 

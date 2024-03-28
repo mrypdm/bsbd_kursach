@@ -22,5 +22,14 @@
         <Button Content="Get Books with Count" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding ShowEntities}" CommandParameter="count" />
+        <Button Content="Top sold books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding ShowEntities}" CommandParameter="sales" />
+        <Button Content="Top score books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding ShowEntities}" CommandParameter="score" />
+        <Button Content="Top money books" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding ShowEntities}" CommandParameter="revenue" />
     </StackPanel>
 </UserControl>

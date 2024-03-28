@@ -8,7 +8,6 @@ using System.Windows.Input;
 using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
-using DatabaseClient.Providers;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -25,7 +24,7 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
     private readonly IBooksRepository _booksRepository;
 
     public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository,
-        IBooksRepository booksRepository, ReportsProvider reportsProvider, IMapper mapper)
+        IBooksRepository booksRepository, IMapper mapper)
         : base(securityContext, repository, mapper)
     {
         _clientsRepository = repository;
@@ -35,7 +34,7 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
         ShowOrders = new AsyncFuncCommand<ClientDto>(ShowOrdersAsync, item => item?.Id != -1);
 
         ShowRevenue = new AsyncFuncCommand<ClientDto>(
-            async item => { item.Revenue = await reportsProvider.RevenueOfClient(new Client { Id = item.Id }); },
+            async item => { item.Revenue = await _clientsRepository.RevenueOfClient(new Client { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
     }
 

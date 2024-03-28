@@ -26,7 +26,7 @@ public class ClientsUserControlViewModel(ISecurityContext securityContext)
                 return (async r =>
                 {
                     var repo = r.Cast<Client, IClientsRepository>();
-                    return await repo.GetClientsByPhoneAsync(phone);
+                    return [await repo.GetClientsByPhoneAsync(phone)];
                 }, null);
             case "phone":
                 return (null, null);
@@ -50,6 +50,14 @@ public class ClientsUserControlViewModel(ISecurityContext securityContext)
                 }, null);
             }
             case "gender":
+                return (null, null);
+            case "revenue" when AskerWindow.TryAskInt("Enter count", out var count):
+                return (r =>
+                {
+                    var repo = r.Cast<Client, IClientsRepository>();
+                    return repo.MostRevenueClients(count);
+                }, null);
+            case "revenue":
                 return (null, null);
             default:
                 throw InvalidFilter(filterName);

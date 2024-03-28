@@ -19,5 +19,8 @@
         <Button Content="Get Client by Gender" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding ShowEntities}" CommandParameter="gender" />
+        <Button Content="Top money clients" Style="{StaticResource RowControl}"
+                Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding ShowEntities}" CommandParameter="revenue" />
     </StackPanel>
 </UserControl>

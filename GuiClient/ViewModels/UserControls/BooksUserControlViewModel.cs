@@ -71,6 +71,30 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             }
             case "author":
                 return (null, null);
+            case "revenue" when AskerWindow.TryAskInt("Enter count", out var count):
+                return (r =>
+                {
+                    var repo = r.Cast<Book, IBooksRepository>();
+                    return repo.MostRevenueBooks(count);
+                }, null);
+            case "revenue":
+                return (null, null);
+            case "sales" when AskerWindow.TryAskInt("Enter count", out var count):
+                return (r =>
+                {
+                    var repo = r.Cast<Book, IBooksRepository>();
+                    return repo.MostSoldBooks(count);
+                }, null);
+            case "sales":
+                return (null, null);
+            case "score" when AskerWindow.TryAskInt("Enter count", out var count):
+                return (r =>
+                {
+                    var repo = r.Cast<Book, IBooksRepository>();
+                    return repo.MostScoredBooks(count);
+                }, null);
+            case "score":
+                return (null, null);
             default:
                 throw InvalidFilter(filterName);
         }

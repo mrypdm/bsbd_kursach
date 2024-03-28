@@ -22,8 +22,6 @@
                                        DataContext="{Binding ClientsUserControlViewModel}" />
                 <uc:OrdersUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5"
                                       DataContext="{Binding OrdersUserControlViewModel}" />
-                <uc:ReportsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5"
-                                       DataContext="{Binding ReportsUserControlViewModel}" />
                 <uc:PrincipalsUserControl VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5"
                                           DataContext="{Binding PrincipalsUserControlViewModel}" />
             </StackPanel>

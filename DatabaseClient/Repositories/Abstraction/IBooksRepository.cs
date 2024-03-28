@@ -20,4 +20,16 @@ public interface IBooksRepository : IRepository<Book>
     Task AddTagToBookAsync(Book book, Tag tag);
 
     Task RemoveTagFromBookAsync(Book book, Tag tag);
+
+    Task<int> CountOfSales(Book book);
+
+    Task<int> RevenueOfBook(Book book);
+
+    Task<double> ScoreOfBook(Book book);
+
+    Task<ICollection<Book>> MostSoldBooks(int topCount = 10);
+
+    Task<ICollection<Book>> MostRevenueBooks(int topCount = 10);
+
+    Task<ICollection<Book>> MostScoredBooks(int topCount = 10);
 }

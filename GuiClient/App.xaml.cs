@@ -99,8 +99,6 @@ public partial class App : Application
         services.AddTransient<IPrincipalRepository>(p => p.GetRequiredService<PrincipalRepository>());
         services.AddTransient<IRepository<DbPrincipal>>(p => p.GetRequiredService<PrincipalRepository>());
 
-        services.AddTransient<ReportsProvider>();
-
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<AuthControlViewModel>();
 
@@ -109,7 +107,6 @@ public partial class App : Application
         services.AddTransient<IEntityViewModel<Client, ClientDto>, ClientsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Order, OrderDto>, OrdersUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Review, ReviewDto>, ReviewsUserControlViewModel>();
-        services.AddTransient<ReportsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<DbPrincipal, DbPrincipal>, PrincipalsUserControlViewModel>();
 
         services.AddTransient<IAllEntitiesViewModel<Book, BookDto>, AllBooksViewModel>();

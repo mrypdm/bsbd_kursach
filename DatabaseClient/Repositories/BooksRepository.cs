@@ -125,4 +125,79 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         await using var context = Factory.Create();
         await context.RemoveTagFromBook(book, tag);
     }
+
+    public async Task<int> CountOfSales(Book book)
+    {
+        await using var context = Factory.Create();
+        return await context.OrdersToBooks
+            .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
+            .SumAsync(m => m.Count);
+    }
+
+    public async Task<int> RevenueOfBook(Book book)
+    {
+        await using var context = Factory.Create();
+        return await context.OrdersToBooks
+            .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
+            .SumAsync(m => m.Count * m.Book.Price);
+    }
+
+    public async Task<double> ScoreOfBook(Book book)
+    {
+        await using var context = Factory.Create();
+        return await context.Reviews
+            .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
+            .AverageAsync(m => m.Score);
+    }
+
+    public async Task<ICollection<Book>> MostScoredBooks(int topCount = 10)
+    {
+        await using var context = Factory.Create();
+        return await context.Books
+            .Where(m => !m.IsDeleted)
+            .Include(m => m.Tags)
+            .Select(m => new
+            {
+                Book = m,
+                Score = m.Reviews.Average(r => r.Score)
+            })
+            .OrderByDescending(m => m.Score)
+            .Take(topCount)
+            .Select(m => m.Book)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Book>> MostSoldBooks(int topCount = 10)
+    {
+        await using var context = Factory.Create();
+        return await context.Books
+            .Where(m => !m.IsDeleted)
+            .Include(m => m.Tags)
+            .Select(m => new
+            {
+                Book = m,
+                Sum = m.OrdersToBooks.Sum(o => o.Count)
+            })
+            .OrderByDescending(m => m.Sum)
+            .Take(topCount)
+            .Select(m => m.Book)
+            .ToListAsync();
+    }
+
+    public async Task<ICollection<Book>> MostRevenueBooks(int topCount = 10)
+    {
+        await using var context = Factory.Create();
+        return await context.Books
+            .Where(m => !m.IsDeleted)
+            .Include(m => m.Tags)
+            .Select(m => new
+            {
+                Book = m,
+                Sum = m.OrdersToBooks.Sum(o => o.Count) * m.Price
+            })
+            .OrderByDescending(m => m.Sum)
+            .Take(topCount)
+            .Select(m => m.Book)
+            .ToListAsync();
+    }
 }

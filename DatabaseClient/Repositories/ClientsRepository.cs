@@ -35,7 +35,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             .ToListAsync();
     }
 
-    public async Task<ICollection<Client>> GetClientsByPhoneAsync(string phone)
+    public async Task<Client> GetClientsByPhoneAsync(string phone)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
@@ -43,7 +43,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         return await context.Clients
             .Where(m => m.Phone == phone && !m.IsDeleted)
             .Include(m => m.Orders)
-            .ToListAsync();
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Client>> GetClientsByNameAsync(string firstName, string lastName)
@@ -104,5 +104,33 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
                 .SetProperty(m => m.LastName, entity.LastName)
                 .SetProperty(m => m.Phone, entity.Phone)
                 .SetProperty(m => m.Gender, entity.Gender));
+    }
+
+    public async Task<int> RevenueOfClient(Client client)
+    {
+        await using var context = Factory.Create();
+        return await context.Orders
+            .Where(m => m.ClientId == client.Id && !m.Client.IsDeleted)
+            .SelectMany(m => m.OrdersToBooks)
+            .SumAsync(m => m.Count * m.Book.Price);
+    }
+
+    public async Task<ICollection<Client>> MostRevenueClients(int topCount = 10)
+    {
+        await using var context = Factory.Create();
+        return await context.Clients
+            .Where(m => !m.IsDeleted)
+            .Include(m => m.Orders)
+            .Select(m => new
+            {
+                Client = m,
+                Sum = m.Orders.SelectMany(order
+                        => order.OrdersToBooks.Select(orb => orb.Count * orb.Book.Price))
+                    .Sum()
+            })
+            .OrderByDescending(m => m.Sum)
+            .Take(topCount)
+            .Select(m => m.Client)
+            .ToListAsync();
     }
 }
