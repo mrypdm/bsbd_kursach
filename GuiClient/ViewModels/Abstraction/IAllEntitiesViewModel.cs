@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DatabaseClient.Repositories.Abstraction;
@@ -9,7 +10,7 @@ namespace GuiClient.ViewModels.Abstraction;
 
 public interface IAllEntitiesViewModel<TEntity, TDto>
 {
-    ICollection<TDto> Entities { get; }
+    ObservableCollection<TDto> Entities { get; }
 
     TDto SelectedItem { get; set; }
 

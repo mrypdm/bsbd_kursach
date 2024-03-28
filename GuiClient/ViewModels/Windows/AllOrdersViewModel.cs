@@ -45,6 +45,15 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
         AddText(window, nameof(OrderDto.ClientId), true);
         AddText(window, nameof(OrderDto.Client), true);
         AddText(window, nameof(OrderDto.CreatedAt), true);
+        AddText(window, nameof(OrderDto.TotalSum), true);
+    }
+
+    protected override async Task AddAsync()
+    {
+        var item = await DtoFactory();
+        item.PropertyChanged += (_, _) => OnPropertyChanged(nameof(Entities));
+        Entities.Add(item);
+        SelectedItem = item;
     }
 
     protected override async Task UpdateAsync([NotNull] OrderDto item)
@@ -90,6 +99,7 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
                         OrderId = item.Id,
                         BookId = book.Id,
                         Book = book.ToString(),
+                        Price = book.Price,
                         Count = 1
                     };
                 });
@@ -111,6 +121,8 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 
         var window = new AllEntitiesWindow(viewModel);
         viewModel.EnrichDataGrid(window);
-        window.Show();
+        window.ShowDialog();
+
+        item.TotalSum = viewModel.Entities.Sum(t => t.TotalPrice);
     }
 }

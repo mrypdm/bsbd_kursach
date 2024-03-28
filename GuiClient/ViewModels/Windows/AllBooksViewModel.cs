@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,7 +58,7 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
             dtos[i].Sold = await _reportProvider.CountOfSales(entities.ElementAt(i));
         }
 
-        Entities = dtos;
+        Entities = new ObservableCollection<BookDto>(dtos);
     }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)

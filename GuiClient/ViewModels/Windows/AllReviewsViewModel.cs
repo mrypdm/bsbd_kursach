@@ -41,7 +41,7 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
 
         if (currentItem is null)
         {
-            Entities = Entities.Append(item).ToList();
+            Entities.Add(item);
             SelectedItem = item;
             return;
         }

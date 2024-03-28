@@ -17,10 +17,13 @@ public class AutoMapperConfiguration : Profile
             .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()));
 
         CreateMap<Order, OrderDto>()
-            .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()));
+            .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()))
+            .ForMember(d => d.TotalSum, m => m.MapFrom(s => s.OrdersToBooks.Sum(t => t.Count * t.Book.Price)));
 
         CreateMap<OrdersToBook, BookInOrderDto>()
-            .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()));
+            .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()))
+            .ForMember(d => d.Price, m => m.MapFrom(s => s.Book.Price))
+            .ForMember(d => d.Count, m => m.MapFrom(s => s.Count));
 
         CreateMap<BookDto, Book>()
             .ForMember(d => d.Tags, m => m.Ignore());

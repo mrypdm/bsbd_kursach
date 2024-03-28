@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,12 +33,22 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
         AddText(window, nameof(BookInOrderDto.BookId), true);
         AddText(window, nameof(BookInOrderDto.Book), true);
         AddText(window, nameof(BookInOrderDto.Count), !Add.CanExecute(null));
+        AddText(window, nameof(BookInOrderDto.Price), true);
+        AddText(window, nameof(BookInOrderDto.TotalPrice), true);
     }
 
     public override async Task RefreshAsync()
     {
         var order = await Filter(_ordersRepository);
-        Entities = Mapper.Map<BookInOrderDto[]>(order.First().OrdersToBooks);
+        Entities = new ObservableCollection<BookInOrderDto>(Mapper.Map<BookInOrderDto[]>(order.First().OrdersToBooks));
+    }
+
+    protected override async Task AddAsync()
+    {
+        var item = await DtoFactory();
+        item.PropertyChanged += (_, _) => OnPropertyChanged(nameof(Entities));
+        Entities.Add(item);
+        SelectedItem = item;
     }
 
     protected override Task DeleteAsync([NotNull] BookInOrderDto item)
@@ -47,7 +58,7 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
             throw new NotSupportedException("Cannot delete book from existing order");
         }
 
-        Entities = Entities.Where(m => m != item).ToArray();
+        Entities.Remove(item);
         return Task.CompletedTask;
     }
 

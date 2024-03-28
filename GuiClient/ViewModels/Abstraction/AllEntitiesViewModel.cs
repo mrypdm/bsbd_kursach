@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +21,7 @@ namespace GuiClient.ViewModels.Abstraction;
 public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TEntity, TDto>
 {
     private readonly IRepository<TEntity> _repository;
-    private ICollection<TDto> _entities;
+    private ObservableCollection<TDto> _entities;
 
     private TDto _selectedItem;
 
@@ -48,7 +48,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public string WindowTitle => $"{typeof(TEntity).Name}s";
 
-    public ICollection<TDto> Entities
+    public ObservableCollection<TDto> Entities
     {
         get => _entities;
         protected set => SetField(ref _entities, value);
@@ -81,7 +81,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     public virtual async Task RefreshAsync()
     {
         var entities = await Filter(_repository);
-        Entities = Mapper.Map<TDto[]>(entities);
+        Entities = new ObservableCollection<TDto>(Mapper.Map<TDto[]>(entities));
     }
 
     public virtual void EnrichDataGrid(AllEntitiesWindow window)
@@ -97,7 +97,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     protected virtual async Task AddAsync()
     {
         var item = await DtoFactory();
-        Entities = Entities.Append(item).ToArray();
+        Entities.Add(item);
         SelectedItem = item;
     }
 
