@@ -41,7 +41,6 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        base.EnrichDataGrid(window);
         AddButton(window, "Update", nameof(Update));
         AddButton(window, "Manage books", nameof(ShowBooks));
         AddText(window, nameof(OrderDto.Id), true);
