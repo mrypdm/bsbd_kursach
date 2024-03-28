@@ -9,4 +9,4 @@ alter role bsbd_admin_role add member bsbd_security_role
 alter role db_securityadmin add member bsbd_security_role
 alter role db_accessadmin add member bsbd_security_role
 
-alter role bsbd_security add member bsbd_owner
+alter role bsbd_security_role add member bsbd_owner
