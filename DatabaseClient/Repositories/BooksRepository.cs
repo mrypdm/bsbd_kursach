@@ -29,16 +29,14 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .SingleOrDefaultAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
                  where b.IsDeleted = 0 and b.Id = {id}
-                 order by b.Id, t.Id
+                 order by b.Id
                  """)
-            .SingleOrDefaultAsync(new TaggedBookGroupConverter());
+            .SingleOrDefaultAsync(new BookGroupConverter());
     }
 
     public override async Task<ICollection<Book>> GetAllAsync()
@@ -51,16 +49,14 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
                  where b.IsDeleted = 0
-                 order by b.Id, t.Id
+                 order by b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<ICollection<Book>> GetBooksByTitleAsync(string title)
@@ -75,16 +71,14 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
                  where b.IsDeleted = 0 and b.Title = {title}
-                 order by b.Id, t.Id
+                 order by b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<ICollection<Book>> GetBooksByAuthorAsync(string author)
@@ -99,16 +93,14 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
                  where b.IsDeleted = 0 and b.Author = {author}
-                 order by b.Id, t.Id
+                 order by b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<ICollection<Book>> GetBooksByTagsAsync(IEnumerable<string> tags)
@@ -130,10 +122,8 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
         var query = new StringBuilder(
             """
-            select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                   t.Id as TagId, t.Name as TagName
+            select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
             from Books b
-            left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
             where b.IsDeleted = 0
             """);
 
@@ -147,12 +137,12 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
             sqlParams.Add(new SqlParameter(paramName, safeTags[i]));
         }
 
-        query.Append("order by b.Id, t.Id");
+        query.Append("order by b.Id");
 
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
-            .SqlQueryRaw<DbTaggedBook>(query.ToString(), sqlParams.ToArray())
-            .AsListAsync(new TaggedBookGroupConverter());
+            .SqlQueryRaw<DbBook>(query.ToString(), sqlParams.ToArray())
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
@@ -165,16 +155,14 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
                  where b.IsDeleted = 0 and b.Count < {count}
-                 order by b.Id, t.Id
+                 order by b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate, int price, int count = 0)
@@ -339,10 +327,9 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from
                  (
                      select top({topCount})
@@ -353,10 +340,9 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                      where b.IsDeleted = 0
                      order by Score desc
                  ) b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
-                 order by b.Score desc, b.Id, t.Id
+                 order by b.Score desc, b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<ICollection<Book>> MostSoldBooks(int topCount = 10)
@@ -377,10 +363,9 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from
                  (
                      select top({topCount})
@@ -391,10 +376,9 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                      where b.IsDeleted = 0
                      order by Sales desc
                  ) b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
-                 order by b.Sales desc, b.Id, t.Id
+                 order by b.Sales desc, b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 
     public async Task<ICollection<Book>> MostRevenueBooks(int topCount = 10)
@@ -415,10 +399,9 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         //     .ToListAsync();
 
         return await context.Database
-            .SqlQuery<DbTaggedBook>(
+            .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price,
-                        t.Id as TagId, t.Name as TagName
+                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from
                  (
                      select top({topCount})
@@ -429,9 +412,8 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                      where b.IsDeleted = 0
                      order by Revenue desc
                  ) b
-                 left join (BooksToTags btt join Tags t on t.Id = btt.TagId) on btt.BookId = b.Id
-                 order by b.Revenue desc, b.Id, t.Id
+                 order by b.Revenue desc, b.Id
                  """)
-            .AsListAsync(new TaggedBookGroupConverter());
+            .AsListAsync(new BookGroupConverter());
     }
 }
