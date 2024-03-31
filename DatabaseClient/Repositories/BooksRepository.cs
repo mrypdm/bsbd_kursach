@@ -136,7 +136,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
             sqlParams.Add(new SqlParameter(paramName, safeTags[i]));
         }
 
-        query.Append("order by b.Id");
+        query.Append("\norder by b.Id");
 
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
