@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Repositories.Abstraction;
@@ -22,14 +21,5 @@ public abstract class BaseRepository<TEntity>(DatabaseContextFactory factory)
 
     public abstract Task UpdateAsync(TEntity entity);
 
-    public virtual async Task RemoveAsync(TEntity entity)
-    {
-        if (entity == null)
-        {
-            return;
-        }
-
-        await using var context = Factory.Create();
-        await context.Set<TEntity>().Where(m => m == entity).ExecuteDeleteAsync();
-    }
+    public abstract Task RemoveAsync(TEntity entity);
 }
