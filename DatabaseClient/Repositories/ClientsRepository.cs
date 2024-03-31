@@ -197,11 +197,8 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await context.Database.ExecuteSqlAsync(
             $"""
              update Books
-             set
-                 FirstName = {entity.FirstName},
-                 LastName = {entity.LastName},
-                 Phone = {entity.Phone},
-                 Gender = {entity.Gender}
+             set FirstName = {entity.FirstName}, LastName = {entity.LastName},
+                 Phone = {entity.Phone}, Gender = {entity.Gender}
              where Id = {entity.Id}
              """);
     }
@@ -272,7 +269,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
                      join
                      (
                          select otb.OrderId, otb.Count * b.Price as Revenue
-                         from OrdersToBooks as otb
+                         from OrdersToBooks otb
                          join Books b on otb.BookId = b.Id
                      ) as orv on orv.OrderId = o.Id
                  ) desc, c.Id

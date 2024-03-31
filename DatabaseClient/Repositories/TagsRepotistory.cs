@@ -123,8 +123,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
         await context.Database.ExecuteSqlAsync(
             $"""
              update Tags
-             set
-                 Name = {entity.Name}
+             set Name = {entity.Name}
              where Id = {entity.Id}
              """);
     }

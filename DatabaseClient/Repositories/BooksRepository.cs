@@ -212,12 +212,8 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         await context.Database.ExecuteSqlAsync(
             $"""
              update Books
-             set
-                 Title = {entity.Title},
-                 Author = {entity.Author},
-                 ReleaseDate = {entity.ReleaseDate},
-                 Count = {entity.Count},
-                 Price = {entity.Price}
+             set Title = {entity.Title}, Author = {entity.Author}, ReleaseDate = {entity.ReleaseDate},
+                 Count = {entity.Count}, Price = {entity.Price}
              where Id = {entity.Id}
              """);
     }
