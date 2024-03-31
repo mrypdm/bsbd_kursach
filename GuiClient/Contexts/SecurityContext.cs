@@ -14,11 +14,11 @@ namespace GuiClient.Contexts;
 
 public sealed class SecurityContext(ServerOptions options) : ISecurityContext
 {
-    private DbPrincipal _principal;
+    private Principal _principal;
 
     public bool IsAuthenticated => Principal is not null;
 
-    public DbPrincipal Principal
+    public Principal Principal
     {
         get => _principal;
         private set
@@ -33,7 +33,7 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentException.ThrowIfNullOrWhiteSpace(userName);
         ArgumentNullException.ThrowIfNull(password);
 
-        using var cred = new DbPrincipal();
+        using var cred = new Principal();
         cred.Name = userName;
         cred.SecurePassword = password.Copy();
 
@@ -56,7 +56,7 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         ArgumentNullException.ThrowIfNull(oldPassword);
         ArgumentNullException.ThrowIfNull(newPassword);
 
-        using var oldCred = new DbPrincipal();
+        using var oldCred = new Principal();
         oldCred.Name = Principal.Name;
         oldCred.SecurePassword = oldPassword.Copy();
 
@@ -76,7 +76,7 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    DbPrincipal IPrincipalProvider.GetPrincipal()
+    Principal IPrincipalProvider.GetPrincipal()
     {
         return Principal;
     }

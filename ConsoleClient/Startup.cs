@@ -9,7 +9,7 @@ namespace ConsoleClient;
 
 public static class Startup
 {
-    public static DbPrincipal Cred { get; } = new()
+    public static Principal Cred { get; } = new()
     {
         Name = "bsbd_owner",
         SecurePassword = "very_secret_Password_forOwner".AsSecure()

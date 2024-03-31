@@ -11,7 +11,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllPrincipalsViewModel : AllEntitiesViewModel<DbPrincipal, DbPrincipal>
+public class AllPrincipalsViewModel : AllEntitiesViewModel<Principal, Principal>
 {
     private readonly IPrincipalRepository _repository;
 
@@ -22,7 +22,7 @@ public class AllPrincipalsViewModel : AllEntitiesViewModel<DbPrincipal, DbPrinci
     {
         _repository = repository;
         Add = new AsyncActionCommand(AddPrincipalAsync, () => IsSecurity);
-        ChangePasswordForce = new AsyncFuncCommand<DbPrincipal>(ChangePasswordForceAsync);
+        ChangePasswordForce = new AsyncFuncCommand<Principal>(ChangePasswordForceAsync);
     }
 
     public ICommand ChangePasswordForce { get; }
@@ -35,21 +35,21 @@ public class AllPrincipalsViewModel : AllEntitiesViewModel<DbPrincipal, DbPrinci
             AddButton(window, "Change password (force)", nameof(ChangePasswordForce));
         }
 
-        AddText(window, nameof(DbPrincipal.Id), true);
-        AddText(window, nameof(DbPrincipal.Name), true);
-        AddText(window, nameof(DbPrincipal.Role), true);
+        AddText(window, nameof(Principal.Id), true);
+        AddText(window, nameof(Principal.Name), true);
+        AddText(window, nameof(Principal.Role), true);
     }
 
-    protected override Task UpdateAsync(DbPrincipal item)
+    protected override Task UpdateAsync(Principal item)
     {
         throw new InvalidOperationException("Cannot update principal");
     }
 
-    private async Task ChangePasswordForceAsync(DbPrincipal item)
+    private async Task ChangePasswordForceAsync(Principal item)
     {
         if (CredAsker.AskForPassword(item.Name, out var password))
         {
-            using var principal = new DbPrincipal();
+            using var principal = new Principal();
             principal.Name = item.Name;
             principal.SecurePassword = password;
             await _repository.ChangePasswordForceAsync(principal);

@@ -97,7 +97,7 @@ public partial class App : Application
 
         services.AddTransient<PrincipalRepository>();
         services.AddTransient<IPrincipalRepository>(p => p.GetRequiredService<PrincipalRepository>());
-        services.AddTransient<IRepository<DbPrincipal>>(p => p.GetRequiredService<PrincipalRepository>());
+        services.AddTransient<IRepository<Principal>>(p => p.GetRequiredService<PrincipalRepository>());
 
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<AuthControlViewModel>();
@@ -107,14 +107,14 @@ public partial class App : Application
         services.AddTransient<IEntityViewModel<Client, ClientDto>, ClientsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Order, OrderDto>, OrdersUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Review, ReviewDto>, ReviewsUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<DbPrincipal, DbPrincipal>, PrincipalsUserControlViewModel>();
+        services.AddTransient<IEntityViewModel<Principal, Principal>, PrincipalsUserControlViewModel>();
 
         services.AddTransient<IAllEntitiesViewModel<Book, BookDto>, AllBooksViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Tag, Tag>, AllTagsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Client, ClientDto>, AllClientsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Review, ReviewDto>, AllReviewsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Order, OrderDto>, AllOrdersViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<DbPrincipal, DbPrincipal>, AllPrincipalsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Principal, Principal>, AllPrincipalsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Order, BookInOrderDto>, AllBooksInOrderViewModel>();
     }
 }

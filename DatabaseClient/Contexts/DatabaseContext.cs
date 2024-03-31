@@ -23,7 +23,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
 
     // Views
 
-    public DbSet<DbPrincipal> Principals { get; set; }
+    public DbSet<Principal> Principals { get; set; }
 
     // Database configuration
 
@@ -71,7 +71,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
                 .HasConstraintName("FK_Orders_Clients");
         });
 
-        modelBuilder.Entity<DbPrincipal>(entity =>
+        modelBuilder.Entity<Principal>(entity =>
         {
             entity.ToView("bsbd_principals");
             entity.Property(m => m.RoleString).HasColumnName("Role");

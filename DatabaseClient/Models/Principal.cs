@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using DatabaseClient.Extensions;
 using DatabaseClient.Providers;
@@ -7,7 +8,8 @@ using DatabaseClient.Providers;
 namespace DatabaseClient.Models;
 
 [Serializable]
-public sealed class DbPrincipal : IPrincipalProvider, IDisposable
+[SuppressMessage("Naming", "CA1724: Type names should not match namespaces")]
+public sealed class Principal : IPrincipalProvider, IDisposable
 {
     private SecureString _password;
 
@@ -53,7 +55,7 @@ public sealed class DbPrincipal : IPrincipalProvider, IDisposable
 
     public int Id { get; set; }
 
-    public DbPrincipal GetPrincipal()
+    public Principal GetPrincipal()
     {
         return this;
     }

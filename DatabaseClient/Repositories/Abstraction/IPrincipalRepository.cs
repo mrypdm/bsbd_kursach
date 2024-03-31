@@ -4,13 +4,13 @@ using DatabaseClient.Models;
 
 namespace DatabaseClient.Repositories.Abstraction;
 
-public interface IPrincipalRepository : IRepository<DbPrincipal>
+public interface IPrincipalRepository : IRepository<Principal>
 {
-    Task<DbPrincipal> GetByName(string name);
+    Task<Principal> GetByName(string name);
 
-    Task<DbPrincipal> CreatePrincipalAsync(string name, SecureString password, Role role);
+    Task<Principal> CreatePrincipalAsync(string name, SecureString password, Role role);
 
-    Task ChangePasswordAsync(DbPrincipal principal, SecureString newPassword);
+    Task ChangePasswordAsync(Principal principal, SecureString newPassword);
 
-    Task ChangePasswordForceAsync(DbPrincipal principal);
+    Task ChangePasswordForceAsync(Principal principal);
 }

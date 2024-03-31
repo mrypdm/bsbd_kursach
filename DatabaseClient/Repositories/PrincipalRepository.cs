@@ -13,7 +13,7 @@ namespace DatabaseClient.Repositories;
 
 public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRepository
 {
-    public async Task<DbPrincipal> GetByIdAsync(int id)
+    public async Task<Principal> GetByIdAsync(int id)
     {
         await using var context = factory.Create();
         return await context.Principals
@@ -21,18 +21,18 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
             .SingleOrDefaultAsync();
     }
 
-    public async Task<ICollection<DbPrincipal>> GetAllAsync()
+    public async Task<ICollection<Principal>> GetAllAsync()
     {
         await using var context = factory.Create();
         return await context.Principals.ToArrayAsync();
     }
 
-    public Task UpdateAsync(DbPrincipal entity)
+    public Task UpdateAsync(Principal entity)
     {
         throw new NotSupportedException();
     }
 
-    public async Task RemoveAsync(DbPrincipal entity)
+    public async Task RemoveAsync(Principal entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -41,7 +41,7 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
             .ExecuteSqlAsync($"bsbd_delete_user {entity.Name}");
     }
 
-    public async Task<DbPrincipal> CreatePrincipalAsync(string name, SecureString password, Role role)
+    public async Task<Principal> CreatePrincipalAsync(string name, SecureString password, Role role)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentNullException.ThrowIfNull(password);
@@ -54,7 +54,7 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
         return await GetByName(name);
     }
 
-    public async Task ChangePasswordAsync(DbPrincipal principal, SecureString newPassword)
+    public async Task ChangePasswordAsync(Principal principal, SecureString newPassword)
     {
         ArgumentNullException.ThrowIfNull(principal);
         ArgumentNullException.ThrowIfNull(newPassword);
@@ -65,7 +65,7 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
                 $"exec bsbd_change_user_password {principal.Name}, {newPassword.Unsecure()}, {principal.Password}");
     }
 
-    public async Task ChangePasswordForceAsync(DbPrincipal principal)
+    public async Task ChangePasswordForceAsync(Principal principal)
     {
         ArgumentNullException.ThrowIfNull(principal);
 
@@ -74,7 +74,7 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
             .ExecuteSqlAsync($"exec bsbd_change_user_password {principal.Name}, {principal.Password}");
     }
 
-    public async Task<DbPrincipal> GetByName(string name)
+    public async Task<Principal> GetByName(string name)
     {
         await using var context = factory.Create();
         return await context.Principals

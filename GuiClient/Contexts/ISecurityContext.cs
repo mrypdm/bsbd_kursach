@@ -10,7 +10,7 @@ public interface ISecurityContext : IPrincipalProvider, INotifyPropertyChanged
 {
     bool IsAuthenticated { get; }
 
-    DbPrincipal Principal { get; }
+    Principal Principal { get; }
 
     Task LogInAsync(string userName, SecureString password);
 

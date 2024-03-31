@@ -11,9 +11,9 @@ using GuiClient.Views.Windows;
 namespace GuiClient.ViewModels.UserControls;
 
 public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<DbPrincipal, DbPrincipal>(securityContext)
+    : EntityUserControlViewModel<Principal, Principal>(securityContext)
 {
-    protected override (Func<IRepository<DbPrincipal>, Task<ICollection<DbPrincipal>>>, Func<Task<DbPrincipal>>)
+    protected override (Func<IRepository<Principal>, Task<ICollection<Principal>>>, Func<Task<Principal>>)
         GetFilter(string filterName)
     {
         return filterName switch
@@ -21,7 +21,7 @@ public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
             null => (null, null),
             "name" when AskerWindow.TryAskString("Enter name", out var name) => (async r =>
             {
-                var repo = r.Cast<DbPrincipal, IPrincipalRepository>();
+                var repo = r.Cast<Principal, IPrincipalRepository>();
                 return [await repo.GetByName(name)];
             }, null),
             "name" => (null, null),

@@ -11,7 +11,7 @@ public class MainWindowViewModel(
     IEntityViewModel<Tag, Tag> tagsUserControlViewModel,
     IEntityViewModel<Client, ClientDto> clientsUserControlViewModel,
     IEntityViewModel<Order, OrderDto> ordersUserControlViewModel,
-    IEntityViewModel<DbPrincipal, DbPrincipal> principalsUserControlViewModel) : BaseViewModel
+    IEntityViewModel<Principal, Principal> principalsUserControlViewModel) : BaseViewModel
 {
     public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
 
@@ -23,6 +23,6 @@ public class MainWindowViewModel(
 
     public IEntityViewModel<Order, OrderDto> OrdersUserControlViewModel { get; } = ordersUserControlViewModel;
 
-    public IEntityViewModel<DbPrincipal, DbPrincipal> PrincipalsUserControlViewModel { get; } =
+    public IEntityViewModel<Principal, Principal> PrincipalsUserControlViewModel { get; } =
         principalsUserControlViewModel;
 }
