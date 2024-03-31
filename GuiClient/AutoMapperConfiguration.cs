@@ -10,7 +10,7 @@ public class AutoMapperConfiguration : Profile
     public AutoMapperConfiguration()
     {
         CreateMap<Book, BookDto>()
-            .ForMember(d => d.Tags, m => m.MapFrom(s => string.Join(", ", s.Tags.Select(t => t.Name))));
+            .ForMember(d => d.Tags, m => m.Ignore());
 
         CreateMap<BookDto, Book>()
             .ForMember(d => d.Reviews, m => m.Ignore())

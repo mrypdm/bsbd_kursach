@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
+using DatabaseClient.Converters;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
+using DatabaseClient.Models.Internal;
 using DatabaseClient.Repositories.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +30,29 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
         return await context.Tags
             .Where(m => m.Name == name)
             .SingleOrDefaultAsync();
+    }
+
+    public async Task<ICollection<Tag>> GetTagsOfBook(Book book)
+    {
+        ArgumentNullException.ThrowIfNull(book);
+
+        await using var context = Factory.Create();
+
+        // return await context.Books
+        //     .Where(m => m.Id == book.Id && !m.IsDeleted)
+        //     .SelectMany(m => m.Tags)
+        //     .ToListAsync();
+
+        return await context.Database
+            .SqlQuery<DbTag>(
+                $"""
+                 select t.Id, t.Name
+                 from Books b
+                 join BooksToTags btt on btt.BookId = b.Id
+                 join Tags t on btt.TagId = t.Id
+                 where b.IsDeleted = 0 and b.Id = {book.Id}
+                 """)
+            .AsListAsync(new TagGroupConverter());
     }
 
     public async Task<Tag> AddTagAsync(string name)

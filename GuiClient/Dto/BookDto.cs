@@ -11,6 +11,8 @@ public sealed class BookDto : NotifyPropertyChanged
 
     private double? _score;
 
+    private string _tags;
+
     public int Id { get; set; } = -1;
 
     public string Title { get; set; }
@@ -23,7 +25,11 @@ public sealed class BookDto : NotifyPropertyChanged
 
     public int Price { get; set; }
 
-    public string Tags { get; set; } = string.Empty;
+    public string Tags
+    {
+        get => _tags;
+        set => SetField(ref _tags, value);
+    }
 
     public int? Sales
     {

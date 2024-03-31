@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using System.Windows.Input;
 using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
-using DatabaseClient.Repositories;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -23,11 +21,11 @@ namespace GuiClient.ViewModels.Windows;
 public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 {
     private readonly IBooksRepository _booksRepository;
-    private readonly TagsRepository _tagsRepository;
+    private readonly ITagsRepository _tagsRepository;
     private readonly IClientsRepository _clientsRepository;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
-        TagsRepository tagsRepository, IClientsRepository clientsRepository, IMapper mapper)
+        ITagsRepository tagsRepository, IClientsRepository clientsRepository, IMapper mapper)
         : base(securityContext, booksRepository, mapper)
     {
         _booksRepository = booksRepository;
@@ -46,6 +44,7 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         ShowSales = new AsyncFuncCommand<BookDto>(
             async item => { item.Sales = await _booksRepository.CountOfSales(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Sales: null });
+        ShowTags = new AsyncFuncCommand<BookDto>(ShowTagsAsync, item => item is { Id: not -1 });
     }
 
     public ICommand ShowReviews { get; }
@@ -54,16 +53,11 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
     public ICommand ShowRevenue { get; }
 
+    public ICommand ShowTags { get; }
+
     public ICommand ShowScore { get; }
 
     public ICommand ShowSales { get; }
-
-    public override async Task RefreshAsync()
-    {
-        var entities = await Filter(_booksRepository);
-        var dtos = Mapper.Map<BookDto[]>(entities);
-        Entities = new ObservableCollection<BookDto>(dtos);
-    }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
@@ -85,18 +79,15 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         AddButton(window, nameof(BookDto.Sales), nameof(ShowSales), true);
         AddButton(window, nameof(BookDto.Revenue), nameof(ShowRevenue), true);
         AddButton(window, nameof(BookDto.Score), nameof(ShowScore), true);
-        AddText(window, nameof(BookDto.Tags), allowWrap: true);
+        AddButton(window, nameof(BookDto.Tags), nameof(ShowTags), true);
     }
 
     protected override async Task UpdateAsync([NotNull] BookDto item)
     {
-        var newTags = item.Tags.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
         if (item.Id == -1)
         {
             var book = await _booksRepository.AddBookAsync(item.Title, item.Author, item.ReleaseDate, item.Price,
                 item.Count);
-            await _tagsRepository.AddBookToTags(book, newTags);
             MessageBox.Show($"Book created with ID={book.Id}");
         }
         else
@@ -110,12 +101,18 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
             await _booksRepository.UpdateAsync(book);
 
-            var currentTags = book.Tags.Select(m => m.Name).ToArray();
-            var toDelete = currentTags.Except(newTags);
-            var toAdd = newTags.Except(currentTags);
+            if (item.Tags != null)
+            {
+                var newTags = item.Tags
+                    .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-            await _tagsRepository.RemoveBookFromTags(book, toDelete);
-            await _tagsRepository.AddBookToTags(book, toAdd);
+                var currentTags = book.Tags.Select(m => m.Name).ToArray();
+                var toDelete = currentTags.Except(newTags);
+                var toAdd = newTags.Except(currentTags);
+
+                await _tagsRepository.RemoveBookFromTags(book, toDelete);
+                await _tagsRepository.AddBookToTags(book, toAdd);
+            }
         }
 
         await RefreshAsync();
@@ -162,5 +159,19 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
                 return repo.GetOrdersForBookAsync(new Book { Id = book.Id });
             },
             null);
+    }
+
+    private async Task ShowTagsAsync(BookDto book)
+    {
+        if (book.Tags == null)
+        {
+            var tags = await _tagsRepository.GetTagsOfBook(new Book { Id = book.Id });
+            book.Tags = string.Join(", ", tags.Select(m => m.Name));
+        }
+        else
+        {
+            var newTags = AskerWindow.AskString("Enter tags separated by comma", book.Tags);
+            book.Tags = newTags ?? book.Tags;
+        }
     }
 }
