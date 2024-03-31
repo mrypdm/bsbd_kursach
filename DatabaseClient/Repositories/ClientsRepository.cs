@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<Client>(factory), IClientsRepository
+public class ClientsRepository(DatabaseContextFactory factory) : IClientsRepository
 {
     // Instead of delete, the record is updated by trigger bsbd_mark_user_deleted with the parameters:
     // FirstName = empty,
@@ -20,9 +20,9 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     // Phone = 0000000000,
     // IsDeleted = true
 
-    public override async Task<Client> GetByIdAsync(int id)
+    public async Task<Client> GetByIdAsync(int id)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Clients
         //     .Where(m => m.Id == id && !m.IsDeleted)
@@ -39,9 +39,9 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             .SingleOrDefaultAsync<DbClient, Client>();
     }
 
-    public override async Task<ICollection<Client>> GetAllAsync()
+    public async Task<ICollection<Client>> GetAllAsync()
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Clients
         //     .Where(m => !m.IsDeleted)
@@ -62,7 +62,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Clients
         //     .Where(m => m.Phone == phone && !m.IsDeleted)
@@ -86,7 +86,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             throw new ArgumentException("Both of names cannot be empty");
         }
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // var command = context.Clients as IQueryable<Client>;
         //
@@ -133,7 +133,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
 
     public async Task<ICollection<Client>> GetClientsByGender(Gender gender)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Clients
         //     .Where(m => m.Gender == gender && !m.IsDeleted)
@@ -156,7 +156,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // var client = new Client
         // {
@@ -180,11 +180,11 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             .SingleOrDefaultAsync<DbClient, Client>();
     }
 
-    public override async Task UpdateAsync(Client entity)
+    public async Task UpdateAsync(Client entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // await context.Clients
         //     .Where(m => m.Id == entity.Id)
@@ -203,14 +203,14 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
              """);
     }
 
-    public override async Task RemoveAsync(Client entity)
+    public async Task RemoveAsync(Client entity)
     {
         if (entity == null)
         {
             return;
         }
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.Database.ExecuteSqlAsync($"delete from Clients where Id == {entity.Id}");
     }
 
@@ -218,7 +218,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
     {
         ArgumentNullException.ThrowIfNull(client);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Orders
         //     .Where(m => m.ClientId == client.Id && !m.Client.IsDeleted)
@@ -240,7 +240,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
 
     public async Task<ICollection<Client>> MostRevenueClients(int topCount = 10)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Clients
         //     .Where(m => !m.IsDeleted)

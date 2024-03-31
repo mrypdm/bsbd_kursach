@@ -14,13 +14,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Book>(factory), IBooksRepository
+public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
 {
     // bsbd_mark_book_as_deleted prevents deletion and marks books as deleted and removes book from tags
 
-    public override async Task<Book> GetByIdAsync(int id)
+    public async Task<Book> GetByIdAsync(int id)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => m.Id == id && !m.IsDeleted)
@@ -38,9 +38,9 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
             .SingleOrDefaultAsync<DbBook, Book>();
     }
 
-    public override async Task<ICollection<Book>> GetAllAsync()
+    public async Task<ICollection<Book>> GetAllAsync()
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => !m.IsDeleted)
@@ -62,7 +62,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => m.Title == title && !m.IsDeleted)
@@ -84,7 +84,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(author);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => m.Author == author && !m.IsDeleted)
@@ -112,7 +112,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
             throw new ArgumentException("Tags are empty");
         }
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // var command = safeTags.Aggregate(context.Books.Where(m => !m.IsDeleted),
         //     (current, tag) => current.Where(m => m.Tags.Select(t => t.Name).Contains(tag)));
@@ -146,7 +146,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => m.Count < count && !m.IsDeleted)
@@ -169,7 +169,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
         ArgumentException.ThrowIfNullOrWhiteSpace(author);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // var book = new Book
         // {
@@ -194,11 +194,11 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
             .SingleOrDefaultAsync<DbBook, Book>();
     }
 
-    public override async Task UpdateAsync(Book entity)
+    public async Task UpdateAsync(Book entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // await context.Books
         //     .Where(m => m.Id == entity.Id)
@@ -218,26 +218,26 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
              """);
     }
 
-    public override async Task RemoveAsync(Book entity)
+    public async Task RemoveAsync(Book entity)
     {
         if (entity == null)
         {
             return;
         }
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.Database.ExecuteSqlAsync($"delete from Books where Id == {entity.Id}");
     }
 
     public async Task AddTagToBookAsync(Book book, Tag tag)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.AddTagToBook(book, tag);
     }
 
     public async Task RemoveTagFromBookAsync(Book book, Tag tag)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.RemoveTagFromBook(book, tag);
     }
 
@@ -245,7 +245,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.OrdersToBooks
         //     .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
@@ -266,7 +266,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.OrdersToBooks
         //     .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
@@ -287,7 +287,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Reviews
         //     .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
@@ -306,7 +306,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
     public async Task<ICollection<Book>> MostScoredBooks(int topCount = 10)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => !m.IsDeleted)
@@ -337,7 +337,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
     public async Task<ICollection<Book>> MostSoldBooks(int topCount = 10)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => !m.IsDeleted)
@@ -368,7 +368,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
     public async Task<ICollection<Book>> MostRevenueBooks(int topCount = 10)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => !m.IsDeleted)

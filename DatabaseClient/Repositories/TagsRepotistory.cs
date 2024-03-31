@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag>(factory), ITagsRepository
+public class TagsRepository(DatabaseContextFactory factory) : ITagsRepository
 {
-    public override async Task<Tag> GetByIdAsync(int id)
+    public async Task<Tag> GetByIdAsync(int id)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Tags
         //     .Where(m => m.Id == id)
@@ -30,11 +30,22 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
             .SingleOrDefaultAsync<DbTag, Tag>();
     }
 
+    public async Task<ICollection<Tag>> GetAllAsync()
+    {
+        await using var context = factory.Create();
+
+        // return await context.Tags.ToListAsync();
+
+        return await context.Database
+            .SqlQuery<DbTag>($"select t.Id, t.Name from Tags t")
+            .AsListAsync<DbTag, Tag>();
+    }
+
     public async Task<Tag> GetTagByNameAsync(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Tags
         //     .Where(m => m.Name == name)
@@ -54,7 +65,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
     {
         ArgumentNullException.ThrowIfNull(book);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // return await context.Books
         //     .Where(m => m.Id == book.Id && !m.IsDeleted)
@@ -77,7 +88,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // var tag = new Tag
         // {
@@ -100,21 +111,21 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
 
     public async Task AddBookToTagAsync(Book book, Tag tag)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.AddTagToBook(book, tag);
     }
 
     public async Task RemoveBookFromTagAsync(Book book, Tag tag)
     {
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.RemoveTagFromBook(book, tag);
     }
 
-    public override async Task UpdateAsync(Tag entity)
+    public async Task UpdateAsync(Tag entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
 
         // await context.Tags
         //     .Where(m => m.Id == entity.Id)
@@ -128,14 +139,14 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
              """);
     }
 
-    public override async Task RemoveAsync(Tag entity)
+    public async Task RemoveAsync(Tag entity)
     {
         if (entity == null)
         {
             return;
         }
 
-        await using var context = Factory.Create();
+        await using var context = factory.Create();
         await context.Database.ExecuteSqlAsync($"delete from Tags where Id == {entity.Id}");
     }
 }
