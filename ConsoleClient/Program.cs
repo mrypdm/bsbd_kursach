@@ -3,7 +3,6 @@
 using ConsoleClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Options;
-using DatabaseClient.Providers;
 using DatabaseClient.Repositories;
 using Domain;
 
