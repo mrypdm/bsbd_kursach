@@ -18,10 +18,7 @@ public class BookGroupConverter : IGroupConverter<DbBook, Book>
             ReleaseDate = dbBook.ReleaseDate,
             Count = dbBook.Count,
             Price = dbBook.Price,
-            IsDeleted = dbBook.IsDeleted,
-            OrdersToBooks = null,
-            Reviews = null,
-            Tags = null
+            IsDeleted = dbBook.IsDeleted
         };
 
         return book;

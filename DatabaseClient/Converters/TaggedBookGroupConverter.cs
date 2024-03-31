@@ -23,11 +23,13 @@ public class TaggedBookGroupConverter : IGroupConverter<DbTaggedBook, Book>
             ReleaseDate = dbBook.ReleaseDate,
             Count = dbBook.Count,
             Price = dbBook.Price,
-            IsDeleted = dbBook.IsDeleted,
-            OrdersToBooks = null,
-            Reviews = null,
-            Tags = tags.Length > 0 ? tags : null
+            IsDeleted = dbBook.IsDeleted
         };
+
+        if (tags.Length > 0)
+        {
+            book.Tags = tags;
+        }
 
         return book;
     }
