@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
@@ -119,28 +117,20 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         //
         // return await command.Include(m => m.Tags).ToListAsync();
 
-        var query = new StringBuilder(
-            """
-            select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
-            from Books b
-            where b.IsDeleted = 0
-            """);
+        var condition = string.Join(" and ", safeTags.Select((_, i) =>
+            $"@tag{i} in (select t.Name from BooksToTags btt join Tags t on btt.TagId = t.Id where b.Id = btt.BookId)"));
+        var args = safeTags.Select((m, i) => new SqlParameter($"tag{i}", m)).ToArray();
 
-        var sqlParams = new List<SqlParameter>();
-
-        for (var i = 0; i < safeTags.Count; ++i)
-        {
-            var paramName = $"@tag{i}";
-            query.Append(CultureInfo.InvariantCulture,
-                $" and {paramName} in (select t.Name from BooksToTags btt join Tags t on btt.TagId = t.Id where b.Id = btt.BookId)");
-            sqlParams.Add(new SqlParameter(paramName, safeTags[i]));
-        }
-
-        query.Append("\norder by b.Id");
+        var query = $"""
+                     select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
+                     from Books b
+                     where b.IsDeleted = 0 and {condition}
+                     order by b.Id
+                     """;
 
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
-            .SqlQueryRaw<DbBook>(query.ToString(), sqlParams.ToArray())
+            .SqlQueryRaw<DbBook>(query, args)
             .AsListAsync<DbBook, Book>();
     }
 
