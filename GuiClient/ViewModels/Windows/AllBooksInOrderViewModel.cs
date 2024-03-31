@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +13,12 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderDto>
+public class AllBooksInOrderViewModel : AllEntitiesViewModel<OrdersToBook, BookInOrderDto>
 {
-    private readonly IOrdersRepository _ordersRepository;
-
-    public AllBooksInOrderViewModel(ISecurityContext securityContext, IOrdersRepository ordersRepository,
+    public AllBooksInOrderViewModel(ISecurityContext securityContext, IOrderBooksRepository orderBooksRepository,
         IMapper mapper)
-        : base(securityContext, ordersRepository, mapper)
+        : base(securityContext, orderBooksRepository, mapper)
     {
-        _ordersRepository = ordersRepository;
         Add = new AsyncActionCommand(AddAsync, () => Entities.Count == 0 || Entities.First().OrderId == -1);
         Delete = new AsyncFuncCommand<BookInOrderDto>(DeleteAsync, item => item?.OrderId == -1);
     }
@@ -36,12 +32,6 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
         AddText(window, nameof(BookInOrderDto.Count), !Add.CanExecute(null));
         AddText(window, nameof(BookInOrderDto.Price), true);
         AddText(window, nameof(BookInOrderDto.TotalPrice), true);
-    }
-
-    public override async Task RefreshAsync()
-    {
-        var order = await Filter(_ordersRepository);
-        Entities = new ObservableCollection<BookInOrderDto>(Mapper.Map<BookInOrderDto[]>(order.First().OrdersToBooks));
     }
 
     protected override Task DeleteAsync([NotNull] BookInOrderDto item)

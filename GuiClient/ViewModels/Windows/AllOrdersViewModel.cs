@@ -20,7 +20,7 @@ namespace GuiClient.ViewModels.Windows;
 
 public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 {
-    private readonly Dictionary<OrderDto, IAllEntitiesViewModel<Order, BookInOrderDto>> _viewModels = new();
+    private readonly Dictionary<OrderDto, IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>> _viewModels = new();
 
     private readonly IOrdersRepository _ordersRepository;
     private readonly IBooksRepository _booksRepository;
@@ -74,13 +74,15 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 
         var order = await _ordersRepository.AddOrderAsync(new Client { Id = item.ClientId }, books);
         MessageBox.Show($"Order created with ID={order.Id}");
+
+        await RefreshAsync();
     }
 
     private async Task ShowBooksAsync(OrderDto item)
     {
         if (!_viewModels.TryGetValue(item, out var viewModel))
         {
-            viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<Order, BookInOrderDto>>();
+            viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>>();
 
             if (item.Id == -1)
             {
@@ -111,11 +113,11 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
             {
                 if (item.Id == -1)
                 {
-                    return [new Order()];
+                    return [];
                 }
 
-                var repo = r.Cast<Order, IOrdersRepository>();
-                return [await repo.GetByIdAsync(item.Id)];
+                var repo = r.Cast<OrdersToBook, IOrderBooksRepository>();
+                return await repo.GetBooksForOrderAsync(new Order { Id = item.Id });
             });
 
             await viewModel.RefreshAsync();

@@ -91,6 +91,10 @@ public partial class App : Application
         services.AddTransient<IOrdersRepository>(p => p.GetRequiredService<OrdersRepository>());
         services.AddTransient<IRepository<Order>>(p => p.GetRequiredService<OrdersRepository>());
 
+        services.AddTransient<OrdersBookRepository>();
+        services.AddTransient<IOrderBooksRepository>(p => p.GetRequiredService<OrdersBookRepository>());
+        services.AddTransient<IRepository<OrdersToBook>>(p => p.GetRequiredService<OrdersBookRepository>());
+
         services.AddTransient<ReviewsRepository>();
         services.AddTransient<IReviewsRepository>(p => p.GetRequiredService<ReviewsRepository>());
         services.AddTransient<IRepository<Review>>(p => p.GetRequiredService<ReviewsRepository>());
@@ -115,6 +119,6 @@ public partial class App : Application
         services.AddTransient<IAllEntitiesViewModel<Review, ReviewDto>, AllReviewsViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Order, OrderDto>, AllOrdersViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Principal, Principal>, AllPrincipalsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Order, BookInOrderDto>, AllBooksInOrderViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>, AllBooksInOrderViewModel>();
     }
 }
