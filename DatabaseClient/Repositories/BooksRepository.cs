@@ -328,18 +328,13 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
-                 from
+                 select top({topCount}) b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
+                 from Books b
+                 where b.IsDeleted = 0
+                 order by
                  (
-                     select top({topCount})
-                        b.Id, b.Title, b.Author, b.ReleaseDate,
-                        b.IsDeleted, b.Count, b.Price,
-                        coalesce((select avg(cast(r.Score as float)) from Reviews r where b.Id = r.BookId), 0) as Score
-                     from Books b
-                     where b.IsDeleted = 0
-                     order by Score desc
-                 ) b
-                 order by b.Score desc, b.Id
+                    coalesce((select avg(cast(r.Score as float)) from Reviews r where b.Id = r.BookId), 0)
+                 ) desc, b.Id
                  """)
             .AsListAsync<DbBook, Book>();
     }
@@ -364,18 +359,13 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
-                 from
+                 select top({topCount}) b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
+                 from Books b
+                 where b.IsDeleted = 0
+                 order by
                  (
-                     select top({topCount})
-                        b.Id, b.Title, b.Author, b.ReleaseDate,
-                        b.IsDeleted, b.Count, b.Price,
-                        coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0) as Sales
-                     from Books b
-                     where b.IsDeleted = 0
-                     order by Sales desc
-                 ) b
-                 order by b.Sales desc, b.Id
+                    coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0)
+                 ) desc, b.Id
                  """)
             .AsListAsync<DbBook, Book>();
     }
@@ -386,7 +376,6 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
 
         // return await context.Books
         //     .Where(m => !m.IsDeleted)
-        //     .Include(m => m.Tags)
         //     .Select(m => new
         //     {
         //         Book = m,
@@ -400,18 +389,13 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
-                 select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
-                 from
+                 select top({topCount}) b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
+                 from Books b
+                 where b.IsDeleted = 0
+                 order by
                  (
-                     select top({topCount})
-                        b.Id, b.Title, b.Author, b.ReleaseDate,
-                        b.IsDeleted, b.Count, b.Price,
-                        coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0) * b.Price as Revenue
-                     from Books b
-                     where b.IsDeleted = 0
-                     order by Revenue desc
-                 ) b
-                 order by b.Revenue desc, b.Id
+                    coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0) * b.Price
+                 ) desc, b.Id
                  """)
             .AsListAsync<DbBook, Book>();
     }
