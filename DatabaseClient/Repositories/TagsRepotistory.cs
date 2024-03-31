@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
-using DatabaseClient.Converters;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Models.Internal;
@@ -28,7 +27,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
                  from Tags t
                  where t.Id = {id}
                  """)
-            .SingleOrDefaultAsync(new TagGroupConverter());
+            .SingleOrDefaultAsync<DbTag, Tag>();
     }
 
     public async Task<Tag> GetTagByNameAsync(string name)
@@ -48,7 +47,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
                  from Tags t
                  where t.Name = {name}
                  """)
-            .SingleOrDefaultAsync(new TagGroupConverter());
+            .SingleOrDefaultAsync<DbTag, Tag>();
     }
 
     public async Task<ICollection<Tag>> GetTagsOfBook(Book book)
@@ -71,7 +70,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
                  join Tags t on btt.TagId = t.Id
                  where b.IsDeleted = 0 and b.Id = {book.Id}
                  """)
-            .AsListAsync(new TagGroupConverter());
+            .AsListAsync<DbTag, Tag>();
     }
 
     public async Task<Tag> AddTagAsync(string name)
@@ -96,7 +95,7 @@ public class TagsRepository(DatabaseContextFactory factory) : BaseRepository<Tag
                  output inserted.*
                  values ({name})
                  """)
-            .SingleOrDefaultAsync(new TagGroupConverter());
+            .SingleOrDefaultAsync<DbTag, Tag>();
     }
 
     public async Task AddBookToTagAsync(Book book, Tag tag)

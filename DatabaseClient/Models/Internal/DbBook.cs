@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models.Internal;
 
 [Serializable]
-public sealed class DbBook : IDbEntity
+public sealed class DbBook : IDbEntity<Book>
 {
     public int Id { get; set; }
 
@@ -18,4 +18,18 @@ public sealed class DbBook : IDbEntity
     public int Price { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    public Book ToEntity()
+    {
+        return new Book
+        {
+            Id = Id,
+            Title = Title,
+            Author = Author,
+            ReleaseDate = ReleaseDate,
+            Count = Count,
+            Price = Price,
+            IsDeleted = IsDeleted
+        };
+    }
 }

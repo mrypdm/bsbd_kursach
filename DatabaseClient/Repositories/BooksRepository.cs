@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
-using DatabaseClient.Converters;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Models.Internal;
@@ -36,7 +35,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  where b.IsDeleted = 0 and b.Id = {id}
                  order by b.Id
                  """)
-            .SingleOrDefaultAsync(new BookGroupConverter());
+            .SingleOrDefaultAsync<DbBook, Book>();
     }
 
     public override async Task<ICollection<Book>> GetAllAsync()
@@ -56,7 +55,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  where b.IsDeleted = 0
                  order by b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<ICollection<Book>> GetBooksByTitleAsync(string title)
@@ -78,7 +77,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  where b.IsDeleted = 0 and b.Title = {title}
                  order by b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<ICollection<Book>> GetBooksByAuthorAsync(string author)
@@ -100,7 +99,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  where b.IsDeleted = 0 and b.Author = {author}
                  order by b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<ICollection<Book>> GetBooksByTagsAsync(IEnumerable<string> tags)
@@ -142,7 +141,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
             .SqlQueryRaw<DbBook>(query.ToString(), sqlParams.ToArray())
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
@@ -162,7 +161,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  where b.IsDeleted = 0 and b.Count < {count}
                  order by b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate, int price, int count = 0)
@@ -192,7 +191,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  output inserted.*
                  values ({title}, {author}, {releaseDate}, {price}, {count})
                  """)
-            .SingleOrDefaultAsync(new BookGroupConverter());
+            .SingleOrDefaultAsync<DbBook, Book>();
     }
 
     public override async Task UpdateAsync(Book entity)
@@ -342,7 +341,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  ) b
                  order by b.Score desc, b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<ICollection<Book>> MostSoldBooks(int topCount = 10)
@@ -378,7 +377,7 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  ) b
                  order by b.Sales desc, b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 
     public async Task<ICollection<Book>> MostRevenueBooks(int topCount = 10)
@@ -414,6 +413,6 @@ public class BooksRepository(DatabaseContextFactory factory) : BaseRepository<Bo
                  ) b
                  order by b.Revenue desc, b.Id
                  """)
-            .AsListAsync(new BookGroupConverter());
+            .AsListAsync<DbBook, Book>();
     }
 }

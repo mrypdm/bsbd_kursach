@@ -102,6 +102,17 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
                 .SetProperty(m => m.Gender, entity.Gender));
     }
 
+    public override async Task RemoveAsync(Client entity)
+    {
+        if (entity == null)
+        {
+            return;
+        }
+
+        await using var context = Factory.Create();
+        await context.Database.ExecuteSqlAsync($"delete from Clients where Id == {entity.Id}");
+    }
+
     public async Task<int> RevenueOfClient(Client client)
     {
         await using var context = Factory.Create();

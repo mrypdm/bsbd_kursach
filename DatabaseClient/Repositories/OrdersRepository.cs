@@ -100,4 +100,15 @@ public class OrdersRepository(DatabaseContextFactory factory) : BaseRepository<O
     {
         throw new NotSupportedException("Cannot update order");
     }
+
+    public override async Task RemoveAsync(Order entity)
+    {
+        if (entity == null)
+        {
+            return;
+        }
+
+        await using var context = Factory.Create();
+        await context.Database.ExecuteSqlAsync($"delete from Orders where Id == {entity.Id}");
+    }
 }

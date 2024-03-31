@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
-using DatabaseClient.Converters;
 using DatabaseClient.Models.Internal;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,33 +23,23 @@ public static class DatabaseContextExtensions
         }
     }
 
-    public static async Task<List<TEntity>> AsListAsync<TDbEntity, TEntity>(this IQueryable<TDbEntity> query,
-        IGroupConverter<TDbEntity, TEntity> conv)
-        where TDbEntity : IDbEntity, new()
+    private static async Task<IEnumerable<TEntity>> AsEnumerable<TDbEntity, TEntity>(this IQueryable<TDbEntity> query)
+        where TDbEntity : IDbEntity<TEntity>, new()
     {
         ArgumentNullException.ThrowIfNull(query);
-        ArgumentNullException.ThrowIfNull(conv);
-
         var result = await query.ToListAsync();
-
-        return result
-            .GroupBy(m => m.Id)
-            .Select(conv.Convert)
-            .ToList();
+        return result.Select(m => m.ToEntity());
     }
 
-    public static async Task<TEntity> SingleOrDefaultAsync<TDbEntity, TEntity>(this IQueryable<TDbEntity> query,
-        IGroupConverter<TDbEntity, TEntity> conv)
-        where TDbEntity : IDbEntity, new()
+    public static async Task<List<TEntity>> AsListAsync<TDbEntity, TEntity>(this IQueryable<TDbEntity> query)
+        where TDbEntity : IDbEntity<TEntity>, new()
     {
-        ArgumentNullException.ThrowIfNull(query);
-        ArgumentNullException.ThrowIfNull(conv);
+        return (await query.AsEnumerable<TDbEntity, TEntity>()).ToList();
+    }
 
-        var result = await query.ToListAsync();
-
-        return result
-            .GroupBy(m => m.Id)
-            .Select(conv.Convert)
-            .SingleOrDefault();
+    public static async Task<TEntity> SingleOrDefaultAsync<TDbEntity, TEntity>(this IQueryable<TDbEntity> query)
+        where TDbEntity : IDbEntity<TEntity>, new()
+    {
+        return (await query.AsEnumerable<TDbEntity, TEntity>()).SingleOrDefault();
     }
 }
