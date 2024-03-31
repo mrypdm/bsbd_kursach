@@ -44,13 +44,6 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<Order, BookInOrderD
         Entities = new ObservableCollection<BookInOrderDto>(Mapper.Map<BookInOrderDto[]>(order.First().OrdersToBooks));
     }
 
-    protected override async Task AddAsync()
-    {
-        var item = await DtoFactory();
-        Entities.Add(item);
-        SelectedItem = item;
-    }
-
     protected override Task DeleteAsync([NotNull] BookInOrderDto item)
     {
         if (item.OrderId != -1)

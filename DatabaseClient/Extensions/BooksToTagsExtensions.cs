@@ -23,7 +23,7 @@ public static class BooksToTagsExtensions
 
         await context.Database.ExecuteSqlAsync(
             $"""
-             insert into BookToTags (BookId, TagId)
+             insert into BooksToTags (BookId, TagId)
              values ({book.Id}, {tag.Id})
              """);
     }

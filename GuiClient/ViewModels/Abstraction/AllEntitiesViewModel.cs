@@ -98,6 +98,12 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     protected virtual async Task AddAsync()
     {
         var item = await DtoFactory();
+
+        if (item == null)
+        {
+            return;
+        }
+
         Entities.Add(item);
         SelectedItem = item;
     }

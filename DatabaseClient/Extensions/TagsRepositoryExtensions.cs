@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DatabaseClient.Models;
-using DatabaseClient.Repositories;
+using DatabaseClient.Repositories.Abstraction;
 
 namespace DatabaseClient.Extensions;
 
 public static class TagsRepositoryExtensions
 {
-    public static async Task AddBookToTags(this TagsRepository repository, Book book, IEnumerable<string> tags)
+    public static async Task AddBookToTags(this ITagsRepository repository, Book book, IEnumerable<string> tags)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(book);
@@ -22,7 +22,7 @@ public static class TagsRepositoryExtensions
         }
     }
 
-    public static async Task RemoveBookFromTags(this TagsRepository repository, Book book, IEnumerable<string> tags)
+    public static async Task RemoveBookFromTags(this ITagsRepository repository, Book book, IEnumerable<string> tags)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(book);
