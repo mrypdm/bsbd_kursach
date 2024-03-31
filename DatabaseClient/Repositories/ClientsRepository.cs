@@ -22,7 +22,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Clients
             .Where(m => m.Id == id && !m.IsDeleted)
-            .Include(m => m.Orders)
             .SingleOrDefaultAsync();
     }
 
@@ -31,7 +30,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Clients
             .Where(m => !m.IsDeleted)
-            .Include(m => m.Orders)
             .ToListAsync();
     }
 
@@ -42,7 +40,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Clients
             .Where(m => m.Phone == phone && !m.IsDeleted)
-            .Include(m => m.Orders)
             .SingleOrDefaultAsync();
     }
 
@@ -62,7 +59,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
             command = command.Where(m => m.LastName == lastName);
         }
 
-        return await command.Include(m => m.Orders).ToListAsync();
+        return await command.ToListAsync();
     }
 
     public async Task<ICollection<Client>> GetClientsByGender(Gender gender)
@@ -70,7 +67,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Clients
             .Where(m => m.Gender == gender && !m.IsDeleted)
-            .Include(m => m.Orders)
             .ToArrayAsync();
     }
 
@@ -120,7 +116,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : BaseRepository<
         await using var context = Factory.Create();
         return await context.Clients
             .Where(m => !m.IsDeleted)
-            .Include(m => m.Orders)
             .Select(m => new
             {
                 Client = m,
