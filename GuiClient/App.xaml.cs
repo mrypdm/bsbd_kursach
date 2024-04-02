@@ -112,6 +112,7 @@ public partial class App : Application
         services.AddTransient<IEntityViewModel<OrderDto>, OrdersUserControlViewModel>();
         services.AddTransient<IEntityViewModel<ReviewDto>, ReviewsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Principal>, PrincipalsUserControlViewModel>();
+        services.AddTransient<IEntityViewModel<BookInOrderDto>, BookInOrderViewModel>();
 
         services.AddTransient<IAllEntitiesViewModel<BookDto>, AllBooksViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Tag>, AllTagsViewModel>();

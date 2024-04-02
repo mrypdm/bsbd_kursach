@@ -12,7 +12,7 @@ namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TDto>
 {
-    private ObservableCollection<TDto> _entities;
+    private ObservableCollection<TDto> _entities = [];
 
     private TDto _selectedItem;
 

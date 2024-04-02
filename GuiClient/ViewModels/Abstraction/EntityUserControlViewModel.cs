@@ -20,7 +20,7 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
 
     public ICommand ShowEntities { get; }
 
-    public async Task ShowBy(IDtoProvider<TDto> provider)
+    public async Task<IAllEntitiesViewModel<TDto>> ShowBy(IDtoProvider<TDto> provider, bool showDialog = false)
     {
         ArgumentNullException.ThrowIfNull(provider);
 
@@ -32,7 +32,16 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
         viewModel.EnrichDataGrid(view);
         await viewModel.RefreshAsync();
 
-        view.Show();
+        if (showDialog)
+        {
+            view.ShowDialog();
+        }
+        else
+        {
+            view.Show();
+        }
+
+        return viewModel;
     }
 
     private async Task GetBy(string filterName)

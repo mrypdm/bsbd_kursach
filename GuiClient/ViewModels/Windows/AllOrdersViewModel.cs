@@ -89,17 +89,8 @@ public class AllOrdersViewModel : AllEntitiesViewModel<OrderDto>
 
     private async Task ShowBooksAsync(OrderDto item)
     {
-        // TODO: as IEntityViewModel
-        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<BookInOrderDto>>();
-
-        viewModel.SetProvider(BooksByOrderProvider.Create(item));
-
-        await viewModel.RefreshAsync();
-
-        var window = new AllEntitiesWindow(viewModel);
-        viewModel.EnrichDataGrid(window);
-        window.ShowDialog();
-
-        item.Books = viewModel.Entities;
+        var entityViewModel = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookInOrderDto>>();
+        var windowViewModel = await entityViewModel.ShowBy(BooksByOrderProvider.Create(item), true);
+        item.Books = windowViewModel.Entities;
     }
 }

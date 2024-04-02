@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
-using GuiClient.ViewModels.UserControls;
+using DatabaseClient.Models;
+using GuiClient.ViewModels.Abstraction;
 
 namespace GuiClient.Views.UserControls;
 
@@ -10,7 +11,7 @@ public partial class TagsUserControl : UserControl
         InitializeComponent();
     }
 
-    public TagsUserControl(TagsUserControlViewModel viewModel)
+    public TagsUserControl(IEntityViewModel<Tag> viewModel)
         : this()
     {
         DataContext = viewModel;

@@ -8,5 +8,5 @@ public interface IEntityViewModel<TDto>
 {
     ICommand ShowEntities { get; }
 
-    Task ShowBy(IDtoProvider<TDto> provider);
+    Task<IAllEntitiesViewModel<TDto>> ShowBy(IDtoProvider<TDto> provider, bool showDialog = false);
 }

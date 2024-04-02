@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
-using GuiClient.ViewModels.UserControls;
+using DatabaseClient.Models;
+using GuiClient.ViewModels.Abstraction;
 
 namespace GuiClient.Views.UserControls;
 
@@ -10,7 +11,7 @@ public partial class PrincipalsUserControl : UserControl
         InitializeComponent();
     }
 
-    public PrincipalsUserControl(PrincipalsUserControlViewModel viewModel)
+    public PrincipalsUserControl(IEntityViewModel<Principal> viewModel)
         : this()
     {
         DataContext = viewModel;
