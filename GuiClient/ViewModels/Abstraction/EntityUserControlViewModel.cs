@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.DtoProviders;
+using GuiClient.ViewModels.Data.Providers;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
@@ -19,7 +19,7 @@ public abstract class EntityUserControlViewModel<TDataViewModel> : Authenticated
 
     public ICommand ShowEntities { get; }
 
-    public async Task<IAllEntitiesViewModel<TDataViewModel>> ShowBy(IDtoProvider<TDataViewModel> provider,
+    public async Task<IAllEntitiesViewModel<TDataViewModel>> ShowBy(IDataViewModelProvider<TDataViewModel> provider,
         bool showDialog = false)
     {
         ArgumentNullException.ThrowIfNull(provider);
@@ -51,7 +51,7 @@ public abstract class EntityUserControlViewModel<TDataViewModel> : Authenticated
         await ShowBy(provider);
     }
 
-    protected abstract IDtoProvider<TDataViewModel> GetProvider(string filterName);
+    protected abstract IDataViewModelProvider<TDataViewModel> GetProvider(string filterName);
 
     protected static Exception InvalidFilter(string filter)
     {

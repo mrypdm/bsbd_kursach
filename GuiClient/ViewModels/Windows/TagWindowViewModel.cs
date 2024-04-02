@@ -8,9 +8,9 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.DtoProviders.Books;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
+using GuiClient.ViewModels.Data.Providers.Books;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 

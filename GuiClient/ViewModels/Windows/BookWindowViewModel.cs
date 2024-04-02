@@ -10,10 +10,10 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.DtoProviders.Orders;
-using GuiClient.DtoProviders.Reviews;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
+using GuiClient.ViewModels.Data.Providers.Orders;
+using GuiClient.ViewModels.Data.Providers.Reviews;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 

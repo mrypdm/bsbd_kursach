@@ -1,15 +1,15 @@
 ﻿using DatabaseClient.Models;
 using GuiClient.Contexts;
-using GuiClient.DtoProviders;
-using GuiClient.DtoProviders.Tags;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data.Providers;
+using GuiClient.ViewModels.Data.Providers.Tags;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class TagControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<Tag>(securityContext)
 {
-    protected override IDtoProvider<Tag> GetProvider(string filterName)
+    protected override IDataViewModelProvider<Tag> GetProvider(string filterName)
     {
         return filterName switch
         {

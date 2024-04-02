@@ -1,15 +1,15 @@
 ﻿using GuiClient.Contexts;
-using GuiClient.DtoProviders;
-using GuiClient.DtoProviders.Clients;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
+using GuiClient.ViewModels.Data.Providers;
+using GuiClient.ViewModels.Data.Providers.Clients;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class ClientControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<ClientDataViewModel>(securityContext)
 {
-    protected override IDtoProvider<ClientDataViewModel> GetProvider(string filterName)
+    protected override IDataViewModelProvider<ClientDataViewModel> GetProvider(string filterName)
     {
         return filterName switch
         {

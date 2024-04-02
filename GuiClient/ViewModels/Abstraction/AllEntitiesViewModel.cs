@@ -6,7 +6,7 @@ using System.Windows.Input;
 using AutoMapper;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.DtoProviders;
+using GuiClient.ViewModels.Data.Providers;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,7 +30,7 @@ public abstract class AllEntitiesViewModel<TDataViewModel> : AuthenticatedViewMo
         Delete = new AsyncFuncCommand<TDataViewModel>(DeleteAsync, _ => false);
     }
 
-    protected IDtoProvider<TDataViewModel> Provider { get; private set; }
+    protected IDataViewModelProvider<TDataViewModel> Provider { get; private set; }
 
     protected IMapper Mapper { get; }
 
@@ -87,7 +87,7 @@ public abstract class AllEntitiesViewModel<TDataViewModel> : AuthenticatedViewMo
     }
 
     [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
-    public static IAllEntitiesViewModel<TDataViewModel> Create(IDtoProvider<TDataViewModel> provider)
+    public static IAllEntitiesViewModel<TDataViewModel> Create(IDataViewModelProvider<TDataViewModel> provider)
     {
         var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TDataViewModel>>();
         (viewModel as AllEntitiesViewModel<TDataViewModel>)!.Provider = provider;
