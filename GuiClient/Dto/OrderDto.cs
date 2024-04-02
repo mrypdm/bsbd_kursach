@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GuiClient.Dto;
 
 public sealed class OrderDto : NotifyPropertyChanged
 {
-    private int _totalSum;
+    private ICollection<BookInOrderDto> _books = new List<BookInOrderDto>();
+    private int? _totalSum;
 
     public int Id { get; set; } = -1;
 
@@ -14,7 +17,17 @@ public sealed class OrderDto : NotifyPropertyChanged
 
     public DateTime CreatedAt { get; set; }
 
-    public int TotalSum
+    public ICollection<BookInOrderDto> Books
+    {
+        get => _books;
+        set
+        {
+            SetField(ref _books, value);
+            TotalSum = _books.Sum(m => m.Count * m.Price);
+        }
+    }
+
+    public int? TotalSum
     {
         get => _totalSum;
         set => SetField(ref _totalSum, value);

@@ -20,24 +20,29 @@ namespace GuiClient.ViewModels.Windows;
 
 public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 {
-    private readonly Dictionary<OrderDto, IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>> _viewModels = new();
-
     private readonly IOrdersRepository _ordersRepository;
+    private readonly IOrderBooksRepository _orderBooksRepository;
     private readonly IBooksRepository _booksRepository;
 
     public AllOrdersViewModel(ISecurityContext securityContext, IOrdersRepository ordersRepository,
+        IOrderBooksRepository orderBooksRepository,
         IBooksRepository booksRepository, IMapper mapper)
         : base(securityContext, ordersRepository, mapper)
     {
         _ordersRepository = ordersRepository;
+        _orderBooksRepository = orderBooksRepository;
         _booksRepository = booksRepository;
 
         Update = new AsyncFuncCommand<OrderDto>(UpdateAsync, item => item?.Id == -1);
 
         ShowBooks = new AsyncFuncCommand<OrderDto>(ShowBooksAsync);
+        ShowTotalSum =
+            new AsyncFuncCommand<OrderDto>(ShowTotalSumAsync, item => item is { Id: not -1, TotalSum: null });
     }
 
-    public ICommand ShowBooks { get; set; }
+    public ICommand ShowBooks { get; }
+
+    public ICommand ShowTotalSum { get; }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
@@ -47,7 +52,7 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
         AddText(window, nameof(OrderDto.ClientId), true);
         AddText(window, nameof(OrderDto.Client), true);
         AddText(window, nameof(OrderDto.CreatedAt), true);
-        AddText(window, nameof(OrderDto.TotalSum), true);
+        AddButton(window, nameof(OrderDto.TotalSum), nameof(ShowTotalSum), true);
     }
 
     protected override async Task AddAsync()
@@ -65,10 +70,7 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
             throw new NotSupportedException("Cannot update order");
         }
 
-        var viewModel = _viewModels[item];
-        _viewModels.Remove(item);
-
-        var books = viewModel.Entities
+        var books = item.Books
             .Select(m => new OrdersToBook { BookId = m.BookId, Count = m.Count })
             .ToList();
 
@@ -78,54 +80,58 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
         await RefreshAsync();
     }
 
+    private async Task ShowTotalSumAsync(OrderDto item)
+    {
+        if (item.Id != -1)
+        {
+            var entities = await _orderBooksRepository.GetBooksForOrderAsync(new Order { Id = item.Id });
+            item.Books = Mapper.Map<BookInOrderDto[]>(entities);
+        }
+    }
+
     private async Task ShowBooksAsync(OrderDto item)
     {
-        if (!_viewModels.TryGetValue(item, out var viewModel))
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>>();
+
+        if (item.Id == -1)
         {
-            viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>>();
-
-            if (item.Id == -1)
+            viewModel.SetDefaultDto(async () =>
             {
-                _viewModels.Add(item, viewModel);
-
-                viewModel.SetDefaultDto(async () =>
+                if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
                 {
-                    if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
-                    {
-                        return null;
-                    }
+                    return null;
+                }
 
-                    var book = await _booksRepository.GetByIdAsync(bookId)
-                        ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
+                var book = await _booksRepository.GetByIdAsync(bookId)
+                    ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
 
-                    return new BookInOrderDto
-                    {
-                        OrderId = item.Id,
-                        BookId = book.Id,
-                        Book = book.ToString(),
-                        Price = book.Price,
-                        Count = 1
-                    };
-                });
-
-                viewModel.SetFilter((_, _) => Task.FromResult<ICollection<BookInOrderDto>>([]));
-            }
-            else
-            {
-                viewModel.SetFilter(async (r, m) =>
+                return new BookInOrderDto
                 {
-                    var repo = r.Cast<OrdersToBook, IOrderBooksRepository>();
-                    return m.Map<BookInOrderDto[]>(await repo.GetBooksForOrderAsync(new Order { Id = item.Id }));
-                });
-            }
+                    OrderId = item.Id,
+                    BookId = book.Id,
+                    Book = book.ToString(),
+                    Price = book.Price,
+                    Count = 1
+                };
+            });
 
-            await viewModel.RefreshAsync();
+            viewModel.SetFilter((_, _) => Task.FromResult(item.Books));
         }
+        else
+        {
+            viewModel.SetFilter(async (r, m) =>
+            {
+                var repo = r.Cast<OrdersToBook, IOrderBooksRepository>();
+                return m.Map<BookInOrderDto[]>(await repo.GetBooksForOrderAsync(new Order { Id = item.Id }));
+            });
+        }
+
+        await viewModel.RefreshAsync();
 
         var window = new AllEntitiesWindow(viewModel);
         viewModel.EnrichDataGrid(window);
         window.ShowDialog();
 
-        item.TotalSum = viewModel.Entities.Sum(t => t.TotalPrice);
+        item.Books = viewModel.Entities;
     }
 }

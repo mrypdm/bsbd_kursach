@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using DatabaseClient.Models;
 using GuiClient.Dto;
 
@@ -18,8 +17,7 @@ public class AutoMapperConfiguration : Profile
             .ForMember(d => d.Tags, m => m.Ignore());
 
         CreateMap<Order, OrderDto>()
-            .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()))
-            .ForMember(d => d.TotalSum, m => m.MapFrom(s => s.OrdersToBooks.Sum(t => t.Count * t.Book.Price)));
+            .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()));
 
         CreateMap<OrderDto, Order>()
             .ForMember(d => d.Client, m => m.Ignore());
