@@ -14,7 +14,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllReviewsViewModel : AllEntitiesViewModel<Review, ReviewDto>
+public class AllReviewsViewModel : AllEntitiesViewModel<ReviewDto>
 {
     private readonly IReviewsRepository _repository;
 

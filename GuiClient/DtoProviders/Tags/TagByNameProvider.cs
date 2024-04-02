@@ -31,6 +31,8 @@ public class TagByNameProvider : IDtoProvider<Tag>
 
     public bool CanCreate => false;
 
+    public string Name => $"Tags with name '{_name}'";
+
     public static TagByNameProvider Create()
     {
         return AskerWindow.TryAskString("Enter tag name", out var name)

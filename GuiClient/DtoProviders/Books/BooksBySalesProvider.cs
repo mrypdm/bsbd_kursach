@@ -35,6 +35,8 @@ public class BooksBySalesProvider : IDtoProvider<BookDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"Top {_count} books by sales";
+
     public static BooksBySalesProvider Create()
     {
         return AskerWindow.TryAskInt("Enter count", out var count)

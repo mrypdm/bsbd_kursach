@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
+public class AllBooksViewModel : AllEntitiesViewModel<BookDto>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly ITagsRepository _tagsRepository;

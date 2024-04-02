@@ -35,6 +35,8 @@ public class ClientsByPhoneProvider : IDtoProvider<ClientDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"Clients with phone '{_phone}'";
+
     public static ClientsByPhoneProvider Create()
     {
         return AskerWindow.TryAskString("Enter phone in format '1234567890'", out var phone)

@@ -34,6 +34,8 @@ public class AllClientsProvider : IDtoProvider<ClientDto>
 
     public bool CanCreate => true;
 
+    public string Name => "Clients";
+
     public static AllClientsProvider Create()
     {
         return new AllClientsProvider(

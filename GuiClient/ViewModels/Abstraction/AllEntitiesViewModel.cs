@@ -10,7 +10,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TDto>
+public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TDto>
 {
     private ObservableCollection<TDto> _entities;
 
@@ -31,7 +31,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     protected IMapper Mapper { get; }
 
-    public string WindowTitle => $"{typeof(TEntity).Name}s";
+    public string WindowTitle => Provider?.Name ?? "All items";
 
     public ObservableCollection<TDto> Entities
     {

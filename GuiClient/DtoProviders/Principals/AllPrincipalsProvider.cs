@@ -40,6 +40,8 @@ public class AllPrincipalsProvider : IDtoProvider<Principal>
 
     public bool CanCreate => _securityContext.Principal.IsSecurity();
 
+    public string Name => "Principals";
+
     public static AllPrincipalsProvider Create()
     {
         return new AllPrincipalsProvider(

@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -13,7 +12,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllBooksInOrderViewModel : AllEntitiesViewModel<OrdersToBook, BookInOrderDto>
+public class AllBooksInOrderViewModel : AllEntitiesViewModel<BookInOrderDto>
 {
     public AllBooksInOrderViewModel(ISecurityContext securityContext, IOrderBooksRepository orderBooksRepository,
         IMapper mapper)

@@ -42,6 +42,8 @@ public class BooksByTagsProvider : IDtoProvider<BookDto>
 
     public bool CanCreate => true;
 
+    public string Name => $"Books with tags '{_tags}'";
+
     public static BooksByTagsProvider Create(string tags = null)
     {
         if (tags != null || AskerWindow.TryAskString("Enter tags separated by comma", out tags))

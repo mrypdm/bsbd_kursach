@@ -36,6 +36,8 @@ public class ClientsByGenderProvider : IDtoProvider<ClientDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"{_gender} clients";
+
     public static ClientsByGenderProvider Create()
     {
         return AskerWindow.TryAskEnum<Gender>("Enter gender (Male|Female)", out var gender)

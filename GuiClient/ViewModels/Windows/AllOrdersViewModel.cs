@@ -17,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
+public class AllOrdersViewModel : AllEntitiesViewModel<OrderDto>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IOrderBooksRepository _orderBooksRepository;

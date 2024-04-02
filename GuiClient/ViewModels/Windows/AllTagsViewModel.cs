@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
+public class AllTagsViewModel : AllEntitiesViewModel<Tag>
 {
     private readonly ITagsRepository _tagsRepository;
 

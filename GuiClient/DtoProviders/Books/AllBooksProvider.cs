@@ -34,6 +34,8 @@ public class AllBooksProvider : IDtoProvider<BookDto>
 
     public bool CanCreate => true;
 
+    public string Name => "Books";
+
     public static AllBooksProvider Create()
     {
         return new AllBooksProvider(

@@ -41,6 +41,8 @@ public class ClientsByNameProvider : IDtoProvider<ClientDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"Clients with name '{_firstName}, {_lastName}'";
+
     public static ClientsByNameProvider Create()
     {
         if (!AskerWindow.TryAskString("Enter name in format 'First Name, Last Name'", out var name))

@@ -38,6 +38,8 @@ public class BooksByAuthorProvider : IDtoProvider<BookDto>
 
     public bool CanCreate => true;
 
+    public string Name => $"Books by author '{_author}'";
+
     public static BooksByAuthorProvider Create()
     {
         return AskerWindow.TryAskString("Enter author", out var author)

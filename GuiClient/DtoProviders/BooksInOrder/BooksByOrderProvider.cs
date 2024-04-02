@@ -60,6 +60,8 @@ public class BooksByOrderProvider : IDtoProvider<BookInOrderDto>
 
     public bool CanCreate => _order.Id == -1;
 
+    public string Name => $"Books in order with id '{_order.Id}'";
+
     public static BooksByOrderProvider Create(OrderDto order)
     {
         return new BooksByOrderProvider(

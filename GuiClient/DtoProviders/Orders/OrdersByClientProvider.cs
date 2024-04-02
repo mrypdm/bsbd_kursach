@@ -41,6 +41,8 @@ public class OrdersByClientProvider : IDtoProvider<OrderDto>
 
     public bool CanCreate => true;
 
+    public string Name => $"Orders of client '{_client}'";
+
     public static OrdersByClientProvider Create(ClientDto client)
     {
         return new OrdersByClientProvider(

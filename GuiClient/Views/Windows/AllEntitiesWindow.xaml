@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:abstractions="clr-namespace:GuiClient.ViewModels.Abstraction"
         mc:Ignorable="d"
-        d:DataContext="{ d:DesignInstance Type={x:Type abstractions:AllEntitiesViewModel`2}, IsDesignTimeCreatable=True }"
+        d:DataContext="{ d:DesignInstance Type={x:Type abstractions:AllEntitiesViewModel`1}, IsDesignTimeCreatable=True }"
         Title="{Binding WindowTitle}" MinHeight="500" MinWidth="1000" Style="{StaticResource WinAll}"
         SizeToContent="WidthAndHeight">
     <Window.Resources>

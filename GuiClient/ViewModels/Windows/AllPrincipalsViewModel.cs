@@ -11,7 +11,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllPrincipalsViewModel : AllEntitiesViewModel<Principal, Principal>
+public class AllPrincipalsViewModel : AllEntitiesViewModel<Principal>
 {
     private readonly IPrincipalRepository _repository;
 

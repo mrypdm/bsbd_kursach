@@ -65,6 +65,8 @@ public class OrdersByBookProvider : IDtoProvider<OrderDto>
 
     public bool CanCreate => true;
 
+    public string Name => $"Orders for book '{_book}'";
+
     public static OrdersByBookProvider Create(BookDto book)
     {
         return new OrdersByBookProvider(

@@ -35,6 +35,8 @@ public class ClientsByRevenueProvider : IDtoProvider<ClientDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"Top {_count} clients by revenue";
+
     public static ClientsByRevenueProvider Create()
     {
         return AskerWindow.TryAskInt("Enter count", out var count)

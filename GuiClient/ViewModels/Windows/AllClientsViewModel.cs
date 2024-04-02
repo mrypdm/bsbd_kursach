@@ -17,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
+public class AllClientsViewModel : AllEntitiesViewModel<ClientDto>
 {
     private readonly IClientsRepository _clientsRepository;
 

@@ -35,6 +35,8 @@ public class BooksByTitleProvider : IDtoProvider<BookDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"Books with title '{_title}'";
+
     public static BooksByTitleProvider Create()
     {
         return AskerWindow.TryAskString("Enter title", out var title)

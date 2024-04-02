@@ -30,6 +30,8 @@ public class AllTagsProvider : IDtoProvider<Tag>
 
     public bool CanCreate => true;
 
+    public string Name => "Tags";
+
     public static AllTagsProvider Create()
     {
         return new AllTagsProvider(App.ServiceProvider.GetRequiredService<ITagsRepository>());

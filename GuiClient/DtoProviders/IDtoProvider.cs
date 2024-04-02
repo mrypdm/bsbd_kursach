@@ -10,4 +10,6 @@ public interface IDtoProvider<TDto>
     Task<TDto> CreateNewAsync();
 
     bool CanCreate { get; }
+
+    string Name { get; }
 }

@@ -49,6 +49,8 @@ public class AllOrdersProvider : IDtoProvider<OrderDto>
 
     public bool CanCreate => true;
 
+    public string Name => "Orders";
+
     public static AllOrdersProvider Create()
     {
         return new AllOrdersProvider(

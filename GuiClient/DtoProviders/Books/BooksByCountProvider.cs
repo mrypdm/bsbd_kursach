@@ -35,6 +35,8 @@ public class BooksByCountProvider : IDtoProvider<BookDto>
 
     public bool CanCreate => false;
 
+    public string Name => $"Books with count less than {_count}";
+
     public static BooksByCountProvider Create()
     {
         return AskerWindow.TryAskInt("Enter count", out var count)

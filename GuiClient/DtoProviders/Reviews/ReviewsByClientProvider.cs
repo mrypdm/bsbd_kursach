@@ -55,6 +55,8 @@ public class ReviewsByClientProvider : IDtoProvider<ReviewDto>
 
     public bool CanCreate => true;
 
+    public string Name => $"Reviews for client '{_client}'";
+
     public static ReviewsByClientProvider Create(ClientDto client)
     {
         return new ReviewsByClientProvider(

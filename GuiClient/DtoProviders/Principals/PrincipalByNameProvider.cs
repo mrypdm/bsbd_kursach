@@ -31,6 +31,8 @@ public class PrincipalByNameProvider : IDtoProvider<Principal>
 
     public bool CanCreate => false;
 
+    public string Name => $"Principals with name '{_name}'";
+
     public static PrincipalByNameProvider Create()
     {
         return AskerWindow.TryAskString("Enter name", out var name)

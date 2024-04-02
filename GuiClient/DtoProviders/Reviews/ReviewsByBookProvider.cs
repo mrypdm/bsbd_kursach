@@ -55,6 +55,8 @@ public class ReviewsByBookProvider : IDtoProvider<ReviewDto>
 
     public bool CanCreate => true;
 
+    public string Name => $"Reviews for book '{_book}'";
+
     public static ReviewsByBookProvider Create(BookDto book)
     {
         return new ReviewsByBookProvider(
