@@ -80,12 +80,17 @@ public partial class AllEntitiesWindow : Window
         });
     }
 
+    public void Clear()
+    {
+        DataGrid.Columns.Clear();
+    }
+
     public static async Task<AllEntitiesWindow> Create<TDto>(IAllEntitiesViewModel<TDto> viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
 
         var window = new AllEntitiesWindow(viewModel);
-        viewModel.EnrichDataGrid(window);
+        viewModel.SetupDataGrid(window);
         await viewModel.RefreshAsync();
         return window;
     }

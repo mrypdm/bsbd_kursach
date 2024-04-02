@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
@@ -24,5 +23,5 @@ public interface IAllEntitiesViewModel<TDto>
 
     Task RefreshAsync();
 
-    void EnrichDataGrid(AllEntitiesWindow window);
+    void SetupDataGrid(AllEntitiesWindow window);
 }

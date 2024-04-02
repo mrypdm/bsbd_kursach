@@ -28,9 +28,10 @@ public class AllReviewsViewModel : AllEntitiesViewModel<ReviewDto>
         Delete = new AsyncFuncCommand<ReviewDto>(DeleteAsync, item => item?.IsNew == true || IsAdmin);
     }
 
-    public override void EnrichDataGrid(AllEntitiesWindow window)
+    public override void SetupDataGrid(AllEntitiesWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
+        window.Clear();
 
         window.AddButton("Delete", nameof(Delete));
         window.AddButton("Update", nameof(Update));

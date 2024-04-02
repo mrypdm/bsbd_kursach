@@ -41,8 +41,6 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
         get => _entities;
         private set => SetField(ref _entities, value);
     }
-    
-    public ObservableCollection<DataGridColumn> Columns { get; }
 
     public TDto SelectedItem
     {
@@ -63,7 +61,7 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
         Entities = new ObservableCollection<TDto>(await Provider.GetAllAsync());
     }
 
-    public abstract void EnrichDataGrid(AllEntitiesWindow window);
+    public abstract void SetupDataGrid(AllEntitiesWindow window);
 
     protected virtual async Task AddAsync()
     {

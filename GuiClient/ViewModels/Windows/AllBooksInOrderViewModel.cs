@@ -23,9 +23,10 @@ public class AllBooksInOrderViewModel : AllEntitiesViewModel<BookInOrderDto>
         Delete = new AsyncFuncCommand<BookInOrderDto>(DeleteAsync, item => item?.OrderId == -1);
     }
 
-    public override void EnrichDataGrid(AllEntitiesWindow window)
+    public override void SetupDataGrid(AllEntitiesWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
+        window.Clear();
 
         window.AddButton("Delete", nameof(Delete));
         window.AddText(nameof(BookInOrderDto.OrderId), true);

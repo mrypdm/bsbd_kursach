@@ -44,9 +44,10 @@ public class AllClientsViewModel : AllEntitiesViewModel<ClientDto>
 
     public ICommand ShowRevenue { get; }
 
-    public override void EnrichDataGrid(AllEntitiesWindow window)
+    public override void SetupDataGrid(AllEntitiesWindow window)
     {
         ArgumentNullException.ThrowIfNull(window);
+        window.Clear();
 
         window.AddButton("Delete", nameof(Delete));
         window.AddButton("Update", nameof(Update));
