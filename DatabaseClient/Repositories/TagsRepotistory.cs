@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class TagsRepository(DatabaseContextFactory factory) : ITagsRepository
+public class TagsRepository(DbContextFactory factory) : ITagsRepository
 {
     public async Task<Tag> GetByIdAsync(int id)
     {

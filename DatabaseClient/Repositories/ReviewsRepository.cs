@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ReviewsRepository(DatabaseContextFactory factory) : IReviewsRepository
+public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {

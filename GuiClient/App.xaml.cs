@@ -74,7 +74,7 @@ public partial class App : Application
         services.AddSingleton<ISecurityContext>(p => p.GetRequiredService<SecurityContext>());
         services.AddSingleton<IPrincipalProvider>(p => p.GetRequiredService<SecurityContext>());
 
-        services.AddTransient<DatabaseContextFactory>();
+        services.AddTransient<DbContextFactory>();
         services.AddTransient<BooksRepository>();
         services.AddTransient<IBooksRepository>(p => p.GetRequiredService<BooksRepository>());
         services.AddTransient<IRepository<Book>>(p => p.GetRequiredService<BooksRepository>());

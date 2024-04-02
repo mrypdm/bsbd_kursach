@@ -108,9 +108,9 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
                 var newTags = item.Tags
                     .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-                var currentTags = book.Tags.Select(m => m.Name).ToArray();
-                var toDelete = currentTags.Except(newTags);
-                var toAdd = newTags.Except(currentTags);
+                var currentTags = await _tagsRepository.GetTagsOfBook(book);
+                var toDelete = currentTags.Select(m => m.Name).Except(newTags);
+                var toAdd = newTags.Except(currentTags.Select(m => m.Name));
 
                 await _tagsRepository.RemoveBookFromTags(book, toDelete);
                 await _tagsRepository.AddBookToTags(book, toAdd);

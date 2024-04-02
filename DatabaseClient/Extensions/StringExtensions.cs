@@ -29,11 +29,11 @@ public static class StringExtensions
         }
 
         var ptr = IntPtr.Zero;
-        var result = string.Empty;
+
         try
         {
             ptr = Marshal.SecureStringToGlobalAllocUnicode(value);
-            result = Marshal.PtrToStringUni(ptr)!;
+            return Marshal.PtrToStringUni(ptr);
         }
         finally
         {
@@ -42,7 +42,5 @@ public static class StringExtensions
                 Marshal.ZeroFreeGlobalAllocUnicode(ptr);
             }
         }
-
-        return result;
     }
 }

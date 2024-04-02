@@ -17,7 +17,7 @@ public static class Startup
 
     public static async Task InitDatabaseAsync()
     {
-        var factory = new DatabaseContextFactory(Cred, new ServerOptions());
+        var factory = new DbContextFactory(Cred, new ServerOptions());
 
         var clientsRepository = new ClientsRepository(factory);
         var tagsRepository = new TagsRepository(factory);
@@ -81,17 +81,5 @@ public static class Startup
                 Count = 2
             }
         });
-    }
-
-    public static async Task ClearAllAsync()
-    {
-        var factory = new DatabaseContextFactory(Cred, new ServerOptions());
-        await using var context = factory.Create();
-
-        await context.Reviews.ExecuteDeleteAsync();
-        await context.Orders.ExecuteDeleteAsync();
-        await context.Books.ExecuteDeleteAsync();
-        await context.Clients.ExecuteDeleteAsync();
-        await context.Tags.ExecuteDeleteAsync();
     }
 }

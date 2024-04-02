@@ -8,7 +8,7 @@ using Domain;
 
 Logging.Init();
 
-var factory = new DatabaseContextFactory(Startup.Cred, new ServerOptions());
+var factory = new DbContextFactory(Startup.Cred, new ServerOptions());
 
 var clientsRepository = new ClientsRepository(factory);
 var tagsRepository = new TagsRepository(factory);
@@ -17,7 +17,6 @@ var reviewsRepository = new ReviewsRepository(factory);
 var ordersRepository = new OrdersRepository(factory);
 var principalsManager = new PrincipalRepository(factory);
 
-await Startup.ClearAllAsync();
 await Startup.InitDatabaseAsync();
 
 Logging.Close();

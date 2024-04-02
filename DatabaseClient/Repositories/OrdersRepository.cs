@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepository
+public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
 {
     public async Task<ICollection<Order>> GetAllAsync()
     {

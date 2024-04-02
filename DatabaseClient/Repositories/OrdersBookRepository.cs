@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersBookRepository(DatabaseContextFactory factory) : IOrderBooksRepository
+public class OrdersBookRepository(DbContextFactory factory) : IOrderBooksRepository
 {
     public async Task<OrdersToBook> GetByIdAsync(int orderId, int bookId)
     {

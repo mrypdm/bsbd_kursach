@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
+public class BooksRepository(DbContextFactory factory) : IBooksRepository
 {
     public async Task<Book> GetByIdAsync(int id)
     {

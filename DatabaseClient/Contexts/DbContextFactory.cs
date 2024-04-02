@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Contexts;
 
-public class DatabaseContextFactory(IPrincipalProvider principalProvider, ServerOptions options)
+public class DbContextFactory(IPrincipalProvider principalProvider, ServerOptions options)
 {
-    public DatabaseContext Create()
+    public DbContext Create()
     {
         var credential = principalProvider.GetPrincipal();
 
@@ -21,7 +21,7 @@ public class DatabaseContextFactory(IPrincipalProvider principalProvider, Server
             Encrypt = options.Encryption
         }.ConnectionString;
 
-        var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>()
+        var optionsBuilder = new DbContextOptionsBuilder()
             .UseSqlServer(connectionString);
 
         if (Logging.IsInit)
@@ -33,6 +33,6 @@ public class DatabaseContextFactory(IPrincipalProvider principalProvider, Server
 #endif
         }
 
-        return new DatabaseContext(optionsBuilder.Options);
+        return new DbContext(optionsBuilder.Options);
     }
 }

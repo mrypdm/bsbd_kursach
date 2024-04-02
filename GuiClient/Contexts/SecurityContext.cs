@@ -34,7 +34,7 @@ public sealed class SecurityContext(ServerOptions options) : NotifyPropertyChang
         cred.Name = userName;
         cred.SecurePassword = password.Copy();
 
-        var factory = new DatabaseContextFactory(cred, options);
+        var factory = new DbContextFactory(cred, options);
         var repository = new PrincipalRepository(factory);
 
         LogOff();
@@ -57,7 +57,7 @@ public sealed class SecurityContext(ServerOptions options) : NotifyPropertyChang
         oldCred.Name = Principal.Name;
         oldCred.SecurePassword = oldPassword.Copy();
 
-        var factory = new DatabaseContextFactory(oldCred, options);
+        var factory = new DbContextFactory(oldCred, options);
         var repository = new PrincipalRepository(factory);
 
         await repository.ChangePasswordAsync(oldCred, newPassword);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ClientsRepository(DatabaseContextFactory factory) : IClientsRepository
+public class ClientsRepository(DbContextFactory factory) : IClientsRepository
 {
     public async Task<Client> GetByIdAsync(int id)
     {
