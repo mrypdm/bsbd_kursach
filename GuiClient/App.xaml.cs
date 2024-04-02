@@ -93,9 +93,9 @@ public partial class App : Application
         services.AddTransient<IOrdersRepository>(p => p.GetRequiredService<OrdersRepository>());
         services.AddTransient<IRepository<Order>>(p => p.GetRequiredService<OrdersRepository>());
 
-        services.AddTransient<OrdersBookRepository>();
-        services.AddTransient<IOrderBooksRepository>(p => p.GetRequiredService<OrdersBookRepository>());
-        services.AddTransient<IRepository<OrdersToBook>>(p => p.GetRequiredService<OrdersBookRepository>());
+        services.AddTransient<OrderBooksRepository>();
+        services.AddTransient<IOrderBooksRepository>(p => p.GetRequiredService<OrderBooksRepository>());
+        services.AddTransient<IRepository<OrderBook>>(p => p.GetRequiredService<OrderBooksRepository>());
 
         services.AddTransient<ReviewsRepository>();
         services.AddTransient<IReviewsRepository>(p => p.GetRequiredService<ReviewsRepository>());

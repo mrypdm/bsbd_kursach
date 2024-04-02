@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersBookRepository(DbContextFactory factory, IMapper mapper) : IOrderBooksRepository
+public class OrderBooksRepository(DbContextFactory factory, IMapper mapper) : IOrderBooksRepository
 {
-    public async Task<OrdersToBook> GetByIdAsync(int orderId, int bookId)
+    public async Task<OrderBook> GetByIdAsync(int orderId, int bookId)
     {
         await using var context = factory.Create();
 
         return await context.Database
-            .SqlQuery<DbOrderToBook>(
+            .SqlQuery<DbOrderBook>(
                 $"""
                  select otb.BookId, otb.OrderId, otb.Count as OrderedCount,
                         b.Title as BookTitle, b.Author as BookAuthor, b.ReleaseDate as BookReleaseDate,
@@ -28,18 +28,18 @@ public class OrdersBookRepository(DbContextFactory factory, IMapper mapper) : IO
                  join Books b on otb.BookId = b.Id
                  where OrderId = {orderId} and BookId = {bookId}
                  """)
-            .ProjectTo<OrdersToBook>(mapper.ConfigurationProvider)
+            .ProjectTo<OrderBook>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
     }
 
-    public async Task<ICollection<OrdersToBook>> GetBooksForOrderAsync(Order order)
+    public async Task<ICollection<OrderBook>> GetBooksForOrderAsync(Order order)
     {
         ArgumentNullException.ThrowIfNull(order);
 
         await using var context = factory.Create();
 
         return await context.Database
-            .SqlQuery<DbOrderToBook>(
+            .SqlQuery<DbOrderBook>(
                 $"""
                  select otb.BookId, otb.OrderId, otb.Count as OrderedCount,
                         b.Title as BookTitle, b.Author as BookAuthor, b.ReleaseDate as BookReleaseDate,
@@ -48,26 +48,26 @@ public class OrdersBookRepository(DbContextFactory factory, IMapper mapper) : IO
                  join Books b on otb.BookId = b.Id
                  where OrderId = {order.Id}
                  """)
-            .ProjectTo<OrdersToBook>(mapper.ConfigurationProvider)
+            .ProjectTo<OrderBook>(mapper.ConfigurationProvider)
             .ToListAsync();
     }
 
-    public Task<OrdersToBook> GetByIdAsync(int id)
+    public Task<OrderBook> GetByIdAsync(int id)
     {
         throw new NotSupportedException("Use GetByIdAsync(int orderId, int bookId)");
     }
 
-    public Task<ICollection<OrdersToBook>> GetAllAsync()
+    public Task<ICollection<OrderBook>> GetAllAsync()
     {
         throw new NotSupportedException();
     }
 
-    public Task UpdateAsync(OrdersToBook entity)
+    public Task UpdateAsync(OrderBook entity)
     {
         throw new NotSupportedException("Cannot update existing order");
     }
 
-    public Task RemoveAsync(OrdersToBook entity)
+    public Task RemoveAsync(OrderBook entity)
     {
         throw new NotSupportedException("Cannot delete existing order");
     }

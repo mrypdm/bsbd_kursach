@@ -20,7 +20,7 @@ public class AutoMapperConfiguration : Profile
                 IsDeleted = s.IsClientDeleted
             }));
 
-        CreateMap<DbOrderToBook, OrdersToBook>()
+        CreateMap<DbOrderBook, OrderBook>()
             .ForMember(d => d.Count, m => m.MapFrom(s => s.OrderedCount))
             .ForMember(d => d.Book, m => m.MapFrom(s => new Book
             {

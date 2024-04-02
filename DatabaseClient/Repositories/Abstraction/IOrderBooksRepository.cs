@@ -4,7 +4,7 @@ using DatabaseClient.Models;
 
 namespace DatabaseClient.Repositories.Abstraction;
 
-public interface IOrderBooksRepository : IRepository<OrdersToBook>
+public interface IOrderBooksRepository : IRepository<OrderBook>
 {
-    public Task<ICollection<OrdersToBook>> GetBooksForOrderAsync(Order order);
+    public Task<ICollection<OrderBook>> GetBooksForOrderAsync(Order order);
 }

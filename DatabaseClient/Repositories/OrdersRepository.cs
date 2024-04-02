@@ -85,7 +85,7 @@ public class OrdersRepository(DbContextFactory factory, IMapper mapper) : IOrder
 
     // bsbd_verify_order verifies that there are enough books for the order,
     // and then subtracts the number of books in the order from the total number
-    public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
+    public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrderBook> booksToOrder)
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(booksToOrder);

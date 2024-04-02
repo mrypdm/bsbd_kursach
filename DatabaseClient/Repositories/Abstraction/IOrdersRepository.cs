@@ -10,7 +10,7 @@ public interface IOrdersRepository : IRepository<Order>
 
     Task<ICollection<Order>> GetOrdersForBookAsync(Book book);
 
-    Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder);
+    Task<Order> AddOrderAsync(Client client, IEnumerable<OrderBook> booksToOrder);
 
     Task<int> GetOrderTotalPrice(Order order);
 }

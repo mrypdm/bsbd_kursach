@@ -68,12 +68,12 @@ public static class Startup
 
         await ordersRepository.AddOrderAsync(cl1, new[]
         {
-            new OrdersToBook
+            new OrderBook
             {
                 BookId = b1.Id,
                 Count = 1
             },
-            new OrdersToBook
+            new OrderBook
             {
                 BookId = b2.Id,
                 Count = 1
@@ -81,7 +81,7 @@ public static class Startup
         });
         await ordersRepository.AddOrderAsync(cl2, new[]
         {
-            new OrdersToBook
+            new OrderBook
             {
                 BookId = b4.Id,
                 Count = 2

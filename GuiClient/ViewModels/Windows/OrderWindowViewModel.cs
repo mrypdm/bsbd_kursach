@@ -64,7 +64,7 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
     protected override async Task UpdateAsync([NotNull] OrderDataViewModel item)
     {
         var books = item.Books
-            .Select(m => new OrdersToBook { BookId = m.BookId, Count = m.Count })
+            .Select(m => new OrderBook { BookId = m.BookId, Count = m.Count })
             .ToList();
 
         var order = await _ordersRepository.AddOrderAsync(new Client { Id = item.ClientId }, books);
