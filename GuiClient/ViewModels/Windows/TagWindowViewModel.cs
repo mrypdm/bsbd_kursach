@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -8,10 +7,10 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Books;
-using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
@@ -30,22 +29,18 @@ public class TagWindowViewModel : AllEntitiesViewModel<Tag>
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
         Update = new AsyncFuncCommand<Tag>(UpdateAsync);
         Delete = new AsyncFuncCommand<Tag>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
+
+        Columns =
+        [
+            ColumnHelper.CreateButton("Delete", nameof(Delete)),
+            ColumnHelper.CreateButton("Update", nameof(Update)),
+            ColumnHelper.CreateButton("Show books", nameof(ShowBooks)),
+            ColumnHelper.CreateText(nameof(Tag.Id), true),
+            ColumnHelper.CreateText(nameof(Tag.Name))
+        ];
     }
 
     public ICommand ShowBooks { get; }
-
-    public override void SetupDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        window.Clear();
-
-        window.AddButton("Delete", nameof(Delete));
-        window.AddButton("Update", nameof(Update));
-        window.AddButton("Show books", nameof(ShowBooks));
-
-        window.AddText(nameof(Tag.Id), true);
-        window.AddText(nameof(Tag.Name));
-    }
 
     protected override async Task UpdateAsync([NotNull] Tag item)
     {

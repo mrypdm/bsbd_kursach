@@ -6,6 +6,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
@@ -27,22 +28,18 @@ public class PrincipalWindowViewModel : AllEntitiesViewModel<Principal>
         Add = new AsyncActionCommand(AddPrincipalAsync, () => IsSecurity);
         Update = new AsyncFuncCommand<Principal>(UpdateAsync, _ => false);
         Delete = new AsyncFuncCommand<Principal>(DeleteAsync, _ => IsSecurity);
+
+        Columns =
+        [
+            ColumnHelper.CreateButton("Delete", nameof(Delete)),
+            ColumnHelper.CreateButton("Change password (force)", nameof(ChangePasswordForce)),
+            ColumnHelper.CreateText(nameof(Principal.Id), true),
+            ColumnHelper.CreateText(nameof(Principal.Name), true),
+            ColumnHelper.CreateText(nameof(Principal.Role), true)
+        ];
     }
 
     public ICommand ChangePasswordForce { get; }
-
-    public override void SetupDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        window.Clear();
-
-        window.AddButton("Delete", nameof(Delete));
-        window.AddButton("Change password (force)", nameof(ChangePasswordForce));
-
-        window.AddText(nameof(Principal.Id), true);
-        window.AddText(nameof(Principal.Name), true);
-        window.AddText(nameof(Principal.Role), true);
-    }
 
     protected override Task UpdateAsync(Principal item)
     {

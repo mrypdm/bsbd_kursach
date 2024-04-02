@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -8,11 +7,11 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Orders;
 using GuiClient.ViewModels.Data.Providers.Reviews;
-using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
@@ -36,6 +35,20 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
         Update = new AsyncFuncCommand<ClientDataViewModel>(UpdateAsync);
         Delete = new AsyncFuncCommand<ClientDataViewModel>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
+
+        Columns =
+        [
+            ColumnHelper.CreateButton("Delete", nameof(Delete)),
+            ColumnHelper.CreateButton("Update", nameof(Update)),
+            ColumnHelper.CreateButton("Show reviews", nameof(ShowReviews)),
+            ColumnHelper.CreateButton("Show orders", nameof(ShowOrders)),
+            ColumnHelper.CreateText(nameof(ClientDataViewModel.Id), true),
+            ColumnHelper.CreateText(nameof(ClientDataViewModel.FirstName)),
+            ColumnHelper.CreateText(nameof(ClientDataViewModel.LastName)),
+            ColumnHelper.CreateText(nameof(ClientDataViewModel.Phone)),
+            ColumnHelper.CreateText(nameof(ClientDataViewModel.Gender)),
+            ColumnHelper.CreateButton(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true)
+        ];
     }
 
     public ICommand ShowOrders { get; }
@@ -43,24 +56,6 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
     public ICommand ShowReviews { get; }
 
     public ICommand ShowRevenue { get; }
-
-    public override void SetupDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        window.Clear();
-
-        window.AddButton("Delete", nameof(Delete));
-        window.AddButton("Update", nameof(Update));
-        window.AddButton("Show reviews", nameof(ShowReviews));
-        window.AddButton("Show orders", nameof(ShowOrders));
-
-        window.AddText(nameof(ClientDataViewModel.Id), true);
-        window.AddText(nameof(ClientDataViewModel.FirstName));
-        window.AddText(nameof(ClientDataViewModel.LastName));
-        window.AddText(nameof(ClientDataViewModel.Phone));
-        window.AddText(nameof(ClientDataViewModel.Gender));
-        window.AddButton(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true);
-    }
 
     protected override async Task UpdateAsync([NotNull] ClientDataViewModel item)
     {

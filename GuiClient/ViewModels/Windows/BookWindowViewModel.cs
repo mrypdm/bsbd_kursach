@@ -10,6 +10,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Orders;
@@ -48,6 +49,24 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
         Update = new AsyncFuncCommand<BookDataViewModel>(UpdateAsync);
         Delete = new AsyncFuncCommand<BookDataViewModel>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
+
+        Columns =
+        [
+            ColumnHelper.CreateButton("Delete", nameof(Delete)),
+            ColumnHelper.CreateButton("Update", nameof(Update)),
+            ColumnHelper.CreateButton("Show reviews", nameof(ShowReviews)),
+            ColumnHelper.CreateButton("Show orders", nameof(ShowOrders)),
+            ColumnHelper.CreateText(nameof(BookDataViewModel.Id), true),
+            ColumnHelper.CreateText(nameof(BookDataViewModel.Title)),
+            ColumnHelper.CreateText(nameof(BookDataViewModel.Author)),
+            ColumnHelper.CreateText(nameof(BookDataViewModel.ReleaseDate)),
+            ColumnHelper.CreateText(nameof(BookDataViewModel.Count)),
+            ColumnHelper.CreateText(nameof(BookDataViewModel.Price)),
+            ColumnHelper.CreateButton(nameof(BookDataViewModel.Sales), nameof(ShowSales), true),
+            ColumnHelper.CreateButton(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true),
+            ColumnHelper.CreateButton(nameof(BookDataViewModel.Score), nameof(ShowScore), true),
+            ColumnHelper.CreateButton(nameof(BookDataViewModel.Tags), nameof(ShowTags), true)
+        ];
     }
 
     public ICommand ShowReviews { get; }
@@ -61,28 +80,6 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
     public ICommand ShowScore { get; }
 
     public ICommand ShowSales { get; }
-
-    public override void SetupDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        window.Clear();
-
-        window.AddButton("Delete", nameof(Delete));
-        window.AddButton("Update", nameof(Update));
-        window.AddButton("Show reviews", nameof(ShowReviews));
-        window.AddButton("Show orders", nameof(ShowOrders));
-
-        window.AddText(nameof(BookDataViewModel.Id), true);
-        window.AddText(nameof(BookDataViewModel.Title));
-        window.AddText(nameof(BookDataViewModel.Author));
-        window.AddText(nameof(BookDataViewModel.ReleaseDate));
-        window.AddText(nameof(BookDataViewModel.Count));
-        window.AddText(nameof(BookDataViewModel.Price));
-        window.AddButton(nameof(BookDataViewModel.Sales), nameof(ShowSales), true);
-        window.AddButton(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true);
-        window.AddButton(nameof(BookDataViewModel.Score), nameof(ShowScore), true);
-        window.AddButton(nameof(BookDataViewModel.Tags), nameof(ShowTags), true);
-    }
 
     protected override async Task UpdateAsync([NotNull] BookDataViewModel item)
     {

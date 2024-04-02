@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -8,9 +7,9 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
-using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
@@ -26,22 +25,18 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
         Update = new AsyncFuncCommand<ReviewDataViewModel>(UpdateAsync, item => item?.IsNew == true || IsAdmin);
         Delete = new AsyncFuncCommand<ReviewDataViewModel>(DeleteAsync, item => item?.IsNew == true || IsAdmin);
-    }
 
-    public override void SetupDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        window.Clear();
-
-        window.AddButton("Delete", nameof(Delete));
-        window.AddButton("Update", nameof(Update));
-
-        window.AddText(nameof(ReviewDataViewModel.BookId), true);
-        window.AddText(nameof(ReviewDataViewModel.Book), true);
-        window.AddText(nameof(ReviewDataViewModel.ClientId), true);
-        window.AddText(nameof(ReviewDataViewModel.Client), true);
-        window.AddText(nameof(ReviewDataViewModel.Score));
-        window.AddText(nameof(ReviewDataViewModel.Text));
+        Columns =
+        [
+            ColumnHelper.CreateButton("Delete", nameof(Delete)),
+            ColumnHelper.CreateButton("Update", nameof(Update)),
+            ColumnHelper.CreateText(nameof(ReviewDataViewModel.BookId), true),
+            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Book), true),
+            ColumnHelper.CreateText(nameof(ReviewDataViewModel.ClientId), true),
+            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Client), true),
+            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Score)),
+            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Text))
+        ];
     }
 
     protected override async Task AddAsync()

@@ -1,7 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
-using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
@@ -23,5 +24,5 @@ public interface IAllEntitiesViewModel<TDataViewModel>
 
     Task RefreshAsync();
 
-    void SetupDataGrid(AllEntitiesWindow window);
+    IReadOnlyCollection<DataGridColumn> Columns { get; }
 }

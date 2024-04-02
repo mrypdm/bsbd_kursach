@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AutoMapper;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.ViewModels.Data.Providers;
-using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
@@ -61,7 +62,7 @@ public abstract class AllEntitiesViewModel<TDataViewModel> : AuthenticatedViewMo
         Entities = new ObservableCollection<TDataViewModel>(await Provider.GetAllAsync());
     }
 
-    public abstract void SetupDataGrid(AllEntitiesWindow window);
+    public IReadOnlyCollection<DataGridColumn> Columns { get; protected set; }
 
     protected virtual async Task AddAsync()
     {

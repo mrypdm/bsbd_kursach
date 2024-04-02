@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models;
 
 [Serializable]
-public class Review
+public sealed class Review
 {
     public int ClientId { get; set; }
 

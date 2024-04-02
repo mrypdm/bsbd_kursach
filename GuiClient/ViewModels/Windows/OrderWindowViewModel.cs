@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,10 +8,10 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.BooksInOrder;
-using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
@@ -39,27 +38,23 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
         Update = new AsyncFuncCommand<OrderDataViewModel>(UpdateAsync, item => item?.Id == -1);
         Delete = new AsyncFuncCommand<OrderDataViewModel>(DeleteAsync, item => item?.Id == -1);
+
+        Columns =
+        [
+            ColumnHelper.CreateButton("Delete", nameof(Delete)),
+            ColumnHelper.CreateButton("Update", nameof(Update)),
+            ColumnHelper.CreateButton("Show books", nameof(ShowBooks)),
+            ColumnHelper.CreateText(nameof(OrderDataViewModel.Id), true),
+            ColumnHelper.CreateText(nameof(OrderDataViewModel.ClientId), true),
+            ColumnHelper.CreateText(nameof(OrderDataViewModel.Client), true),
+            ColumnHelper.CreateText(nameof(OrderDataViewModel.CreatedAt), true),
+            ColumnHelper.CreateButton(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true)
+        ];
     }
 
     public ICommand ShowBooks { get; }
 
     public ICommand ShowTotalSum { get; }
-
-    public override void SetupDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        window.Clear();
-
-        window.AddButton("Delete", nameof(Delete));
-        window.AddButton("Update", nameof(Update));
-        window.AddButton("Show books", nameof(ShowBooks));
-
-        window.AddText(nameof(OrderDataViewModel.Id), true);
-        window.AddText(nameof(OrderDataViewModel.ClientId), true);
-        window.AddText(nameof(OrderDataViewModel.Client), true);
-        window.AddText(nameof(OrderDataViewModel.CreatedAt), true);
-        window.AddButton(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true);
-    }
 
     protected override async Task UpdateAsync([NotNull] OrderDataViewModel item)
     {

@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models;
 
 [Serializable]
-public class Book
+public sealed class Book
 {
     public int Id { get; set; }
 

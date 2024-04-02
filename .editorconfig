@@ -242,3 +242,7 @@ dotnet_diagnostic.CA1822.severity = suggestion
 # CA5394: Do not use insecure randomness
 # We use random not for sensitive data
 dotnet_diagnostic.CA5394.severity = suggestion
+
+# CA1812: Avoid uninstantiated internal classes
+# Used for EF Core
+dotnet_diagnostic.CA1812.severity = suggestion
