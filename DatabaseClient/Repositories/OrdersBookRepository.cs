@@ -16,14 +16,17 @@ public class OrdersBookRepository(DatabaseContextFactory factory) : IOrderBooksR
     {
         await using var context = factory.Create();
 
-        return await context.OrdersToBooks
-            .FromSql(
+        return await context.Database
+            .SqlQuery<DbOrderToBook>(
                 $"""
-                 select *
-                 from OrdersToBooks
+                 select otb.BookId, otb.OrderId, otb.Count as OrderedCount,
+                        b.Title as BookTitle, b.Author as BookAuthor, b.ReleaseDate as BookReleaseDate,
+                        b.IsDeleted as IsBookDeleted, b.Count as TotalCount, b.Price as BookPrice
+                 from OrdersToBooks otb
+                 join Books b on otb.BookId = b.Id
                  where OrderId = {orderId} and BookId = {bookId}
                  """)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync<DbOrderToBook, OrdersToBook>();
     }
 
     public async Task<ICollection<OrdersToBook>> GetBooksForOrderAsync(Order order)
