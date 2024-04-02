@@ -106,20 +106,20 @@ public partial class App : Application
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<AuthControlViewModel>();
 
-        services.AddTransient<IEntityViewModel<BookDto>, BooksUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<Tag>, TagsUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<ClientDto>, ClientsUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<OrderDto>, OrdersUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<ReviewDto>, ReviewsUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<Principal>, PrincipalsUserControlViewModel>();
-        services.AddTransient<IEntityViewModel<BookInOrderDto>, BookInOrderViewModel>();
+        services.AddTransient<IEntityViewModel<BookDto>, BookControlViewModel>();
+        services.AddTransient<IEntityViewModel<Tag>, TagControlViewModel>();
+        services.AddTransient<IEntityViewModel<ClientDto>, ClientControlViewModel>();
+        services.AddTransient<IEntityViewModel<OrderDto>, OrderControlViewModel>();
+        services.AddTransient<IEntityViewModel<ReviewDto>, ReviewControlViewModel>();
+        services.AddTransient<IEntityViewModel<Principal>, PrincipalControlViewModel>();
+        services.AddTransient<IEntityViewModel<BookInOrderDto>, BookInOrderControlViewModel>();
 
-        services.AddTransient<IAllEntitiesViewModel<BookDto>, AllBooksViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Tag>, AllTagsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<ClientDto>, AllClientsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<ReviewDto>, AllReviewsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<OrderDto>, AllOrdersViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Principal>, AllPrincipalsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<BookInOrderDto>, AllBooksInOrderViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<BookDto>, BookWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Tag>, TagWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<ClientDto>, ClientWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<ReviewDto>, ReviewWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<OrderDto>, OrderWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Principal>, PrincipalWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<BookInOrderDto>, BookInOrderWindowViewModel>();
     }
 }

@@ -6,7 +6,7 @@ using GuiClient.ViewModels.Abstraction;
 
 namespace GuiClient.ViewModels.UserControls;
 
-public class ClientsUserControlViewModel(ISecurityContext securityContext)
+public class ClientControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<ClientDto>(securityContext)
 {
     protected override IDtoProvider<ClientDto> GetProvider(string filterName)

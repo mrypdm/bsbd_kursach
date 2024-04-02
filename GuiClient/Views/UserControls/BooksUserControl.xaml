@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:GuiClient.ViewModels.UserControls"
              mc:Ignorable="d"
-             d:DataContext="{ d:DesignInstance Type=vm:BooksUserControlViewModel, IsDesignTimeCreatable=True }">
+             d:DataContext="{ d:DesignInstance Type=vm:BookControlViewModel, IsDesignTimeCreatable=True }">
     <StackPanel Orientation="Horizontal">
         <Button Content="Get all Books" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"

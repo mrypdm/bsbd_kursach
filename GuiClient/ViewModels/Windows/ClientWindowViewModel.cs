@@ -17,11 +17,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllClientsViewModel : AllEntitiesViewModel<ClientDto>
+public class ClientWindowViewModel : AllEntitiesViewModel<ClientDto>
 {
     private readonly IClientsRepository _clientsRepository;
 
-    public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository, IMapper mapper)
+    public ClientWindowViewModel(ISecurityContext securityContext, IClientsRepository repository, IMapper mapper)
         : base(securityContext, mapper)
     {
         _clientsRepository = repository;

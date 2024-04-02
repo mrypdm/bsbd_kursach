@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:GuiClient.ViewModels.UserControls"
              mc:Ignorable="d"
-             d:DataContext="{ d:DesignInstance Type=vm:PrincipalsUserControlViewModel, IsDesignTimeCreatable=True }">
+             d:DataContext="{ d:DesignInstance Type=vm:PrincipalControlViewModel, IsDesignTimeCreatable=True }">
     <StackPanel Orientation="Horizontal">
         <Button Content="Get all Principals" Style="{StaticResource RowControl}"
                 Visibility="{Binding IsWorker, Converter={StaticResource BooleanToVisibilityConverter}}"

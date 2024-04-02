@@ -11,11 +11,11 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllPrincipalsViewModel : AllEntitiesViewModel<Principal>
+public class PrincipalWindowViewModel : AllEntitiesViewModel<Principal>
 {
     private readonly IPrincipalRepository _repository;
 
-    public AllPrincipalsViewModel(ISecurityContext securityContext,
+    public PrincipalWindowViewModel(ISecurityContext securityContext,
         IPrincipalRepository repository,
         IMapper mapper)
         : base(securityContext, mapper)

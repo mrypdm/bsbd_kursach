@@ -16,11 +16,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllTagsViewModel : AllEntitiesViewModel<Tag>
+public class TagWindowViewModel : AllEntitiesViewModel<Tag>
 {
     private readonly ITagsRepository _tagsRepository;
 
-    public AllTagsViewModel(ISecurityContext securityContext, ITagsRepository tagsRepository, IMapper mapper)
+    public TagWindowViewModel(ISecurityContext securityContext, ITagsRepository tagsRepository, IMapper mapper)
         : base(securityContext, mapper)
     {
         _tagsRepository = tagsRepository;

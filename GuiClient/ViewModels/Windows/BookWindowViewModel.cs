@@ -19,12 +19,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllBooksViewModel : AllEntitiesViewModel<BookDto>
+public class BookWindowViewModel : AllEntitiesViewModel<BookDto>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly ITagsRepository _tagsRepository;
 
-    public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
+    public BookWindowViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
         ITagsRepository tagsRepository, IMapper mapper)
         : base(securityContext, mapper)
     {

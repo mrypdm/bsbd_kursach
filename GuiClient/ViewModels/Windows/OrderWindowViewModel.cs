@@ -17,13 +17,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllOrdersViewModel : AllEntitiesViewModel<OrderDto>
+public class OrderWindowViewModel : AllEntitiesViewModel<OrderDto>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IOrderBooksRepository _orderBooksRepository;
     private readonly IBooksRepository _booksRepository;
 
-    public AllOrdersViewModel(ISecurityContext securityContext, IOrdersRepository ordersRepository,
+    public OrderWindowViewModel(ISecurityContext securityContext, IOrdersRepository ordersRepository,
         IOrderBooksRepository orderBooksRepository,
         IBooksRepository booksRepository, IMapper mapper)
         : base(securityContext, mapper)

@@ -14,11 +14,11 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllReviewsViewModel : AllEntitiesViewModel<ReviewDto>
+public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDto>
 {
     private readonly IReviewsRepository _repository;
 
-    public AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepository repository, IMapper mapper)
+    public ReviewWindowViewModel(ISecurityContext securityContext, IReviewsRepository repository, IMapper mapper)
         : base(securityContext, mapper)
     {
         _repository = repository;

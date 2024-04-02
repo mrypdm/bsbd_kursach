@@ -12,9 +12,9 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllBooksInOrderViewModel : AllEntitiesViewModel<BookInOrderDto>
+public class BookInOrderWindowViewModel : AllEntitiesViewModel<BookInOrderDto>
 {
-    public AllBooksInOrderViewModel(ISecurityContext securityContext, IOrderBooksRepository orderBooksRepository,
+    public BookInOrderWindowViewModel(ISecurityContext securityContext, IOrderBooksRepository orderBooksRepository,
         IMapper mapper)
         : base(securityContext, mapper)
     {
