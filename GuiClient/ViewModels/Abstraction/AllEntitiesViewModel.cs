@@ -65,6 +65,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Delete { get; protected init; }
 
+    // TODO set from ctor => use factory
     public void SetProvider(IDtoProvider<TDto> provider)
     {
         Provider = provider;
