@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -59,7 +60,8 @@ public class ReviewsRepository(DbContextFactory factory, IMapper mapper) : IRevi
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = factory.Create();
-        return await context.Database
+
+        var review = await context.Database
             .SqlQuery<DbReview>(
                 $"""
                  insert into Reviews (ClientId, BookId, Score, Text)
@@ -73,8 +75,9 @@ public class ReviewsRepository(DbContextFactory factory, IMapper mapper) : IRevi
                  join Books b on b.Id = r.BookId
                  where c.Id = {client.Id} and b.Id = {book.Id}
                  """)
-            .ProjectTo<Review>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
+            .ToListAsync();
+
+        return mapper.Map<Review>(review.SingleOrDefault());
     }
 
     public async Task<Review> GetByIdAsync(int bookId, int clientId)

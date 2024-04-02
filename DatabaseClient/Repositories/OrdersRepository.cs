@@ -130,10 +130,11 @@ public class OrdersRepository(DbContextFactory factory, IMapper mapper) : IOrder
                      """;
 
         // ReSharper disable once CoVariantArrayConversion
-        return await context.Database
+        var order = await context.Database
             .SqlQueryRaw<DbOrder>(query, args)
-            .ProjectTo<Order>(mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
+            .ToListAsync();
+
+        return mapper.Map<Order>(order.SingleOrDefault());
     }
 
     public async Task<int> GetOrderTotalPrice(Order order)

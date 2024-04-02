@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -115,14 +116,16 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
         await using var context = factory.Create();
-        return await context.Database
+        var client = await context.Database
             .SqlQuery<Client>(
                 $"""
                  insert into Clients (FirstName, LastName, Phone, Gender)
                  output inserted.*
                  values ({firstName}, {lastName}, {phone}, {gender})
                  """)
-            .SingleOrDefaultAsync();
+            .ToListAsync();
+
+        return client.SingleOrDefault();
     }
 
     public async Task UpdateAsync(Client entity)

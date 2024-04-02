@@ -122,14 +122,16 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(author);
 
         await using var context = factory.Create();
-        return await context.Database
+        var book = await context.Database
             .SqlQuery<Book>(
                 $"""
                  insert into Books (Title, Author, ReleaseDate, Count, Price)
                  output inserted.*
                  values ({title}, {author}, {releaseDate}, {price}, {count})
                  """)
-            .SingleOrDefaultAsync();
+            .ToListAsync();
+
+        return book.SingleOrDefault();
     }
 
     public async Task UpdateAsync(Book entity)

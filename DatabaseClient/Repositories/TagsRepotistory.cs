@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
@@ -69,14 +70,16 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
         await using var context = factory.Create();
-        return await context.Database
+        var tag = await context.Database
             .SqlQuery<Tag>(
                 $"""
                  insert into Tags (Name)
                  output inserted.*
                  values ({name})
                  """)
-            .SingleOrDefaultAsync();
+            .ToListAsync();
+
+        return tag.SingleOrDefault();
     }
 
     public async Task AddBookToTagAsync(Book book, Tag tag)
