@@ -1,103 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using DatabaseClient.Extensions;
-using DatabaseClient.Models;
-using DatabaseClient.Repositories.Abstraction;
+﻿using DatabaseClient.Models;
 using GuiClient.Contexts;
 using GuiClient.Dto;
+using GuiClient.DtoProviders;
+using GuiClient.DtoProviders.Books;
 using GuiClient.ViewModels.Abstraction;
-using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class BooksUserControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<Book, BookDto>(securityContext)
 {
-    protected override (Func<IRepository<Book>, IMapper, Task<ICollection<BookDto>>>, Func<Task<BookDto>>) GetFilter(
-        string filterName)
+    protected override IDtoProvider<BookDto> GetProvider(string filterName)
     {
-        switch (filterName)
+        return filterName switch
         {
-            case null:
-                return (null, () => Task.FromResult(new BookDto { Id = -1 }));
-            case "count" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (async (r, m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.GetBooksWithCountLessThanAsync(count));
-                }, null);
-            case "count":
-                return (null, null);
-            case "tags" when AskerWindow.TryAskString("Enter count", out var tagString):
-            {
-                var tags = tagString.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-                var filter = async (IRepository<Book> r, IMapper m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.GetBooksByTagsAsync(tags)) as ICollection<BookDto>;
-                };
-
-                var factory = () => Task.FromResult(new BookDto
-                {
-                    Id = -1,
-                    Tags = tagString
-                });
-
-                return (filter, factory);
-            }
-            case "tags":
-                return (null, null);
-            case "title" when AskerWindow.TryAskString("Enter title", out var value):
-                return (async (r, m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.GetBooksByTitleAsync(value));
-                }, null);
-            case "title":
-                return (null, null);
-            case "author" when AskerWindow.TryAskString("Enter author", out var value):
-            {
-                var filter = async (IRepository<Book> r, IMapper m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.GetBooksByAuthorAsync(value)) as ICollection<BookDto>;
-                };
-
-                var factory = () => Task.FromResult(new BookDto { Id = -1, Author = value });
-
-                return (filter, factory);
-            }
-            case "author":
-                return (null, null);
-            case "revenue" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (async (r, m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.MostRevenueBooks(count));
-                }, null);
-            case "revenue":
-                return (null, null);
-            case "sales" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (async (r, m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.MostSoldBooks(count));
-                }, null);
-            case "sales":
-                return (null, null);
-            case "score" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (async (r, m) =>
-                {
-                    var repo = r.Cast<Book, IBooksRepository>();
-                    return m.Map<BookDto[]>(await repo.MostScoredBooks(count));
-                }, null);
-            case "score":
-                return (null, null);
-            default:
-                throw InvalidFilter(filterName);
-        }
+            null => AllBooksProvider.Create(),
+            "count" => BooksByCountProvider.Create(),
+            "tags" => BooksByTagsProvider.Create(),
+            "title" => BooksByTitleProvider.Create(),
+            "author" => BooksByAuthorProvider.Create(),
+            "revenue" => BooksByRevenueProvider.Create(),
+            "sales" => BooksBySalesProvider.Create(),
+            "score" => BooksByScoreProvider.Create(),
+            _ => throw InvalidFilter(filterName)
+        };
     }
 }

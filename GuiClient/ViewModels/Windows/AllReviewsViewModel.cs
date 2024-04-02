@@ -34,7 +34,12 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
 
     protected override async Task AddAsync()
     {
-        var item = await DtoFactory();
+        var item = await Provider.CreateNewAsync();
+
+        if (item == null)
+        {
+            return;
+        }
 
         var currentItem = Entities
             .FirstOrDefault(m => m.BookId == item.BookId && m.ClientId == item.ClientId);

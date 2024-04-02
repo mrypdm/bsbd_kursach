@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AutoMapper;
-using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dto;
+using GuiClient.DtoProviders.Orders;
+using GuiClient.DtoProviders.Reviews;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,50 +84,13 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
 
     private async Task ShowReviewsAsync(ClientDto client)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
-
-        await allReviews.ShowBy(
-            async (r, m) =>
-            {
-                var repo = r.Cast<Review, IReviewsRepository>();
-                return m.Map<ReviewDto[]>(await repo.GetReviewForClientAsync(new Client { Id = client.Id }));
-            },
-            async () =>
-            {
-                if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
-                {
-                    return null;
-                }
-
-                var book = await _booksRepository.GetByIdAsync(bookId)
-                    ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
-
-                return new ReviewDto
-                {
-                    BookId = book.Id,
-                    Book = book.ToString(),
-                    ClientId = client.Id,
-                    Client = client.ToString()
-                };
-            });
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<ReviewDto>>();
+        await allReviews.ShowBy(ReviewsByClientProvider.Create(client));
     }
 
     private async Task ShowOrdersAsync(ClientDto client)
     {
-        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, OrderDto>>();
-
-        await allOrders.ShowBy(
-            async (r, m) =>
-            {
-                var repo = r.Cast<Order, IOrdersRepository>();
-                return m.Map<OrderDto[]>(await repo.GetOrdersForClientAsync(new Client { Id = client.Id }));
-            },
-            () => Task.FromResult(new OrderDto
-            {
-                Id = -1,
-                ClientId = client.Id,
-                Client = client.ToString(),
-                CreatedAt = DateTime.Now
-            }));
+        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<OrderDto>>();
+        await allOrders.ShowBy(OrdersByClientProvider.Create(client));
     }
 }

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Input;
-using AutoMapper;
-using DatabaseClient.Repositories.Abstraction;
+using GuiClient.DtoProviders;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IEntityViewModel<TEntity, TDto>
+public interface IEntityViewModel<TDto>
 {
     ICommand ShowEntities { get; }
 
-    Task ShowBy(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter, Func<Task<TDto>> dtoFactory);
+    Task ShowBy(IDtoProvider<TDto> provider);
 }

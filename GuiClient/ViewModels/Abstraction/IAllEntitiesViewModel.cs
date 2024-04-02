@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AutoMapper;
-using DatabaseClient.Repositories.Abstraction;
+using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
@@ -25,9 +22,7 @@ public interface IAllEntitiesViewModel<TEntity, TDto>
 
     ICommand Delete { get; }
 
-    void SetFilter(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter);
-
-    void SetDefaultDto(Func<Task<TDto>> factory);
+    void SetProvider(IDtoProvider<TDto> provider);
 
     Task RefreshAsync();
 

@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AutoMapper;
-using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel,
-    IEntityViewModel<TEntity, TDto> where TDto : new()
+    IEntityViewModel<TDto> where TDto : new()
 {
     protected EntityUserControlViewModel(ISecurityContext securityContext)
         : base(securityContext)
@@ -22,19 +20,12 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
 
     public ICommand ShowEntities { get; }
 
-    public async Task ShowBy(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter,
-        Func<Task<TDto>> dtoFactory)
+    public async Task ShowBy(IDtoProvider<TDto> provider)
     {
-        filter ??= async (r, m) =>
-        {
-            var ent = await r.GetAllAsync();
-            return m.Map<TDto[]>(ent);
-        };
+        ArgumentNullException.ThrowIfNull(provider);
 
         var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
-
-        viewModel.SetFilter(filter);
-        viewModel.SetDefaultDto(dtoFactory);
+        viewModel.SetProvider(provider);
 
         var view = new AllEntitiesWindow(viewModel);
 
@@ -46,18 +37,17 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
 
     private async Task GetBy(string filterName)
     {
-        var (filter, factory) = GetFilter(filterName);
+        var provider = GetProvider(filterName);
 
-        if (filterName is not null && filter is null)
+        if (filterName is not null && provider is null)
         {
             return;
         }
 
-        await ShowBy(filter, factory);
+        await ShowBy(provider);
     }
 
-    protected abstract (Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>>, Func<Task<TDto>>) GetFilter(
-        string filterName);
+    protected abstract IDtoProvider<TDto> GetProvider(string filterName);
 
     protected static Exception InvalidFilter(string filter)
     {

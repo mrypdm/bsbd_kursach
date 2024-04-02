@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -12,6 +11,7 @@ using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Converters;
+using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
 using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
@@ -34,16 +34,14 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         Mapper = mapper;
 
         Refresh = new AsyncActionCommand(RefreshAsync);
-        Add = new AsyncActionCommand(AddAsync, () => DtoFactory != null);
+        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
     }
 
+    protected IDtoProvider<TDto> Provider { get; private set; }
+
     protected IMapper Mapper { get; }
-
-    protected Func<Task<TDto>> DtoFactory { get; private set; }
-
-    protected Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> Filter { get; private set; }
 
     public string WindowTitle => $"{typeof(TEntity).Name}s";
 
@@ -67,19 +65,14 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Delete { get; protected init; }
 
-    public void SetFilter(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter)
+    public void SetProvider(IDtoProvider<TDto> provider)
     {
-        Filter = filter;
-    }
-
-    public void SetDefaultDto(Func<Task<TDto>> factory)
-    {
-        DtoFactory = factory;
+        Provider = provider;
     }
 
     public virtual async Task RefreshAsync()
     {
-        Entities = new ObservableCollection<TDto>(await Filter(_repository, Mapper));
+        Entities = new ObservableCollection<TDto>(await Provider.GetAllAsync());
     }
 
     public virtual void EnrichDataGrid(AllEntitiesWindow window)
@@ -94,7 +87,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     protected virtual async Task AddAsync()
     {
-        var item = await DtoFactory();
+        var item = await Provider.CreateNewAsync();
 
         if (item == null)
         {

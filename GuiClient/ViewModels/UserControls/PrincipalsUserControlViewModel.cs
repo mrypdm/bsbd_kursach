@@ -1,31 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using DatabaseClient.Extensions;
-using DatabaseClient.Models;
-using DatabaseClient.Repositories.Abstraction;
+﻿using DatabaseClient.Models;
 using GuiClient.Contexts;
+using GuiClient.DtoProviders;
+using GuiClient.DtoProviders.Principals;
 using GuiClient.ViewModels.Abstraction;
-using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.UserControls;
 
 public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<Principal, Principal>(securityContext)
 {
-    protected override (Func<IRepository<Principal>, IMapper, Task<ICollection<Principal>>>, Func<Task<Principal>>)
-        GetFilter(string filterName)
+    protected override IDtoProvider<Principal> GetProvider(string filterName)
     {
         return filterName switch
         {
-            null => (null, null),
-            "name" when AskerWindow.TryAskString("Enter name", out var name) => (async (r, _) =>
-            {
-                var repo = r.Cast<Principal, IPrincipalRepository>();
-                return [await repo.GetByName(name)];
-            }, null),
-            "name" => (null, null),
+            null => AllPrincipalsProvider.Create(),
+            "name" => PrincipalByNameProvider.Create(),
             _ => throw InvalidFilter(filterName)
         };
     }

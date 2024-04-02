@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AutoMapper;
-using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dto;
+using GuiClient.DtoProviders.BooksInOrder;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,14 +54,6 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
         AddButton(window, nameof(OrderDto.TotalSum), nameof(ShowTotalSum), true);
     }
 
-    protected override async Task AddAsync()
-    {
-        var item = await DtoFactory();
-        item.PropertyChanged += (_, _) => OnPropertyChanged(nameof(Entities));
-        Entities.Add(item);
-        SelectedItem = item;
-    }
-
     protected override async Task UpdateAsync([NotNull] OrderDto item)
     {
         if (item.Id != -1)
@@ -91,40 +82,10 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 
     private async Task ShowBooksAsync(OrderDto item)
     {
+        // TODO: as IEntityViewModel
         var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>>();
 
-        if (item.Id == -1)
-        {
-            viewModel.SetDefaultDto(async () =>
-            {
-                if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
-                {
-                    return null;
-                }
-
-                var book = await _booksRepository.GetByIdAsync(bookId)
-                    ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
-
-                return new BookInOrderDto
-                {
-                    OrderId = item.Id,
-                    BookId = book.Id,
-                    Book = book.ToString(),
-                    Price = book.Price,
-                    Count = 1
-                };
-            });
-
-            viewModel.SetFilter((_, _) => Task.FromResult(item.Books));
-        }
-        else
-        {
-            viewModel.SetFilter(async (r, m) =>
-            {
-                var repo = r.Cast<OrdersToBook, IOrderBooksRepository>();
-                return m.Map<BookInOrderDto[]>(await repo.GetBooksForOrderAsync(new Order { Id = item.Id }));
-            });
-        }
+        viewModel.SetProvider(BooksByOrderProvider.Create(item));
 
         await viewModel.RefreshAsync();
 

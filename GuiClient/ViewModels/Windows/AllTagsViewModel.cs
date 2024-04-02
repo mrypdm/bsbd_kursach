@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AutoMapper;
-using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dto;
+using GuiClient.DtoProviders.Books;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,18 +60,7 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
 
     private async Task ShowBooksAsync(Tag item)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Book, BookDto>>();
-
-        await allReviews.ShowBy(
-            async (r, m) =>
-            {
-                var repo = r.Cast<Book, IBooksRepository>();
-                return m.Map<BookDto[]>(await repo.GetBooksByTagsAsync([item.Name]));
-            },
-            () => Task.FromResult(new BookDto
-            {
-                Id = -1,
-                Tags = item.Name
-            }));
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookDto>>();
+        await allReviews.ShowBy(BooksByTagsProvider.Create(item.Name));
     }
 }
