@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models.Internal;
 
 [Serializable]
-public class DbOrder
+internal class DbOrder
 {
     public int OrderId { get; set; }
 

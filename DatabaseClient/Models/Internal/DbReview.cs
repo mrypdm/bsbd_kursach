@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models.Internal;
 
 [Serializable]
-public class DbReview
+internal class DbReview
 {
     public int BookId { get; set; }
 
