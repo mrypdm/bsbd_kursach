@@ -48,7 +48,8 @@ public class ReviewsByClientProvider : IDtoProvider<ReviewDto>
             BookId = book.Id,
             Book = book.ToString(),
             ClientId = _client.Id,
-            Client = _client.ToString()
+            Client = _client.ToString(),
+            IsNew = true
         };
     }
 

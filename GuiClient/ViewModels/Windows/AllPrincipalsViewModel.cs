@@ -18,31 +18,40 @@ public class AllPrincipalsViewModel : AllEntitiesViewModel<Principal, Principal>
     public AllPrincipalsViewModel(ISecurityContext securityContext,
         IPrincipalRepository repository,
         IMapper mapper)
-        : base(securityContext, repository, mapper)
+        : base(securityContext, mapper)
     {
         _repository = repository;
+
+        ChangePasswordForce = new AsyncFuncCommand<Principal>(ChangePasswordForceAsync, _ => IsSecurity);
+
         Add = new AsyncActionCommand(AddPrincipalAsync, () => IsSecurity);
-        ChangePasswordForce = new AsyncFuncCommand<Principal>(ChangePasswordForceAsync);
+        Update = new AsyncFuncCommand<Principal>(UpdateAsync, _ => false);
+        Delete = new AsyncFuncCommand<Principal>(DeleteAsync, _ => IsSecurity);
     }
 
     public ICommand ChangePasswordForce { get; }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        if (IsSecurity)
-        {
-            AddButton(window, "Delete", nameof(Delete));
-            AddButton(window, "Change password (force)", nameof(ChangePasswordForce));
-        }
+        ArgumentNullException.ThrowIfNull(window);
 
-        AddText(window, nameof(Principal.Id), true);
-        AddText(window, nameof(Principal.Name), true);
-        AddText(window, nameof(Principal.Role), true);
+        window.AddButton("Delete", nameof(Delete));
+        window.AddButton("Change password (force)", nameof(ChangePasswordForce));
+
+        window.AddText(nameof(Principal.Id), true);
+        window.AddText(nameof(Principal.Name), true);
+        window.AddText(nameof(Principal.Role), true);
     }
 
     protected override Task UpdateAsync(Principal item)
     {
         throw new InvalidOperationException("Cannot update principal");
+    }
+
+    protected override async Task DeleteAsync(Principal item)
+    {
+        await _repository.RemoveAsync(item);
+        await RefreshAsync();
     }
 
     private async Task ChangePasswordForceAsync(Principal item)

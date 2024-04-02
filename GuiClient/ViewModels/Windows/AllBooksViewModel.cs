@@ -23,15 +23,13 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly ITagsRepository _tagsRepository;
-    private readonly IClientsRepository _clientsRepository;
 
     public AllBooksViewModel(ISecurityContext securityContext, IBooksRepository booksRepository,
-        ITagsRepository tagsRepository, IClientsRepository clientsRepository, IMapper mapper)
-        : base(securityContext, booksRepository, mapper)
+        ITagsRepository tagsRepository, IMapper mapper)
+        : base(securityContext, mapper)
     {
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
-        _clientsRepository = clientsRepository;
 
         ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync, item => item?.Id != -1);
         ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync, item => item?.Id != -1);
@@ -46,6 +44,10 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
             async item => { item.Sales = await _booksRepository.CountOfSales(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Sales: null });
         ShowTags = new AsyncFuncCommand<BookDto>(ShowTagsAsync, item => item is { Id: not -1 });
+
+        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
+        Update = new AsyncFuncCommand<BookDto>(UpdateAsync);
+        Delete = new AsyncFuncCommand<BookDto>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
     }
 
     public ICommand ShowReviews { get; }
@@ -62,25 +64,23 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        base.EnrichDataGrid(window);
+        ArgumentNullException.ThrowIfNull(window);
 
-        if (IsWorker)
-        {
-            AddButton(window, "Update", nameof(Update));
-            AddButton(window, "Show reviews", nameof(ShowReviews));
-            AddButton(window, "Show orders", nameof(ShowOrders));
-        }
+        window.AddButton("Delete", nameof(Delete));
+        window.AddButton("Update", nameof(Update));
+        window.AddButton("Show reviews", nameof(ShowReviews));
+        window.AddButton("Show orders", nameof(ShowOrders));
 
-        AddText(window, nameof(BookDto.Id), true);
-        AddText(window, nameof(BookDto.Title));
-        AddText(window, nameof(BookDto.Author));
-        AddText(window, nameof(BookDto.ReleaseDate));
-        AddText(window, nameof(BookDto.Count));
-        AddText(window, nameof(BookDto.Price));
-        AddButton(window, nameof(BookDto.Sales), nameof(ShowSales), true);
-        AddButton(window, nameof(BookDto.Revenue), nameof(ShowRevenue), true);
-        AddButton(window, nameof(BookDto.Score), nameof(ShowScore), true);
-        AddButton(window, nameof(BookDto.Tags), nameof(ShowTags), true);
+        window.AddText(nameof(BookDto.Id), true);
+        window.AddText(nameof(BookDto.Title));
+        window.AddText(nameof(BookDto.Author));
+        window.AddText(nameof(BookDto.ReleaseDate));
+        window.AddText(nameof(BookDto.Count));
+        window.AddText(nameof(BookDto.Price));
+        window.AddButton(nameof(BookDto.Sales), nameof(ShowSales), true);
+        window.AddButton(nameof(BookDto.Revenue), nameof(ShowRevenue), true);
+        window.AddButton(nameof(BookDto.Score), nameof(ShowScore), true);
+        window.AddButton(nameof(BookDto.Tags), nameof(ShowTags), true);
     }
 
     protected override async Task UpdateAsync([NotNull] BookDto item)
@@ -116,6 +116,18 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
             }
         }
 
+        await RefreshAsync();
+    }
+
+    protected override async Task DeleteAsync([NotNull] BookDto item)
+    {
+        if (item.Id == -1)
+        {
+            Entities.Remove(item);
+            return;
+        }
+
+        await _booksRepository.RemoveAsync(new Book { Id = item.Id });
         await RefreshAsync();
     }
 

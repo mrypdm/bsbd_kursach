@@ -26,17 +26,19 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
     public AllOrdersViewModel(ISecurityContext securityContext, IOrdersRepository ordersRepository,
         IOrderBooksRepository orderBooksRepository,
         IBooksRepository booksRepository, IMapper mapper)
-        : base(securityContext, ordersRepository, mapper)
+        : base(securityContext, mapper)
     {
         _ordersRepository = ordersRepository;
         _orderBooksRepository = orderBooksRepository;
         _booksRepository = booksRepository;
 
-        Update = new AsyncFuncCommand<OrderDto>(UpdateAsync, item => item?.Id == -1);
-
         ShowBooks = new AsyncFuncCommand<OrderDto>(ShowBooksAsync);
         ShowTotalSum =
             new AsyncFuncCommand<OrderDto>(ShowTotalSumAsync, item => item is { Id: not -1, TotalSum: null });
+
+        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
+        Update = new AsyncFuncCommand<OrderDto>(UpdateAsync, item => item?.Id == -1);
+        Delete = new AsyncFuncCommand<OrderDto>(DeleteAsync, item => item?.Id == -1);
     }
 
     public ICommand ShowBooks { get; }
@@ -45,22 +47,21 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        AddButton(window, "Update", nameof(Update));
-        AddButton(window, "Manage books", nameof(ShowBooks));
-        AddText(window, nameof(OrderDto.Id), true);
-        AddText(window, nameof(OrderDto.ClientId), true);
-        AddText(window, nameof(OrderDto.Client), true);
-        AddText(window, nameof(OrderDto.CreatedAt), true);
-        AddButton(window, nameof(OrderDto.TotalSum), nameof(ShowTotalSum), true);
+        ArgumentNullException.ThrowIfNull(window);
+
+        window.AddButton("Delete", nameof(Delete));
+        window.AddButton("Update", nameof(Update));
+        window.AddButton("Show books", nameof(ShowBooks));
+
+        window.AddText(nameof(OrderDto.Id), true);
+        window.AddText(nameof(OrderDto.ClientId), true);
+        window.AddText(nameof(OrderDto.Client), true);
+        window.AddText(nameof(OrderDto.CreatedAt), true);
+        window.AddButton(nameof(OrderDto.TotalSum), nameof(ShowTotalSum), true);
     }
 
     protected override async Task UpdateAsync([NotNull] OrderDto item)
     {
-        if (item.Id != -1)
-        {
-            throw new NotSupportedException("Cannot update order");
-        }
-
         var books = item.Books
             .Select(m => new OrdersToBook { BookId = m.BookId, Count = m.Count })
             .ToList();
@@ -69,6 +70,12 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
         MessageBox.Show($"Order created with ID={order.Id}");
 
         await RefreshAsync();
+    }
+
+    protected override Task DeleteAsync(OrderDto item)
+    {
+        Entities.Remove(item);
+        return Task.CompletedTask;
     }
 
     private async Task ShowTotalSumAsync(OrderDto item)

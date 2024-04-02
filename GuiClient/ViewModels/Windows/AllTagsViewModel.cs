@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -20,27 +21,29 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
     private readonly ITagsRepository _tagsRepository;
 
     public AllTagsViewModel(ISecurityContext securityContext, ITagsRepository tagsRepository, IMapper mapper)
-        : base(securityContext, tagsRepository, mapper)
+        : base(securityContext, mapper)
     {
         _tagsRepository = tagsRepository;
 
         ShowBooks = new AsyncFuncCommand<Tag>(ShowBooksAsync, item => item?.Id != -1);
+
+        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
+        Update = new AsyncFuncCommand<Tag>(UpdateAsync);
+        Delete = new AsyncFuncCommand<Tag>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
     }
 
     public ICommand ShowBooks { get; }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        base.EnrichDataGrid(window);
+        ArgumentNullException.ThrowIfNull(window);
 
-        if (IsWorker)
-        {
-            AddButton(window, "Update", nameof(Update));
-            AddButton(window, "Show books", nameof(ShowBooks));
-        }
+        window.AddButton("Delete", nameof(Delete));
+        window.AddButton("Update", nameof(Update));
+        window.AddButton("Show books", nameof(ShowBooks));
 
-        AddText(window, nameof(Tag.Id), true);
-        AddText(window, nameof(Tag.Name));
+        window.AddText(nameof(Tag.Id), true);
+        window.AddText(nameof(Tag.Name));
     }
 
     protected override async Task UpdateAsync([NotNull] Tag item)
@@ -55,6 +58,18 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
             await _tagsRepository.UpdateAsync(item);
         }
 
+        await RefreshAsync();
+    }
+
+    protected override async Task DeleteAsync([NotNull] Tag item)
+    {
+        if (item.Id == -1)
+        {
+            Entities.Remove(item);
+            return;
+        }
+
+        await _tagsRepository.RemoveAsync(new Tag { Id = item.Id });
         await RefreshAsync();
     }
 

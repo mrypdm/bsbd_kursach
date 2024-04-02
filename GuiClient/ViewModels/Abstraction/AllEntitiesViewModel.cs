@@ -1,42 +1,30 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using AutoMapper;
-using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Converters;
 using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
-using Binding = System.Windows.Data.Binding;
-using Button = System.Windows.Controls.Button;
-using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 
 namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TEntity, TDto>
 {
-    private readonly IRepository<TEntity> _repository;
     private ObservableCollection<TDto> _entities;
 
     private TDto _selectedItem;
 
-    protected AllEntitiesViewModel(ISecurityContext securityContext, IRepository<TEntity> repository,
-        IMapper mapper)
+    protected AllEntitiesViewModel(ISecurityContext securityContext, IMapper mapper)
         : base(securityContext)
     {
-        _repository = repository;
         Mapper = mapper;
-
         Refresh = new AsyncActionCommand(RefreshAsync);
-        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
-        Update = new AsyncFuncCommand<TDto>(UpdateAsync);
-        Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
+
+        Add = new AsyncActionCommand(AddAsync, () => false);
+        Update = new AsyncFuncCommand<TDto>(UpdateAsync, _ => false);
+        Delete = new AsyncFuncCommand<TDto>(DeleteAsync, _ => false);
     }
 
     protected IDtoProvider<TDto> Provider { get; private set; }
@@ -48,7 +36,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
     public ObservableCollection<TDto> Entities
     {
         get => _entities;
-        protected set => SetField(ref _entities, value);
+        private set => SetField(ref _entities, value);
     }
 
     public TDto SelectedItem
@@ -59,9 +47,9 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Refresh { get; }
 
-    public ICommand Add { get; protected set; }
+    public ICommand Add { get; protected init; }
 
-    public ICommand Update { get; protected set; }
+    public ICommand Update { get; protected init; }
 
     public ICommand Delete { get; protected init; }
 
@@ -71,20 +59,12 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         Provider = provider;
     }
 
-    public virtual async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         Entities = new ObservableCollection<TDto>(await Provider.GetAllAsync());
     }
 
-    public virtual void EnrichDataGrid(AllEntitiesWindow window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-
-        if (IsAdmin)
-        {
-            AddButton(window, "Delete", nameof(Delete));
-        }
-    }
+    public abstract void EnrichDataGrid(AllEntitiesWindow window);
 
     protected virtual async Task AddAsync()
     {
@@ -99,71 +79,13 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         SelectedItem = item;
     }
 
-    protected abstract Task UpdateAsync(TDto item);
-
-    protected virtual async Task DeleteAsync([NotNull] TDto item)
+    protected virtual Task UpdateAsync(TDto item)
     {
-        var entity = Mapper.Map<TEntity>(item);
-        await _repository.RemoveAsync(entity);
-        await RefreshAsync();
+        throw new NotSupportedException();
     }
 
-    protected static void AddButton([NotNull] AllEntitiesWindow window, string content, string commandPath,
-        bool contentIsPath = false, string header = null)
+    protected virtual Task DeleteAsync(TDto item)
     {
-        var button = new FrameworkElementFactory(typeof(Button));
-
-        if (contentIsPath)
-        {
-            header ??= content;
-            button.SetBinding(ContentControl.ContentProperty, new Binding(content)
-            {
-                Converter = NullToStringConverter.Instance
-            });
-        }
-        else
-        {
-            header ??= "";
-            button.SetValue(ContentControl.ContentProperty, content);
-        }
-
-        button.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
-        button.SetValue(Control.PaddingProperty, new Thickness(5));
-        button.SetBinding(ButtonBase.CommandProperty, new Binding($"DataContext.{commandPath}")
-        {
-            RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DataGrid), 1)
-        });
-        button.SetBinding(ButtonBase.CommandParameterProperty, new Binding());
-
-        window.DataGrid.Columns.Add(new DataGridTemplateColumn
-        {
-            Header = header,
-            IsReadOnly = true,
-            CellTemplate = new DataTemplate
-            {
-                VisualTree = button
-            }
-        });
-    }
-
-    protected static void AddText([NotNull] AllEntitiesWindow window, string value, bool readOnly = false,
-        bool allowWrap = false, string header = null)
-    {
-        var text = new DataGridTextColumn
-        {
-            Header = header ?? value,
-            IsReadOnly = readOnly,
-            Binding = new Binding(value),
-            ElementStyle = new Style(typeof(TextBlock))
-            {
-                Setters =
-                {
-                    new Setter(TextBlock.TextWrappingProperty, allowWrap ? TextWrapping.Wrap : TextWrapping.NoWrap),
-                    new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Center)
-                }
-            }
-        };
-
-        window.DataGrid.Columns.Add(text);
+        throw new NotSupportedException();
     }
 }

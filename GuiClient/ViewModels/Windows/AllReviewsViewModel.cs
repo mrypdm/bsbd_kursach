@@ -1,10 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
+using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
@@ -12,24 +14,33 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepository repository, IMapper mapper)
-    : AllEntitiesViewModel<Review, ReviewDto>(securityContext, repository, mapper)
+public class AllReviewsViewModel : AllEntitiesViewModel<Review, ReviewDto>
 {
+    private readonly IReviewsRepository _repository;
+
+    public AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepository repository, IMapper mapper)
+        : base(securityContext, mapper)
+    {
+        _repository = repository;
+
+        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
+        Update = new AsyncFuncCommand<ReviewDto>(UpdateAsync, item => item?.IsNew == true || IsAdmin);
+        Delete = new AsyncFuncCommand<ReviewDto>(DeleteAsync, item => item?.IsNew == true || IsAdmin);
+    }
+
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        base.EnrichDataGrid(window);
+        ArgumentNullException.ThrowIfNull(window);
 
-        if (IsAdmin)
-        {
-            AddButton(window, "Update", nameof(Update));
-        }
+        window.AddButton("Delete", nameof(Delete));
+        window.AddButton("Update", nameof(Update));
 
-        AddText(window, nameof(ReviewDto.BookId), true);
-        AddText(window, nameof(ReviewDto.Book), true);
-        AddText(window, nameof(ReviewDto.ClientId), true);
-        AddText(window, nameof(ReviewDto.Client), true);
-        AddText(window, nameof(ReviewDto.Score));
-        AddText(window, nameof(ReviewDto.Text));
+        window.AddText(nameof(ReviewDto.BookId), true);
+        window.AddText(nameof(ReviewDto.Book), true);
+        window.AddText(nameof(ReviewDto.ClientId), true);
+        window.AddText(nameof(ReviewDto.Client), true);
+        window.AddText(nameof(ReviewDto.Score));
+        window.AddText(nameof(ReviewDto.Text));
     }
 
     protected override async Task AddAsync()
@@ -56,11 +67,9 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
 
     protected override async Task UpdateAsync([NotNull] ReviewDto item)
     {
-        var review = await repository.GetByIdAsync(item.BookId, item.ClientId);
-
-        if (review == null)
+        if (item.IsNew)
         {
-            review = await repository.AddReviewAsync(
+            var review = await _repository.AddReviewAsync(
                 new Client { Id = item.ClientId },
                 new Book { Id = item.BookId },
                 item.Score,
@@ -69,12 +78,27 @@ public class AllReviewsViewModel(ISecurityContext securityContext, IReviewsRepos
         }
         else
         {
-            review.Score = item.Score;
-            review.Text = item.Text;
-
-            await repository.UpdateAsync(review);
+            await _repository.UpdateAsync(new Review
+            {
+                BookId = item.BookId,
+                ClientId = item.ClientId,
+                Score = item.Score,
+                Text = item.Text
+            });
         }
 
+        await RefreshAsync();
+    }
+
+    protected override async Task DeleteAsync([NotNull] ReviewDto item)
+    {
+        if (item.IsNew)
+        {
+            Entities.Remove(item);
+            return;
+        }
+
+        await _repository.RemoveAsync(new Review { BookId = item.BookId, ClientId = item.ClientId });
         await RefreshAsync();
     }
 }

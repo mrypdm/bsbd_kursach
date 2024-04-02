@@ -5,6 +5,8 @@ namespace GuiClient.Dto;
 [Serializable]
 public class ReviewDto
 {
+    public bool IsNew { get; set; }
+
     public int BookId { get; init; }
 
     public int ClientId { get; init; }

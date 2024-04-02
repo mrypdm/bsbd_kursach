@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -19,14 +20,11 @@ namespace GuiClient.ViewModels.Windows;
 public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
 {
     private readonly IClientsRepository _clientsRepository;
-    private readonly IBooksRepository _booksRepository;
 
-    public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository,
-        IBooksRepository booksRepository, IMapper mapper)
-        : base(securityContext, repository, mapper)
+    public AllClientsViewModel(ISecurityContext securityContext, IClientsRepository repository, IMapper mapper)
+        : base(securityContext, mapper)
     {
         _clientsRepository = repository;
-        _booksRepository = booksRepository;
 
         ShowReviews = new AsyncFuncCommand<ClientDto>(ShowReviewsAsync, item => item?.Id != -1);
         ShowOrders = new AsyncFuncCommand<ClientDto>(ShowOrdersAsync, item => item?.Id != -1);
@@ -34,6 +32,10 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
         ShowRevenue = new AsyncFuncCommand<ClientDto>(
             async item => { item.Revenue = await _clientsRepository.RevenueOfClient(new Client { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
+
+        Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
+        Update = new AsyncFuncCommand<ClientDto>(UpdateAsync);
+        Delete = new AsyncFuncCommand<ClientDto>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
     }
 
     public ICommand ShowOrders { get; }
@@ -44,22 +46,20 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
-        base.EnrichDataGrid(window);
+        ArgumentNullException.ThrowIfNull(window);
 
-        if (IsWorker)
-        {
-            AddButton(window, "Update", nameof(Update));
-            AddButton(window, "Show reviews", nameof(ShowReviews));
-            AddButton(window, "Show orders", nameof(ShowOrders));
-        }
+        window.AddButton("Delete", nameof(Delete));
+        window.AddButton("Update", nameof(Update));
+        window.AddButton("Show reviews", nameof(ShowReviews));
+        window.AddButton("Show orders", nameof(ShowOrders));
 
-        AddText(window, nameof(ClientDto.Id), true);
-        AddText(window, nameof(ClientDto.FirstName));
-        AddText(window, nameof(ClientDto.LastName));
-        AddText(window, nameof(ClientDto.Phone));
-        AddText(window, nameof(ClientDto.Gender));
-        AddText(window, nameof(ClientDto.OrdersCount), true);
-        AddButton(window, nameof(ClientDto.Revenue), nameof(ShowRevenue), true);
+        window.AddText(nameof(ClientDto.Id), true);
+        window.AddText(nameof(ClientDto.FirstName));
+        window.AddText(nameof(ClientDto.LastName));
+        window.AddText(nameof(ClientDto.Phone));
+        window.AddText(nameof(ClientDto.Gender));
+        window.AddText(nameof(ClientDto.OrdersCount), true);
+        window.AddButton(nameof(ClientDto.Revenue), nameof(ShowRevenue), true);
     }
 
     protected override async Task UpdateAsync([NotNull] ClientDto item)
@@ -79,6 +79,18 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
             await _clientsRepository.UpdateAsync(client);
         }
 
+        await RefreshAsync();
+    }
+
+    protected override async Task DeleteAsync([NotNull] ClientDto item)
+    {
+        if (item.Id == -1)
+        {
+            Entities.Remove(item);
+            return;
+        }
+
+        await _clientsRepository.RemoveAsync(new Client { Id = item.Id });
         await RefreshAsync();
     }
 

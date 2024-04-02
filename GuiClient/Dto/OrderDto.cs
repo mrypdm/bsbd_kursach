@@ -6,7 +6,7 @@ namespace GuiClient.Dto;
 
 public sealed class OrderDto : NotifyPropertyChanged
 {
-    private ICollection<BookInOrderDto> _books = new List<BookInOrderDto>();
+    private ICollection<BookInOrderDto> _books = [];
     private int? _totalSum;
 
     public int Id { get; set; } = -1;
