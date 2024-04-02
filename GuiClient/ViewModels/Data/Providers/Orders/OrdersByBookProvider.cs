@@ -50,7 +50,7 @@ public class OrdersByBookProvider : IDataViewModelProvider<OrderDataViewModel>
             CreatedAt = DateTime.Now,
             Books =
             [
-                new BookInOrderDataViewModel
+                new OrderBookDataViewModel
                 {
                     OrderId = -1,
                     BookId = _book.Id,

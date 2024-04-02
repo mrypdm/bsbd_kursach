@@ -6,7 +6,7 @@ namespace GuiClient.ViewModels.Data;
 
 public sealed class OrderDataViewModel : NotifyPropertyChanged
 {
-    private ICollection<BookInOrderDataViewModel> _books = [];
+    private ICollection<OrderBookDataViewModel> _books = [];
     private int? _totalSum;
 
     public int Id { get; set; } = -1;
@@ -17,7 +17,7 @@ public sealed class OrderDataViewModel : NotifyPropertyChanged
 
     public DateTime CreatedAt { get; set; }
 
-    public ICollection<BookInOrderDataViewModel> Books
+    public ICollection<OrderBookDataViewModel> Books
     {
         get => _books;
         set

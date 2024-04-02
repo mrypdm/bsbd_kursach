@@ -114,7 +114,7 @@ public partial class App : Application
         services.AddTransient<IEntityViewModel<OrderDataViewModel>, OrderControlViewModel>();
         services.AddTransient<IEntityViewModel<ReviewDataViewModel>, ReviewControlViewModel>();
         services.AddTransient<IEntityViewModel<Principal>, PrincipalControlViewModel>();
-        services.AddTransient<IEntityViewModel<BookInOrderDataViewModel>, BookInOrderControlViewModel>();
+        services.AddTransient<IEntityViewModel<OrderBookDataViewModel>, OrderBookControlViewModel>();
 
         services.AddTransient<IAllEntitiesViewModel<BookDataViewModel>, BookWindowViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Tag>, TagWindowViewModel>();
@@ -122,6 +122,6 @@ public partial class App : Application
         services.AddTransient<IAllEntitiesViewModel<ReviewDataViewModel>, ReviewWindowViewModel>();
         services.AddTransient<IAllEntitiesViewModel<OrderDataViewModel>, OrderWindowViewModel>();
         services.AddTransient<IAllEntitiesViewModel<Principal>, PrincipalWindowViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<BookInOrderDataViewModel>, BookInOrderWindowViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<OrderBookDataViewModel>, OrderBookWindowViewModel>();
     }
 }

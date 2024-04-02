@@ -6,9 +6,9 @@ using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GuiClient.ViewModels.Data.Providers.BooksInOrder;
+namespace GuiClient.ViewModels.Data.Providers.OrderBook;
 
-public class BooksByOrderProvider : IDataViewModelProvider<BookInOrderDataViewModel>
+public class BooksByOrderProvider : IDataViewModelProvider<OrderBookDataViewModel>
 {
     private readonly IOrderBooksRepository _orderBooksRepository;
     private readonly IBooksRepository _booksRepository;
@@ -26,7 +26,7 @@ public class BooksByOrderProvider : IDataViewModelProvider<BookInOrderDataViewMo
         _order = order;
     }
 
-    public async Task<ICollection<BookInOrderDataViewModel>> GetAllAsync()
+    public async Task<ICollection<OrderBookDataViewModel>> GetAllAsync()
     {
         if (_order.Id == -1)
         {
@@ -34,10 +34,10 @@ public class BooksByOrderProvider : IDataViewModelProvider<BookInOrderDataViewMo
         }
 
         var books = await _orderBooksRepository.GetBooksForOrderAsync(new Order { Id = _order.Id });
-        return _mapper.Map<BookInOrderDataViewModel[]>(books);
+        return _mapper.Map<OrderBookDataViewModel[]>(books);
     }
 
-    public async Task<BookInOrderDataViewModel> CreateNewAsync()
+    public async Task<OrderBookDataViewModel> CreateNewAsync()
     {
         if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
         {
@@ -47,7 +47,7 @@ public class BooksByOrderProvider : IDataViewModelProvider<BookInOrderDataViewMo
         var book = await _booksRepository.GetByIdAsync(bookId)
             ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
 
-        return new BookInOrderDataViewModel
+        return new OrderBookDataViewModel
         {
             OrderId = -1,
             BookId = book.Id,

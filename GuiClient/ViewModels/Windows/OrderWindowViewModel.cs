@@ -11,7 +11,7 @@ using GuiClient.Contexts;
 using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
-using GuiClient.ViewModels.Data.Providers.BooksInOrder;
+using GuiClient.ViewModels.Data.Providers.OrderBook;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
@@ -79,13 +79,13 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
         if (item.Id != -1)
         {
             var entities = await _orderBooksRepository.GetBooksForOrderAsync(new Order { Id = item.Id });
-            item.Books = Mapper.Map<BookInOrderDataViewModel[]>(entities);
+            item.Books = Mapper.Map<OrderBookDataViewModel[]>(entities);
         }
     }
 
     private async Task ShowBooksAsync(OrderDataViewModel item)
     {
-        var entityViewModel = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookInOrderDataViewModel>>();
+        var entityViewModel = App.ServiceProvider.GetRequiredService<IEntityViewModel<OrderBookDataViewModel>>();
         var windowViewModel = await entityViewModel.ShowBy(BooksByOrderProvider.Create(item), true);
         item.Books = windowViewModel.Entities;
     }
