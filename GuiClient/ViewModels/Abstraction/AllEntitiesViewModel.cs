@@ -37,15 +37,13 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
         Add = new AsyncActionCommand(AddAsync, () => DtoFactory != null);
         Update = new AsyncFuncCommand<TDto>(UpdateAsync);
         Delete = new AsyncFuncCommand<TDto>(DeleteAsync);
-
-        Filter = r => r.GetAllAsync();
     }
 
     protected IMapper Mapper { get; }
 
     protected Func<Task<TDto>> DtoFactory { get; private set; }
 
-    protected Func<IRepository<TEntity>, Task<ICollection<TEntity>>> Filter { get; private set; }
+    protected Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> Filter { get; private set; }
 
     public string WindowTitle => $"{typeof(TEntity).Name}s";
 
@@ -69,7 +67,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public ICommand Delete { get; protected init; }
 
-    public void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter)
+    public void SetFilter(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter)
     {
         Filter = filter;
     }
@@ -81,8 +79,7 @@ public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewMod
 
     public virtual async Task RefreshAsync()
     {
-        var entities = await Filter(_repository);
-        Entities = new ObservableCollection<TDto>(Mapper.Map<TDto[]>(entities));
+        Entities = new ObservableCollection<TDto>(await Filter(_repository, Mapper));
     }
 
     public virtual void EnrichDataGrid(AllEntitiesWindow window)

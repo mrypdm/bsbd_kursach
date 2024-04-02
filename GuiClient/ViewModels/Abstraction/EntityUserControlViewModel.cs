@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
@@ -21,9 +22,14 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
 
     public ICommand ShowEntities { get; }
 
-    public async Task ShowBy(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter, Func<Task<TDto>> dtoFactory)
+    public async Task ShowBy(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter,
+        Func<Task<TDto>> dtoFactory)
     {
-        filter ??= r => r.GetAllAsync();
+        filter ??= async (r, m) =>
+        {
+            var ent = await r.GetAllAsync();
+            return m.Map<TDto[]>(ent);
+        };
 
         var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
 
@@ -50,7 +56,7 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
         await ShowBy(filter, factory);
     }
 
-    protected abstract (Func<IRepository<TEntity>, Task<ICollection<TEntity>>>, Func<Task<TDto>>) GetFilter(
+    protected abstract (Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>>, Func<Task<TDto>>) GetFilter(
         string filterName);
 
     protected static Exception InvalidFilter(string filter)

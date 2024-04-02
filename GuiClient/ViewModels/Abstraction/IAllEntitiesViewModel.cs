@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Views.Windows;
 
@@ -24,7 +25,7 @@ public interface IAllEntitiesViewModel<TEntity, TDto>
 
     ICommand Delete { get; }
 
-    void SetFilter(Func<IRepository<TEntity>, Task<ICollection<TEntity>>> filter);
+    void SetFilter(Func<IRepository<TEntity>, IMapper, Task<ICollection<TDto>>> filter);
 
     void SetDefaultDto(Func<Task<TDto>> factory);
 

@@ -63,10 +63,10 @@ public class AllTagsViewModel : AllEntitiesViewModel<Tag, Tag>
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Book, BookDto>>();
 
         await allReviews.ShowBy(
-            r =>
+            async (r, m) =>
             {
                 var repo = r.Cast<Book, IBooksRepository>();
-                return repo.GetBooksByTagsAsync([item.Name]);
+                return m.Map<BookDto[]>(await repo.GetBooksByTagsAsync([item.Name]));
             },
             () => Task.FromResult(new BookDto
             {

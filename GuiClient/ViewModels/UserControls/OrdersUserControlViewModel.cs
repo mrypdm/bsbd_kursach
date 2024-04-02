@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Contexts;
@@ -13,7 +14,7 @@ namespace GuiClient.ViewModels.UserControls;
 public class OrdersUserControlViewModel(ISecurityContext securityContext, IClientsRepository clientsRepository)
     : EntityUserControlViewModel<Order, OrderDto>(securityContext)
 {
-    protected override (Func<IRepository<Order>, Task<ICollection<Order>>>, Func<Task<OrderDto>>) GetFilter(
+    protected override (Func<IRepository<Order>, IMapper, Task<ICollection<OrderDto>>>, Func<Task<OrderDto>>) GetFilter(
         string filterName)
     {
         return (null, async () =>

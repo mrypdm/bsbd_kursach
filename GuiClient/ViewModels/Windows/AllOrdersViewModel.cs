@@ -107,18 +107,17 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
                         Count = 1
                     };
                 });
+
+                viewModel.SetFilter((_, _) => Task.FromResult<ICollection<BookInOrderDto>>([]));
             }
-
-            viewModel.SetFilter(async r =>
+            else
             {
-                if (item.Id == -1)
+                viewModel.SetFilter(async (r, m) =>
                 {
-                    return [];
-                }
-
-                var repo = r.Cast<OrdersToBook, IOrderBooksRepository>();
-                return await repo.GetBooksForOrderAsync(new Order { Id = item.Id });
-            });
+                    var repo = r.Cast<OrdersToBook, IOrderBooksRepository>();
+                    return m.Map<BookInOrderDto[]>(await repo.GetBooksForOrderAsync(new Order { Id = item.Id }));
+                });
+            }
 
             await viewModel.RefreshAsync();
         }

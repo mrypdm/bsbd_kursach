@@ -123,10 +123,10 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
 
         await allReviews.ShowBy(
-            r =>
+            async (r, m) =>
             {
                 var repo = r.Cast<Review, IReviewsRepository>();
-                return repo.GetReviewForBooksAsync(new Book { Id = book.Id });
+                return m.Map<ReviewDto[]>(await repo.GetReviewForBooksAsync(new Book { Id = book.Id }));
             },
             async () =>
             {
@@ -153,10 +153,10 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
         var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, OrderDto>>();
 
         await allOrders.ShowBy(
-            r =>
+            async (r, m) =>
             {
                 var repo = r.Cast<Order, IOrdersRepository>();
-                return repo.GetOrdersForBookAsync(new Book { Id = book.Id });
+                return m.Map<OrderDto[]>(await repo.GetOrdersForBookAsync(new Book { Id = book.Id }));
             },
             null);
     }

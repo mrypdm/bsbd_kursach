@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -43,13 +42,6 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
     public ICommand ShowReviews { get; }
 
     public ICommand ShowRevenue { get; }
-
-    public override async Task RefreshAsync()
-    {
-        var entities = await Filter(_clientsRepository);
-        var dtos = Mapper.Map<ClientDto[]>(entities);
-        Entities = new ObservableCollection<ClientDto>(dtos);
-    }
 
     public override void EnrichDataGrid(AllEntitiesWindow window)
     {
@@ -96,10 +88,10 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
         var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<Review, ReviewDto>>();
 
         await allReviews.ShowBy(
-            r =>
+            async (r, m) =>
             {
                 var repo = r.Cast<Review, IReviewsRepository>();
-                return repo.GetReviewForClientAsync(new Client { Id = client.Id });
+                return m.Map<ReviewDto[]>(await repo.GetReviewForClientAsync(new Client { Id = client.Id }));
             },
             async () =>
             {
@@ -126,10 +118,10 @@ public class AllClientsViewModel : AllEntitiesViewModel<Client, ClientDto>
         var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<Order, OrderDto>>();
 
         await allOrders.ShowBy(
-            r =>
+            async (r, m) =>
             {
                 var repo = r.Cast<Order, IOrdersRepository>();
-                return repo.GetOrdersForClientAsync(new Client { Id = client.Id });
+                return m.Map<OrderDto[]>(await repo.GetOrdersForClientAsync(new Client { Id = client.Id }));
             },
             () => Task.FromResult(new OrderDto
             {

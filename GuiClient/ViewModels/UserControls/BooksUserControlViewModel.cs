@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
@@ -14,7 +15,7 @@ namespace GuiClient.ViewModels.UserControls;
 public class BooksUserControlViewModel(ISecurityContext securityContext)
     : EntityUserControlViewModel<Book, BookDto>(securityContext)
 {
-    protected override (Func<IRepository<Book>, Task<ICollection<Book>>>, Func<Task<BookDto>>) GetFilter(
+    protected override (Func<IRepository<Book>, IMapper, Task<ICollection<BookDto>>>, Func<Task<BookDto>>) GetFilter(
         string filterName)
     {
         switch (filterName)
@@ -22,10 +23,10 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case null:
                 return (null, () => Task.FromResult(new BookDto { Id = -1 }));
             case "count" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (async r =>
+                return (async (r, m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return await repo.GetBooksWithCountLessThanAsync(count);
+                    return m.Map<BookDto[]>(await repo.GetBooksWithCountLessThanAsync(count));
                 }, null);
             case "count":
                 return (null, null);
@@ -33,10 +34,10 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             {
                 var tags = tagString.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-                var filter = async (IRepository<Book> r) =>
+                var filter = async (IRepository<Book> r, IMapper m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return await repo.GetBooksByTagsAsync(tags);
+                    return m.Map<BookDto[]>(await repo.GetBooksByTagsAsync(tags)) as ICollection<BookDto>;
                 };
 
                 var factory = () => Task.FromResult(new BookDto
@@ -50,19 +51,19 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case "tags":
                 return (null, null);
             case "title" when AskerWindow.TryAskString("Enter title", out var value):
-                return (async r =>
+                return (async (r, m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return await repo.GetBooksByTitleAsync(value);
+                    return m.Map<BookDto[]>(await repo.GetBooksByTitleAsync(value));
                 }, null);
             case "title":
                 return (null, null);
             case "author" when AskerWindow.TryAskString("Enter author", out var value):
             {
-                var filter = async (IRepository<Book> r) =>
+                var filter = async (IRepository<Book> r, IMapper m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return await repo.GetBooksByAuthorAsync(value);
+                    return m.Map<BookDto[]>(await repo.GetBooksByAuthorAsync(value)) as ICollection<BookDto>;
                 };
 
                 var factory = () => Task.FromResult(new BookDto { Id = -1, Author = value });
@@ -72,26 +73,26 @@ public class BooksUserControlViewModel(ISecurityContext securityContext)
             case "author":
                 return (null, null);
             case "revenue" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (r =>
+                return (async (r, m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return repo.MostRevenueBooks(count);
+                    return m.Map<BookDto[]>(await repo.MostRevenueBooks(count));
                 }, null);
             case "revenue":
                 return (null, null);
             case "sales" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (r =>
+                return (async (r, m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return repo.MostSoldBooks(count);
+                    return m.Map<BookDto[]>(await repo.MostSoldBooks(count));
                 }, null);
             case "sales":
                 return (null, null);
             case "score" when AskerWindow.TryAskInt("Enter count", out var count):
-                return (r =>
+                return (async (r, m) =>
                 {
                     var repo = r.Cast<Book, IBooksRepository>();
-                    return repo.MostScoredBooks(count);
+                    return m.Map<BookDto[]>(await repo.MostScoredBooks(count));
                 }, null);
             case "score":
                 return (null, null);
