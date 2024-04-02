@@ -6,7 +6,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IAllEntitiesViewModel<TEntity, TDto>
+public interface IAllEntitiesViewModel<TDto>
 {
     ObservableCollection<TDto> Entities { get; }
 

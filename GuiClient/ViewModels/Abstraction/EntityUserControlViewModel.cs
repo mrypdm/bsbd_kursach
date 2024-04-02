@@ -24,7 +24,7 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
     {
         ArgumentNullException.ThrowIfNull(provider);
 
-        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TEntity, TDto>>();
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TDto>>();
         viewModel.SetProvider(provider);
 
         var view = new AllEntitiesWindow(viewModel);

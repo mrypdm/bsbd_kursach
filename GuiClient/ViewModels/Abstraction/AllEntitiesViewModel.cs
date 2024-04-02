@@ -10,7 +10,7 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TEntity, TDto>
+public abstract class AllEntitiesViewModel<TEntity, TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TDto>
 {
     private ObservableCollection<TDto> _entities;
 

@@ -113,12 +113,12 @@ public partial class App : Application
         services.AddTransient<IEntityViewModel<ReviewDto>, ReviewsUserControlViewModel>();
         services.AddTransient<IEntityViewModel<Principal>, PrincipalsUserControlViewModel>();
 
-        services.AddTransient<IAllEntitiesViewModel<Book, BookDto>, AllBooksViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Tag, Tag>, AllTagsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Client, ClientDto>, AllClientsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Review, ReviewDto>, AllReviewsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Order, OrderDto>, AllOrdersViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<Principal, Principal>, AllPrincipalsViewModel>();
-        services.AddTransient<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>, AllBooksInOrderViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<BookDto>, AllBooksViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Tag>, AllTagsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<ClientDto>, AllClientsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<ReviewDto>, AllReviewsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<OrderDto>, AllOrdersViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<Principal>, AllPrincipalsViewModel>();
+        services.AddTransient<IAllEntitiesViewModel<BookInOrderDto>, AllBooksInOrderViewModel>();
     }
 }

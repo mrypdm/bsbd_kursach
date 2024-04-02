@@ -90,7 +90,7 @@ public class AllOrdersViewModel : AllEntitiesViewModel<Order, OrderDto>
     private async Task ShowBooksAsync(OrderDto item)
     {
         // TODO: as IEntityViewModel
-        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<OrdersToBook, BookInOrderDto>>();
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<BookInOrderDto>>();
 
         viewModel.SetProvider(BooksByOrderProvider.Create(item));
 
