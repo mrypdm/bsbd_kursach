@@ -8,13 +8,13 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDto>
+public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
 {
     private readonly IReviewsRepository _repository;
 
@@ -24,8 +24,8 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDto>
         _repository = repository;
 
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
-        Update = new AsyncFuncCommand<ReviewDto>(UpdateAsync, item => item?.IsNew == true || IsAdmin);
-        Delete = new AsyncFuncCommand<ReviewDto>(DeleteAsync, item => item?.IsNew == true || IsAdmin);
+        Update = new AsyncFuncCommand<ReviewDataViewModel>(UpdateAsync, item => item?.IsNew == true || IsAdmin);
+        Delete = new AsyncFuncCommand<ReviewDataViewModel>(DeleteAsync, item => item?.IsNew == true || IsAdmin);
     }
 
     public override void SetupDataGrid(AllEntitiesWindow window)
@@ -36,12 +36,12 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDto>
         window.AddButton("Delete", nameof(Delete));
         window.AddButton("Update", nameof(Update));
 
-        window.AddText(nameof(ReviewDto.BookId), true);
-        window.AddText(nameof(ReviewDto.Book), true);
-        window.AddText(nameof(ReviewDto.ClientId), true);
-        window.AddText(nameof(ReviewDto.Client), true);
-        window.AddText(nameof(ReviewDto.Score));
-        window.AddText(nameof(ReviewDto.Text));
+        window.AddText(nameof(ReviewDataViewModel.BookId), true);
+        window.AddText(nameof(ReviewDataViewModel.Book), true);
+        window.AddText(nameof(ReviewDataViewModel.ClientId), true);
+        window.AddText(nameof(ReviewDataViewModel.Client), true);
+        window.AddText(nameof(ReviewDataViewModel.Score));
+        window.AddText(nameof(ReviewDataViewModel.Text));
     }
 
     protected override async Task AddAsync()
@@ -66,7 +66,7 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDto>
         SelectedItem = currentItem;
     }
 
-    protected override async Task UpdateAsync([NotNull] ReviewDto item)
+    protected override async Task UpdateAsync([NotNull] ReviewDataViewModel item)
     {
         if (item.IsNew)
         {
@@ -91,7 +91,7 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDto>
         await RefreshAsync();
     }
 
-    protected override async Task DeleteAsync([NotNull] ReviewDto item)
+    protected override async Task DeleteAsync([NotNull] ReviewDataViewModel item)
     {
         if (item.IsNew)
         {

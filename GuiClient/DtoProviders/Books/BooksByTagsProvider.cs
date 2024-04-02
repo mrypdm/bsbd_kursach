@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Books;
 
-public class BooksByTagsProvider : IDtoProvider<BookDto>
+public class BooksByTagsProvider : IDtoProvider<BookDataViewModel>
 {
     private readonly string[] _tags;
 
@@ -25,15 +25,15 @@ public class BooksByTagsProvider : IDtoProvider<BookDto>
         _tags = tagString?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
-    public async Task<ICollection<BookDto>> GetAllAsync()
+    public async Task<ICollection<BookDataViewModel>> GetAllAsync()
     {
         var books = await _booksRepository.GetBooksByTagsAsync(_tags);
-        return _mapper.Map<BookDto[]>(books);
+        return _mapper.Map<BookDataViewModel[]>(books);
     }
 
-    public Task<BookDto> CreateNewAsync()
+    public Task<BookDataViewModel> CreateNewAsync()
     {
-        return Task.FromResult(new BookDto
+        return Task.FromResult(new BookDataViewModel
         {
             Id = -1,
             Tags = _tagString

@@ -8,8 +8,8 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class EntityUserControlViewModel<TDto> : AuthenticatedViewModel,
-    IEntityViewModel<TDto> where TDto : new()
+public abstract class EntityUserControlViewModel<TDataViewModel> : AuthenticatedViewModel,
+    IEntityViewModel<TDataViewModel> where TDataViewModel : new()
 {
     protected EntityUserControlViewModel(ISecurityContext securityContext)
         : base(securityContext)
@@ -19,11 +19,12 @@ public abstract class EntityUserControlViewModel<TDto> : AuthenticatedViewModel,
 
     public ICommand ShowEntities { get; }
 
-    public async Task<IAllEntitiesViewModel<TDto>> ShowBy(IDtoProvider<TDto> provider, bool showDialog = false)
+    public async Task<IAllEntitiesViewModel<TDataViewModel>> ShowBy(IDtoProvider<TDataViewModel> provider,
+        bool showDialog = false)
     {
         ArgumentNullException.ThrowIfNull(provider);
 
-        var viewModel = AllEntitiesViewModel<TDto>.Create(provider);
+        var viewModel = AllEntitiesViewModel<TDataViewModel>.Create(provider);
         var view = await AllEntitiesWindow.Create(viewModel);
 
         if (showDialog)
@@ -50,7 +51,7 @@ public abstract class EntityUserControlViewModel<TDto> : AuthenticatedViewModel,
         await ShowBy(provider);
     }
 
-    protected abstract IDtoProvider<TDto> GetProvider(string filterName);
+    protected abstract IDtoProvider<TDataViewModel> GetProvider(string filterName);
 
     protected static Exception InvalidFilter(string filter)
     {

@@ -5,11 +5,11 @@ using GuiClient.Views.Windows;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IAllEntitiesViewModel<TDto>
+public interface IAllEntitiesViewModel<TDataViewModel>
 {
-    ObservableCollection<TDto> Entities { get; }
+    ObservableCollection<TDataViewModel> Entities { get; }
 
-    TDto SelectedItem { get; set; }
+    TDataViewModel SelectedItem { get; set; }
 
     string WindowTitle { get; }
 

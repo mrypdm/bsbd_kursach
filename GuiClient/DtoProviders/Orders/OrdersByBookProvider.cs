@@ -4,23 +4,23 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Orders;
 
-public class OrdersByBookProvider : IDtoProvider<OrderDto>
+public class OrdersByBookProvider : IDtoProvider<OrderDataViewModel>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IClientsRepository _clientsRepository;
     private readonly IMapper _mapper;
-    private readonly BookDto _book;
+    private readonly BookDataViewModel _book;
 
     private OrdersByBookProvider(IOrdersRepository ordersRepository,
         IClientsRepository clientsRepository,
         IMapper mapper,
-        BookDto book)
+        BookDataViewModel book)
     {
         _ordersRepository = ordersRepository;
         _clientsRepository = clientsRepository;
@@ -28,13 +28,13 @@ public class OrdersByBookProvider : IDtoProvider<OrderDto>
         _book = book;
     }
 
-    public async Task<ICollection<OrderDto>> GetAllAsync()
+    public async Task<ICollection<OrderDataViewModel>> GetAllAsync()
     {
         var orders = await _ordersRepository.GetOrdersForBookAsync(new Book { Id = _book.Id });
-        return _mapper.Map<OrderDto[]>(orders);
+        return _mapper.Map<OrderDataViewModel[]>(orders);
     }
 
-    public async Task<OrderDto> CreateNewAsync()
+    public async Task<OrderDataViewModel> CreateNewAsync()
     {
         if (!AskerWindow.TryAskInt("Enter client ID", out var clientId))
         {
@@ -44,14 +44,14 @@ public class OrdersByBookProvider : IDtoProvider<OrderDto>
         var client = await _clientsRepository.GetByIdAsync(clientId)
             ?? throw new KeyNotFoundException($"Cannot find book with Id={clientId}");
 
-        return new OrderDto
+        return new OrderDataViewModel
         {
             ClientId = client.Id,
             Client = client.ToString(),
             CreatedAt = DateTime.Now,
             Books =
             [
-                new BookInOrderDto
+                new BookInOrderDataViewModel
                 {
                     OrderId = -1,
                     BookId = _book.Id,
@@ -67,7 +67,7 @@ public class OrdersByBookProvider : IDtoProvider<OrderDto>
 
     public string Name => $"Orders for book '{_book}'";
 
-    public static OrdersByBookProvider Create(BookDto book)
+    public static OrdersByBookProvider Create(BookDataViewModel book)
     {
         return new OrdersByBookProvider(
             App.ServiceProvider.GetRequiredService<IOrdersRepository>(),

@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace GuiClient.Dto;
+namespace GuiClient.ViewModels.Data;
 
 [Serializable]
-public sealed class BookDto : NotifyPropertyChanged
+public sealed class BookDataViewModel : NotifyPropertyChanged
 {
     private int? _revenue;
 

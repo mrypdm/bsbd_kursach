@@ -85,7 +85,7 @@ public partial class AllEntitiesWindow : Window
         DataGrid.Columns.Clear();
     }
 
-    public static async Task<AllEntitiesWindow> Create<TDto>(IAllEntitiesViewModel<TDto> viewModel)
+    public static async Task<AllEntitiesWindow> Create<TDataViewModel>(IAllEntitiesViewModel<TDataViewModel> viewModel)
     {
         ArgumentNullException.ThrowIfNull(viewModel);
 

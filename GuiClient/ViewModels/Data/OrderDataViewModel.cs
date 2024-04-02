@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GuiClient.Dto;
+namespace GuiClient.ViewModels.Data;
 
-public sealed class OrderDto : NotifyPropertyChanged
+public sealed class OrderDataViewModel : NotifyPropertyChanged
 {
-    private ICollection<BookInOrderDto> _books = [];
+    private ICollection<BookInOrderDataViewModel> _books = [];
     private int? _totalSum;
 
     public int Id { get; set; } = -1;
@@ -17,7 +17,7 @@ public sealed class OrderDto : NotifyPropertyChanged
 
     public DateTime CreatedAt { get; set; }
 
-    public ICollection<BookInOrderDto> Books
+    public ICollection<BookInOrderDataViewModel> Books
     {
         get => _books;
         set

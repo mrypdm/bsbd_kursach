@@ -4,33 +4,33 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Orders;
 
-public class OrdersByClientProvider : IDtoProvider<OrderDto>
+public class OrdersByClientProvider : IDtoProvider<OrderDataViewModel>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IMapper _mapper;
-    private readonly ClientDto _client;
+    private readonly ClientDataViewModel _client;
 
-    private OrdersByClientProvider(IOrdersRepository ordersRepository, IMapper mapper, ClientDto client)
+    private OrdersByClientProvider(IOrdersRepository ordersRepository, IMapper mapper, ClientDataViewModel client)
     {
         _ordersRepository = ordersRepository;
         _mapper = mapper;
         _client = client;
     }
 
-    public async Task<ICollection<OrderDto>> GetAllAsync()
+    public async Task<ICollection<OrderDataViewModel>> GetAllAsync()
     {
         var orders = await _ordersRepository.GetOrdersForClientAsync(new Client { Id = _client.Id });
-        return _mapper.Map<OrderDto[]>(orders);
+        return _mapper.Map<OrderDataViewModel[]>(orders);
     }
 
-    public Task<OrderDto> CreateNewAsync()
+    public Task<OrderDataViewModel> CreateNewAsync()
     {
-        return Task.FromResult(new OrderDto
+        return Task.FromResult(new OrderDataViewModel
         {
             Id = -1,
             ClientId = _client.Id,
@@ -43,7 +43,7 @@ public class OrdersByClientProvider : IDtoProvider<OrderDto>
 
     public string Name => $"Orders of client '{_client}'";
 
-    public static OrdersByClientProvider Create(ClientDto client)
+    public static OrdersByClientProvider Create(ClientDataViewModel client)
     {
         return new OrdersByClientProvider(
             App.ServiceProvider.GetRequiredService<IOrdersRepository>(),

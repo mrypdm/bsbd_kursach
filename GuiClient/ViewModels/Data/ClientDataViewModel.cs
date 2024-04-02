@@ -1,8 +1,8 @@
 ﻿using DatabaseClient.Models;
 
-namespace GuiClient.Dto;
+namespace GuiClient.ViewModels.Data;
 
-public class ClientDto : NotifyPropertyChanged
+public class ClientDataViewModel : NotifyPropertyChanged
 {
     private int? _revenue;
 

@@ -3,23 +3,23 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.BooksInOrder;
 
-public class BooksByOrderProvider : IDtoProvider<BookInOrderDto>
+public class BooksByOrderProvider : IDtoProvider<BookInOrderDataViewModel>
 {
     private readonly IOrderBooksRepository _orderBooksRepository;
     private readonly IBooksRepository _booksRepository;
     private readonly IMapper _mapper;
-    private readonly OrderDto _order;
+    private readonly OrderDataViewModel _order;
 
     private BooksByOrderProvider(IOrderBooksRepository orderBooksRepository,
         IBooksRepository booksRepository,
         IMapper mapper,
-        OrderDto order)
+        OrderDataViewModel order)
     {
         _orderBooksRepository = orderBooksRepository;
         _booksRepository = booksRepository;
@@ -27,7 +27,7 @@ public class BooksByOrderProvider : IDtoProvider<BookInOrderDto>
         _order = order;
     }
 
-    public async Task<ICollection<BookInOrderDto>> GetAllAsync()
+    public async Task<ICollection<BookInOrderDataViewModel>> GetAllAsync()
     {
         if (_order.Id == -1)
         {
@@ -35,10 +35,10 @@ public class BooksByOrderProvider : IDtoProvider<BookInOrderDto>
         }
 
         var books = await _orderBooksRepository.GetBooksForOrderAsync(new Order { Id = _order.Id });
-        return _mapper.Map<BookInOrderDto[]>(books);
+        return _mapper.Map<BookInOrderDataViewModel[]>(books);
     }
 
-    public async Task<BookInOrderDto> CreateNewAsync()
+    public async Task<BookInOrderDataViewModel> CreateNewAsync()
     {
         if (!AskerWindow.TryAskInt("Enter book ID", out var bookId))
         {
@@ -48,7 +48,7 @@ public class BooksByOrderProvider : IDtoProvider<BookInOrderDto>
         var book = await _booksRepository.GetByIdAsync(bookId)
             ?? throw new KeyNotFoundException($"Cannot find book with Id={bookId}");
 
-        return new BookInOrderDto
+        return new BookInOrderDataViewModel
         {
             OrderId = -1,
             BookId = book.Id,
@@ -62,7 +62,7 @@ public class BooksByOrderProvider : IDtoProvider<BookInOrderDto>
 
     public string Name => $"Books in order with id '{_order.Id}'";
 
-    public static BooksByOrderProvider Create(OrderDto order)
+    public static BooksByOrderProvider Create(OrderDataViewModel order)
     {
         return new BooksByOrderProvider(
             App.ServiceProvider.GetRequiredService<IOrderBooksRepository>(),

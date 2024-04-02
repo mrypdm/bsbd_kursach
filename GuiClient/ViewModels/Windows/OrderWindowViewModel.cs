@@ -9,15 +9,15 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Dto;
 using GuiClient.DtoProviders.BooksInOrder;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class OrderWindowViewModel : AllEntitiesViewModel<OrderDto>
+public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IOrderBooksRepository _orderBooksRepository;
@@ -32,13 +32,13 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDto>
         _orderBooksRepository = orderBooksRepository;
         _booksRepository = booksRepository;
 
-        ShowBooks = new AsyncFuncCommand<OrderDto>(ShowBooksAsync);
+        ShowBooks = new AsyncFuncCommand<OrderDataViewModel>(ShowBooksAsync);
         ShowTotalSum =
-            new AsyncFuncCommand<OrderDto>(ShowTotalSumAsync, item => item is { Id: not -1, TotalSum: null });
+            new AsyncFuncCommand<OrderDataViewModel>(ShowTotalSumAsync, item => item is { Id: not -1, TotalSum: null });
 
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
-        Update = new AsyncFuncCommand<OrderDto>(UpdateAsync, item => item?.Id == -1);
-        Delete = new AsyncFuncCommand<OrderDto>(DeleteAsync, item => item?.Id == -1);
+        Update = new AsyncFuncCommand<OrderDataViewModel>(UpdateAsync, item => item?.Id == -1);
+        Delete = new AsyncFuncCommand<OrderDataViewModel>(DeleteAsync, item => item?.Id == -1);
     }
 
     public ICommand ShowBooks { get; }
@@ -54,14 +54,14 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDto>
         window.AddButton("Update", nameof(Update));
         window.AddButton("Show books", nameof(ShowBooks));
 
-        window.AddText(nameof(OrderDto.Id), true);
-        window.AddText(nameof(OrderDto.ClientId), true);
-        window.AddText(nameof(OrderDto.Client), true);
-        window.AddText(nameof(OrderDto.CreatedAt), true);
-        window.AddButton(nameof(OrderDto.TotalSum), nameof(ShowTotalSum), true);
+        window.AddText(nameof(OrderDataViewModel.Id), true);
+        window.AddText(nameof(OrderDataViewModel.ClientId), true);
+        window.AddText(nameof(OrderDataViewModel.Client), true);
+        window.AddText(nameof(OrderDataViewModel.CreatedAt), true);
+        window.AddButton(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true);
     }
 
-    protected override async Task UpdateAsync([NotNull] OrderDto item)
+    protected override async Task UpdateAsync([NotNull] OrderDataViewModel item)
     {
         var books = item.Books
             .Select(m => new OrdersToBook { BookId = m.BookId, Count = m.Count })
@@ -73,24 +73,24 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDto>
         await RefreshAsync();
     }
 
-    protected override Task DeleteAsync(OrderDto item)
+    protected override Task DeleteAsync(OrderDataViewModel item)
     {
         Entities.Remove(item);
         return Task.CompletedTask;
     }
 
-    private async Task ShowTotalSumAsync(OrderDto item)
+    private async Task ShowTotalSumAsync(OrderDataViewModel item)
     {
         if (item.Id != -1)
         {
             var entities = await _orderBooksRepository.GetBooksForOrderAsync(new Order { Id = item.Id });
-            item.Books = Mapper.Map<BookInOrderDto[]>(entities);
+            item.Books = Mapper.Map<BookInOrderDataViewModel[]>(entities);
         }
     }
 
-    private async Task ShowBooksAsync(OrderDto item)
+    private async Task ShowBooksAsync(OrderDataViewModel item)
     {
-        var entityViewModel = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookInOrderDto>>();
+        var entityViewModel = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookInOrderDataViewModel>>();
         var windowViewModel = await entityViewModel.ShowBy(BooksByOrderProvider.Create(item), true);
         item.Books = windowViewModel.Entities;
     }

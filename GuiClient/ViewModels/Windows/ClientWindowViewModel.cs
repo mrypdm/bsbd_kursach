@@ -8,16 +8,16 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Dto;
 using GuiClient.DtoProviders.Orders;
 using GuiClient.DtoProviders.Reviews;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class ClientWindowViewModel : AllEntitiesViewModel<ClientDto>
+public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
 {
     private readonly IClientsRepository _clientsRepository;
 
@@ -26,16 +26,16 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDto>
     {
         _clientsRepository = repository;
 
-        ShowReviews = new AsyncFuncCommand<ClientDto>(ShowReviewsAsync, item => item?.Id != -1);
-        ShowOrders = new AsyncFuncCommand<ClientDto>(ShowOrdersAsync, item => item?.Id != -1);
+        ShowReviews = new AsyncFuncCommand<ClientDataViewModel>(ShowReviewsAsync, item => item?.Id != -1);
+        ShowOrders = new AsyncFuncCommand<ClientDataViewModel>(ShowOrdersAsync, item => item?.Id != -1);
 
-        ShowRevenue = new AsyncFuncCommand<ClientDto>(
+        ShowRevenue = new AsyncFuncCommand<ClientDataViewModel>(
             async item => { item.Revenue = await _clientsRepository.RevenueOfClient(new Client { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
 
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
-        Update = new AsyncFuncCommand<ClientDto>(UpdateAsync);
-        Delete = new AsyncFuncCommand<ClientDto>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
+        Update = new AsyncFuncCommand<ClientDataViewModel>(UpdateAsync);
+        Delete = new AsyncFuncCommand<ClientDataViewModel>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
     }
 
     public ICommand ShowOrders { get; }
@@ -54,16 +54,16 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDto>
         window.AddButton("Show reviews", nameof(ShowReviews));
         window.AddButton("Show orders", nameof(ShowOrders));
 
-        window.AddText(nameof(ClientDto.Id), true);
-        window.AddText(nameof(ClientDto.FirstName));
-        window.AddText(nameof(ClientDto.LastName));
-        window.AddText(nameof(ClientDto.Phone));
-        window.AddText(nameof(ClientDto.Gender));
-        window.AddText(nameof(ClientDto.OrdersCount), true);
-        window.AddButton(nameof(ClientDto.Revenue), nameof(ShowRevenue), true);
+        window.AddText(nameof(ClientDataViewModel.Id), true);
+        window.AddText(nameof(ClientDataViewModel.FirstName));
+        window.AddText(nameof(ClientDataViewModel.LastName));
+        window.AddText(nameof(ClientDataViewModel.Phone));
+        window.AddText(nameof(ClientDataViewModel.Gender));
+        window.AddText(nameof(ClientDataViewModel.OrdersCount), true);
+        window.AddButton(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true);
     }
 
-    protected override async Task UpdateAsync([NotNull] ClientDto item)
+    protected override async Task UpdateAsync([NotNull] ClientDataViewModel item)
     {
         if (item.Id == -1)
         {
@@ -83,7 +83,7 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDto>
         await RefreshAsync();
     }
 
-    protected override async Task DeleteAsync([NotNull] ClientDto item)
+    protected override async Task DeleteAsync([NotNull] ClientDataViewModel item)
     {
         if (item.Id == -1)
         {
@@ -95,15 +95,15 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDto>
         await RefreshAsync();
     }
 
-    private async Task ShowReviewsAsync(ClientDto client)
+    private async Task ShowReviewsAsync(ClientDataViewModel client)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<ReviewDto>>();
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<ReviewDataViewModel>>();
         await allReviews.ShowBy(ReviewsByClientProvider.Create(client));
     }
 
-    private async Task ShowOrdersAsync(ClientDto client)
+    private async Task ShowOrdersAsync(ClientDataViewModel client)
     {
-        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<OrderDto>>();
+        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<OrderDataViewModel>>();
         await allOrders.ShowBy(OrdersByClientProvider.Create(client));
     }
 }

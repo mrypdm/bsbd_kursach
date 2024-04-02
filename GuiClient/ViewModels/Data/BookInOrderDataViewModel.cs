@@ -1,6 +1,6 @@
-﻿namespace GuiClient.Dto;
+﻿namespace GuiClient.ViewModels.Data;
 
-public sealed class BookInOrderDto : NotifyPropertyChanged
+public sealed class BookInOrderDataViewModel : NotifyPropertyChanged
 {
     private int _count;
 

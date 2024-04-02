@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Books;
 
-public class AllBooksProvider : IDtoProvider<BookDto>
+public class AllBooksProvider : IDtoProvider<BookDataViewModel>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly IMapper _mapper;
@@ -18,15 +18,15 @@ public class AllBooksProvider : IDtoProvider<BookDto>
         _mapper = mapper;
     }
 
-    public async Task<ICollection<BookDto>> GetAllAsync()
+    public async Task<ICollection<BookDataViewModel>> GetAllAsync()
     {
         var books = await _booksRepository.GetAllAsync();
-        return _mapper.Map<BookDto[]>(books);
+        return _mapper.Map<BookDataViewModel[]>(books);
     }
 
-    public Task<BookDto> CreateNewAsync()
+    public Task<BookDataViewModel> CreateNewAsync()
     {
-        return Task.FromResult(new BookDto
+        return Task.FromResult(new BookDataViewModel
         {
             Id = -1
         });

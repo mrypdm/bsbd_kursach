@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Books;
 
-public class BooksByScoreProvider : IDtoProvider<BookDto>
+public class BooksByScoreProvider : IDtoProvider<BookDataViewModel>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly IMapper _mapper;
@@ -22,13 +22,13 @@ public class BooksByScoreProvider : IDtoProvider<BookDto>
         _count = count;
     }
 
-    public async Task<ICollection<BookDto>> GetAllAsync()
+    public async Task<ICollection<BookDataViewModel>> GetAllAsync()
     {
         var books = await _booksRepository.MostScoredBooks(_count);
-        return _mapper.Map<BookDto[]>(books);
+        return _mapper.Map<BookDataViewModel[]>(books);
     }
 
-    public Task<BookDto> CreateNewAsync()
+    public Task<BookDataViewModel> CreateNewAsync()
     {
         throw new NotSupportedException();
     }

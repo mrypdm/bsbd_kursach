@@ -3,23 +3,23 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Reviews;
 
-public class ReviewsByBookProvider : IDtoProvider<ReviewDto>
+public class ReviewsByBookProvider : IDtoProvider<ReviewDataViewModel>
 {
     private readonly IReviewsRepository _reviewsRepository;
     private readonly IClientsRepository _clientsRepository;
     private readonly IMapper _mapper;
-    private readonly BookDto _book;
+    private readonly BookDataViewModel _book;
 
     private ReviewsByBookProvider(IReviewsRepository reviewsRepository,
         IClientsRepository clientsRepository,
         IMapper mapper,
-        BookDto book)
+        BookDataViewModel book)
     {
         _reviewsRepository = reviewsRepository;
         _clientsRepository = clientsRepository;
@@ -27,13 +27,13 @@ public class ReviewsByBookProvider : IDtoProvider<ReviewDto>
         _book = book;
     }
 
-    public async Task<ICollection<ReviewDto>> GetAllAsync()
+    public async Task<ICollection<ReviewDataViewModel>> GetAllAsync()
     {
         var reviews = await _reviewsRepository.GetReviewForBooksAsync(new Book { Id = _book.Id });
-        return _mapper.Map<ReviewDto[]>(reviews);
+        return _mapper.Map<ReviewDataViewModel[]>(reviews);
     }
 
-    public async Task<ReviewDto> CreateNewAsync()
+    public async Task<ReviewDataViewModel> CreateNewAsync()
     {
         if (!AskerWindow.TryAskInt("Enter client ID", out var clientId))
         {
@@ -43,7 +43,7 @@ public class ReviewsByBookProvider : IDtoProvider<ReviewDto>
         var client = await _clientsRepository.GetByIdAsync(clientId)
             ?? throw new KeyNotFoundException($"Cannot find client with Id={clientId}");
 
-        return new ReviewDto
+        return new ReviewDataViewModel
         {
             BookId = _book.Id,
             Book = _book.ToString(),
@@ -57,7 +57,7 @@ public class ReviewsByBookProvider : IDtoProvider<ReviewDto>
 
     public string Name => $"Reviews for book '{_book}'";
 
-    public static ReviewsByBookProvider Create(BookDto book)
+    public static ReviewsByBookProvider Create(BookDataViewModel book)
     {
         return new ReviewsByBookProvider(
             App.ServiceProvider.GetRequiredService<IReviewsRepository>(),

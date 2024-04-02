@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using AutoMapper;
 using GuiClient.Commands;
@@ -13,11 +12,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllEntitiesViewModel<TDto>
+public abstract class AllEntitiesViewModel<TDataViewModel> : AuthenticatedViewModel,
+    IAllEntitiesViewModel<TDataViewModel>
 {
-    private ObservableCollection<TDto> _entities = [];
+    private ObservableCollection<TDataViewModel> _entities = [];
 
-    private TDto _selectedItem;
+    private TDataViewModel _selectedItem;
 
     protected AllEntitiesViewModel(ISecurityContext securityContext, IMapper mapper)
         : base(securityContext)
@@ -26,23 +26,23 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
         Refresh = new AsyncActionCommand(RefreshAsync);
 
         Add = new AsyncActionCommand(AddAsync, () => false);
-        Update = new AsyncFuncCommand<TDto>(UpdateAsync, _ => false);
-        Delete = new AsyncFuncCommand<TDto>(DeleteAsync, _ => false);
+        Update = new AsyncFuncCommand<TDataViewModel>(UpdateAsync, _ => false);
+        Delete = new AsyncFuncCommand<TDataViewModel>(DeleteAsync, _ => false);
     }
 
-    protected IDtoProvider<TDto> Provider { get; private set; }
+    protected IDtoProvider<TDataViewModel> Provider { get; private set; }
 
     protected IMapper Mapper { get; }
 
     public string WindowTitle => Provider?.Name ?? "All items";
 
-    public ObservableCollection<TDto> Entities
+    public ObservableCollection<TDataViewModel> Entities
     {
         get => _entities;
         private set => SetField(ref _entities, value);
     }
 
-    public TDto SelectedItem
+    public TDataViewModel SelectedItem
     {
         get => _selectedItem;
         set => SetField(ref _selectedItem, value);
@@ -58,7 +58,7 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
 
     public async Task RefreshAsync()
     {
-        Entities = new ObservableCollection<TDto>(await Provider.GetAllAsync());
+        Entities = new ObservableCollection<TDataViewModel>(await Provider.GetAllAsync());
     }
 
     public abstract void SetupDataGrid(AllEntitiesWindow window);
@@ -76,21 +76,21 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
         SelectedItem = item;
     }
 
-    protected virtual Task UpdateAsync(TDto item)
+    protected virtual Task UpdateAsync(TDataViewModel item)
     {
         throw new NotSupportedException();
     }
 
-    protected virtual Task DeleteAsync(TDto item)
+    protected virtual Task DeleteAsync(TDataViewModel item)
     {
         throw new NotSupportedException();
     }
 
     [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
-    public static IAllEntitiesViewModel<TDto> Create(IDtoProvider<TDto> provider)
+    public static IAllEntitiesViewModel<TDataViewModel> Create(IDtoProvider<TDataViewModel> provider)
     {
-        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TDto>>();
-        (viewModel as AllEntitiesViewModel<TDto>)!.Provider = provider;
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TDataViewModel>>();
+        (viewModel as AllEntitiesViewModel<TDataViewModel>)!.Provider = provider;
         return viewModel;
     }
 }

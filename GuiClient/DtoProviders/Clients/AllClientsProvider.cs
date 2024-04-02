@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Clients;
 
-public class AllClientsProvider : IDtoProvider<ClientDto>
+public class AllClientsProvider : IDtoProvider<ClientDataViewModel>
 {
     private readonly IClientsRepository _clientsRepository;
     private readonly IMapper _mapper;
@@ -18,15 +18,15 @@ public class AllClientsProvider : IDtoProvider<ClientDto>
         _mapper = mapper;
     }
 
-    public async Task<ICollection<ClientDto>> GetAllAsync()
+    public async Task<ICollection<ClientDataViewModel>> GetAllAsync()
     {
         var clients = await _clientsRepository.GetAllAsync();
-        return _mapper.Map<ClientDto[]>(clients);
+        return _mapper.Map<ClientDataViewModel[]>(clients);
     }
 
-    public Task<ClientDto> CreateNewAsync()
+    public Task<ClientDataViewModel> CreateNewAsync()
     {
-        return Task.FromResult(new ClientDto
+        return Task.FromResult(new ClientDataViewModel
         {
             Id = -1
         });

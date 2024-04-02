@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace GuiClient.Dto;
+namespace GuiClient.ViewModels.Data;
 
 [Serializable]
-public class ReviewDto
+public class ReviewDataViewModel
 {
     public bool IsNew { get; set; }
 

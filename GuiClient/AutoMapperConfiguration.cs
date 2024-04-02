@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DatabaseClient.Models;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 
 namespace GuiClient;
 
@@ -8,38 +8,22 @@ public class AutoMapperConfiguration : Profile
 {
     public AutoMapperConfiguration()
     {
-        CreateMap<Book, BookDto>()
+        CreateMap<Book, BookDataViewModel>()
             .ForMember(d => d.Tags, m => m.Ignore());
 
-        CreateMap<BookDto, Book>()
-            .ForMember(d => d.Reviews, m => m.Ignore())
-            .ForMember(d => d.OrdersToBooks, m => m.Ignore())
-            .ForMember(d => d.Tags, m => m.Ignore());
-
-        CreateMap<Order, OrderDto>()
+        CreateMap<Order, OrderDataViewModel>()
             .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()));
 
-        CreateMap<OrderDto, Order>()
-            .ForMember(d => d.Client, m => m.Ignore());
-
-        CreateMap<OrdersToBook, BookInOrderDto>()
+        CreateMap<OrdersToBook, BookInOrderDataViewModel>()
             .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()))
             .ForMember(d => d.Price, m => m.MapFrom(s => s.Book.Price))
             .ForMember(d => d.Count, m => m.MapFrom(s => s.Count));
 
-        CreateMap<Client, ClientDto>()
+        CreateMap<Client, ClientDataViewModel>()
             .ForMember(d => d.OrdersCount, m => m.MapFrom(s => s.Orders.Count));
 
-        CreateMap<ClientDto, Client>()
-            .ForMember(d => d.Orders, m => m.Ignore())
-            .ForMember(d => d.Reviews, m => m.Ignore());
-
-        CreateMap<Review, ReviewDto>()
+        CreateMap<Review, ReviewDataViewModel>()
             .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()))
             .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()));
-
-        CreateMap<ReviewDto, Review>()
-            .ForMember(d => d.Client, m => m.Ignore())
-            .ForMember(d => d.Book, m => m.Ignore());
     }
 }

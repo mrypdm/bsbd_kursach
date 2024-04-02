@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Orders;
 
-public class AllOrdersProvider : IDtoProvider<OrderDto>
+public class AllOrdersProvider : IDtoProvider<OrderDataViewModel>
 {
     private readonly IOrdersRepository _ordersRepository;
     private readonly IClientsRepository _clientsRepository;
@@ -22,13 +22,13 @@ public class AllOrdersProvider : IDtoProvider<OrderDto>
         _mapper = mapper;
     }
 
-    public async Task<ICollection<OrderDto>> GetAllAsync()
+    public async Task<ICollection<OrderDataViewModel>> GetAllAsync()
     {
         var orders = await _ordersRepository.GetAllAsync();
-        return _mapper.Map<OrderDto[]>(orders);
+        return _mapper.Map<OrderDataViewModel[]>(orders);
     }
 
-    public async Task<OrderDto> CreateNewAsync()
+    public async Task<OrderDataViewModel> CreateNewAsync()
     {
         if (!AskerWindow.TryAskInt("Enter client ID", out var clientId))
         {
@@ -38,7 +38,7 @@ public class AllOrdersProvider : IDtoProvider<OrderDto>
         var client = await _clientsRepository.GetByIdAsync(clientId)
             ?? throw new KeyNotFoundException($"Cannot find client with Id={clientId}");
 
-        return new OrderDto
+        return new OrderDataViewModel
         {
             Id = -1,
             ClientId = client.Id,

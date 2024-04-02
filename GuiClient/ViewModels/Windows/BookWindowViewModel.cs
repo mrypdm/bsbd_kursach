@@ -10,16 +10,16 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Dto;
 using GuiClient.DtoProviders.Orders;
 using GuiClient.DtoProviders.Reviews;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Windows;
 
-public class BookWindowViewModel : AllEntitiesViewModel<BookDto>
+public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
 {
     private readonly IBooksRepository _booksRepository;
     private readonly ITagsRepository _tagsRepository;
@@ -31,23 +31,23 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDto>
         _booksRepository = booksRepository;
         _tagsRepository = tagsRepository;
 
-        ShowReviews = new AsyncFuncCommand<BookDto>(ShowReviewsAsync, item => item?.Id != -1);
-        ShowOrders = new AsyncFuncCommand<BookDto>(ShowOrdersAsync, item => item?.Id != -1);
+        ShowReviews = new AsyncFuncCommand<BookDataViewModel>(ShowReviewsAsync, item => item?.Id != -1);
+        ShowOrders = new AsyncFuncCommand<BookDataViewModel>(ShowOrdersAsync, item => item?.Id != -1);
 
-        ShowRevenue = new AsyncFuncCommand<BookDto>(
+        ShowRevenue = new AsyncFuncCommand<BookDataViewModel>(
             async item => { item.Revenue = await _booksRepository.RevenueOfBook(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Revenue: null });
-        ShowScore = new AsyncFuncCommand<BookDto>(
+        ShowScore = new AsyncFuncCommand<BookDataViewModel>(
             async item => { item.Score = await _booksRepository.ScoreOfBook(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Score: null });
-        ShowSales = new AsyncFuncCommand<BookDto>(
+        ShowSales = new AsyncFuncCommand<BookDataViewModel>(
             async item => { item.Sales = await _booksRepository.CountOfSales(new Book { Id = item.Id }); },
             item => item is { Id: not -1, Sales: null });
-        ShowTags = new AsyncFuncCommand<BookDto>(ShowTagsAsync, item => item is { Id: not -1 });
+        ShowTags = new AsyncFuncCommand<BookDataViewModel>(ShowTagsAsync, item => item is { Id: not -1 });
 
         Add = new AsyncActionCommand(AddAsync, () => Provider?.CanCreate == true);
-        Update = new AsyncFuncCommand<BookDto>(UpdateAsync);
-        Delete = new AsyncFuncCommand<BookDto>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
+        Update = new AsyncFuncCommand<BookDataViewModel>(UpdateAsync);
+        Delete = new AsyncFuncCommand<BookDataViewModel>(DeleteAsync, item => item?.Id == -1 || IsAdmin);
     }
 
     public ICommand ShowReviews { get; }
@@ -72,19 +72,19 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDto>
         window.AddButton("Show reviews", nameof(ShowReviews));
         window.AddButton("Show orders", nameof(ShowOrders));
 
-        window.AddText(nameof(BookDto.Id), true);
-        window.AddText(nameof(BookDto.Title));
-        window.AddText(nameof(BookDto.Author));
-        window.AddText(nameof(BookDto.ReleaseDate));
-        window.AddText(nameof(BookDto.Count));
-        window.AddText(nameof(BookDto.Price));
-        window.AddButton(nameof(BookDto.Sales), nameof(ShowSales), true);
-        window.AddButton(nameof(BookDto.Revenue), nameof(ShowRevenue), true);
-        window.AddButton(nameof(BookDto.Score), nameof(ShowScore), true);
-        window.AddButton(nameof(BookDto.Tags), nameof(ShowTags), true);
+        window.AddText(nameof(BookDataViewModel.Id), true);
+        window.AddText(nameof(BookDataViewModel.Title));
+        window.AddText(nameof(BookDataViewModel.Author));
+        window.AddText(nameof(BookDataViewModel.ReleaseDate));
+        window.AddText(nameof(BookDataViewModel.Count));
+        window.AddText(nameof(BookDataViewModel.Price));
+        window.AddButton(nameof(BookDataViewModel.Sales), nameof(ShowSales), true);
+        window.AddButton(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true);
+        window.AddButton(nameof(BookDataViewModel.Score), nameof(ShowScore), true);
+        window.AddButton(nameof(BookDataViewModel.Tags), nameof(ShowTags), true);
     }
 
-    protected override async Task UpdateAsync([NotNull] BookDto item)
+    protected override async Task UpdateAsync([NotNull] BookDataViewModel item)
     {
         if (item.Id == -1)
         {
@@ -120,7 +120,7 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDto>
         await RefreshAsync();
     }
 
-    protected override async Task DeleteAsync([NotNull] BookDto item)
+    protected override async Task DeleteAsync([NotNull] BookDataViewModel item)
     {
         if (item.Id == -1)
         {
@@ -132,19 +132,19 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDto>
         await RefreshAsync();
     }
 
-    private async Task ShowReviewsAsync(BookDto book)
+    private async Task ShowReviewsAsync(BookDataViewModel book)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<ReviewDto>>();
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<ReviewDataViewModel>>();
         await allReviews.ShowBy(ReviewsByBookProvider.Create(book));
     }
 
-    private async Task ShowOrdersAsync(BookDto book)
+    private async Task ShowOrdersAsync(BookDataViewModel book)
     {
-        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<OrderDto>>();
+        var allOrders = App.ServiceProvider.GetRequiredService<IEntityViewModel<OrderDataViewModel>>();
         await allOrders.ShowBy(OrdersByBookProvider.Create(book));
     }
 
-    private async Task ShowTagsAsync(BookDto book)
+    private async Task ShowTagsAsync(BookDataViewModel book)
     {
         if (book.Tags == null)
         {

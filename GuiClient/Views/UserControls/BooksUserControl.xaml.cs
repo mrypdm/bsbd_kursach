@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
-using GuiClient.Dto;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data;
 
 namespace GuiClient.Views.UserControls;
 
@@ -11,7 +11,7 @@ public partial class BooksUserControl : UserControl
         InitializeComponent();
     }
 
-    public BooksUserControl(IEntityViewModel<BookDto> viewModel)
+    public BooksUserControl(IEntityViewModel<BookDataViewModel> viewModel)
         : this()
     {
         DataContext = viewModel;

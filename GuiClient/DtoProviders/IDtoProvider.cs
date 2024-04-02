@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace GuiClient.DtoProviders;
 
-public interface IDtoProvider<TDto>
+public interface IDtoProvider<TDataViewModel>
 {
-    Task<ICollection<TDto>> GetAllAsync();
+    Task<ICollection<TDataViewModel>> GetAllAsync();
 
-    Task<TDto> CreateNewAsync();
+    Task<TDataViewModel> CreateNewAsync();
 
     bool CanCreate { get; }
 

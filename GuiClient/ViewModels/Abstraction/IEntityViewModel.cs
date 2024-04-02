@@ -4,9 +4,9 @@ using GuiClient.DtoProviders;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public interface IEntityViewModel<TDto>
+public interface IEntityViewModel<TDataViewModel>
 {
     ICommand ShowEntities { get; }
 
-    Task<IAllEntitiesViewModel<TDto>> ShowBy(IDtoProvider<TDto> provider, bool showDialog = false);
+    Task<IAllEntitiesViewModel<TDataViewModel>> ShowBy(IDtoProvider<TDataViewModel> provider, bool showDialog = false);
 }

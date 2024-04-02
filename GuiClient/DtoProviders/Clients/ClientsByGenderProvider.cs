@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
-using GuiClient.Dto;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.DtoProviders.Clients;
 
-public class ClientsByGenderProvider : IDtoProvider<ClientDto>
+public class ClientsByGenderProvider : IDtoProvider<ClientDataViewModel>
 {
     private readonly IClientsRepository _clientsRepository;
     private readonly IMapper _mapper;
@@ -23,13 +23,13 @@ public class ClientsByGenderProvider : IDtoProvider<ClientDto>
         _gender = gender;
     }
 
-    public async Task<ICollection<ClientDto>> GetAllAsync()
+    public async Task<ICollection<ClientDataViewModel>> GetAllAsync()
     {
         var clients = await _clientsRepository.GetClientsByGender(_gender);
-        return _mapper.Map<ClientDto[]>(clients);
+        return _mapper.Map<ClientDataViewModel[]>(clients);
     }
 
-    public Task<ClientDto> CreateNewAsync()
+    public Task<ClientDataViewModel> CreateNewAsync()
     {
         throw new NotSupportedException();
     }

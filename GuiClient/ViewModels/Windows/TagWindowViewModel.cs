@@ -8,9 +8,9 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Dto;
 using GuiClient.DtoProviders.Books;
 using GuiClient.ViewModels.Abstraction;
+using GuiClient.ViewModels.Data;
 using GuiClient.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -76,7 +76,7 @@ public class TagWindowViewModel : AllEntitiesViewModel<Tag>
 
     private async Task ShowBooksAsync(Tag item)
     {
-        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookDto>>();
+        var allReviews = App.ServiceProvider.GetRequiredService<IEntityViewModel<BookDataViewModel>>();
         await allReviews.ShowBy(BooksByTagsProvider.Create(item.Name));
     }
 }
