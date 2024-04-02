@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading.Tasks;
 using DatabaseClient.Contexts;
@@ -12,7 +9,7 @@ using DatabaseClient.Repositories;
 
 namespace GuiClient.Contexts;
 
-public sealed class SecurityContext(ServerOptions options) : ISecurityContext
+public sealed class SecurityContext(ServerOptions options) : NotifyPropertyChanged, ISecurityContext
 {
     private Principal _principal;
 
@@ -74,26 +71,8 @@ public sealed class SecurityContext(ServerOptions options) : ISecurityContext
         Principal = default;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
     Principal IPrincipalProvider.GetPrincipal()
     {
         return Principal;
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value))
-        {
-            return;
-        }
-
-        field = value;
-        OnPropertyChanged(propertyName);
     }
 }

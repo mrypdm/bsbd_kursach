@@ -11,7 +11,7 @@ public class MainWindowViewModel(
     IEntityViewModel<Tag, Tag> tagsUserControlViewModel,
     IEntityViewModel<Client, ClientDto> clientsUserControlViewModel,
     IEntityViewModel<Order, OrderDto> ordersUserControlViewModel,
-    IEntityViewModel<Principal, Principal> principalsUserControlViewModel) : BaseViewModel
+    IEntityViewModel<Principal, Principal> principalsUserControlViewModel) : NotifyPropertyChanged
 {
     public AuthControlViewModel AuthControlViewModel { get; } = authControlViewModel;
 

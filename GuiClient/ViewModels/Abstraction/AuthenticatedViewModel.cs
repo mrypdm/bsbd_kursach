@@ -4,7 +4,7 @@ using GuiClient.Contexts;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class AuthenticatedViewModel : BaseViewModel
+public abstract class AuthenticatedViewModel : NotifyPropertyChanged
 {
     protected AuthenticatedViewModel(ISecurityContext securityContext)
     {
