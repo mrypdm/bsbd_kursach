@@ -158,7 +158,34 @@ public class AllBooksViewModel : AllEntitiesViewModel<Book, BookDto>
                 var repo = r.Cast<Order, IOrdersRepository>();
                 return m.Map<OrderDto[]>(await repo.GetOrdersForBookAsync(new Book { Id = book.Id }));
             },
-            null);
+            async () =>
+            {
+                if (!AskerWindow.TryAskInt("Enter client ID", out var clientId))
+                {
+                    return null;
+                }
+
+                var client = await _clientsRepository.GetByIdAsync(clientId)
+                    ?? throw new KeyNotFoundException($"Cannot find book with Id={clientId}");
+
+                return new OrderDto
+                {
+                    ClientId = client.Id,
+                    Client = client.ToString(),
+                    CreatedAt = DateTime.Now,
+                    Books =
+                    [
+                        new BookInOrderDto
+                        {
+                            OrderId = -1,
+                            BookId = book.Id,
+                            Book = book.ToString(),
+                            Count = 1,
+                            Price = book.Price
+                        }
+                    ]
+                };
+            });
     }
 
     private async Task ShowTagsAsync(BookDto book)
