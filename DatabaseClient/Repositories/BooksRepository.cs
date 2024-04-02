@@ -18,28 +18,28 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
                  where b.IsDeleted = 0 and b.Id = {id}
                  order by b.Id
                  """)
-            .SingleOrDefaultAsync<DbBook, Book>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Book>> GetAllAsync()
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
                  where b.IsDeleted = 0
                  order by b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksByTitleAsync(string title)
@@ -48,14 +48,14 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
 
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
                  where b.IsDeleted = 0 and b.Title = {title}
                  order by b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksByAuthorAsync(string author)
@@ -64,14 +64,14 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
 
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
                  where b.IsDeleted = 0 and b.Author = {author}
                  order by b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksByTagsAsync(IEnumerable<string> tags)
@@ -99,22 +99,22 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
 
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
-            .SqlQueryRaw<DbBook>(query, args)
-            .AsListAsync<DbBook, Book>();
+            .SqlQueryRaw<Book>(query, args)
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
                  where b.IsDeleted = 0 and b.Count < {count}
                  order by b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 
     public async Task<Book> AddBookAsync(string title, string author, DateTime releaseDate, int price, int count = 0)
@@ -124,13 +124,13 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
 
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  insert into Books (Title, Author, ReleaseDate, Count, Price)
                  output inserted.*
                  values ({title}, {author}, {releaseDate}, {price}, {count})
                  """)
-            .SingleOrDefaultAsync<DbBook, Book>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task UpdateAsync(Book entity)
@@ -223,7 +223,7 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select top({topCount}) b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
@@ -233,14 +233,14 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
                     coalesce((select avg(cast(r.Score as float)) from Reviews r where b.Id = r.BookId), 0)
                  ) desc, b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> MostSoldBooks(int topCount = 10)
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select top({topCount}) b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
@@ -250,14 +250,14 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
                     coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0)
                  ) desc, b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 
     public async Task<ICollection<Book>> MostRevenueBooks(int topCount = 10)
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbBook>(
+            .SqlQuery<Book>(
                 $"""
                  select top({topCount}) b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
@@ -267,6 +267,6 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
                     coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0) * b.Price
                  ) desc, b.Id
                  """)
-            .AsListAsync<DbBook, Book>();
+            .ToListAsync();
     }
 }

@@ -13,7 +13,7 @@ public class Review
 
     public string Text { get; set; }
 
-    public virtual Book Book { get; set; }
+    public Book Book { get; set; }
 
-    public virtual Client Client { get; set; }
+    public Client Client { get; set; }
 }

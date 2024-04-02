@@ -15,30 +15,22 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
     public async Task<Tag> GetByIdAsync(int id)
     {
         await using var context = factory.Create();
-
-        // return await context.Tags
-        //     .Where(m => m.Id == id)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
-            .SqlQuery<DbTag>(
+            .SqlQuery<Tag>(
                 $"""
                  select t.Id, t.Name
                  from Tags t
                  where t.Id = {id}
                  """)
-            .SingleOrDefaultAsync<DbTag, Tag>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Tag>> GetAllAsync()
     {
         await using var context = factory.Create();
-
-        // return await context.Tags.ToListAsync();
-
         return await context.Database
-            .SqlQuery<DbTag>($"select t.Id, t.Name from Tags t")
-            .AsListAsync<DbTag, Tag>();
+            .SqlQuery<Tag>($"select t.Id, t.Name from Tags t")
+            .ToListAsync();
     }
 
     public async Task<Tag> GetTagByNameAsync(string name)
@@ -46,19 +38,14 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
         await using var context = factory.Create();
-
-        // return await context.Tags
-        //     .Where(m => m.Name == name)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
-            .SqlQuery<DbTag>(
+            .SqlQuery<Tag>(
                 $"""
                  select t.Id, t.Name
                  from Tags t
                  where t.Name = {name}
                  """)
-            .SingleOrDefaultAsync<DbTag, Tag>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Tag>> GetTagsOfBook(Book book)
@@ -66,14 +53,8 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => m.Id == book.Id && !m.IsDeleted)
-        //     .SelectMany(m => m.Tags)
-        //     .ToListAsync();
-
         return await context.Database
-            .SqlQuery<DbTag>(
+            .SqlQuery<Tag>(
                 $"""
                  select t.Id, t.Name
                  from Books b
@@ -81,7 +62,7 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
                  join Tags t on btt.TagId = t.Id
                  where b.IsDeleted = 0 and b.Id = {book.Id}
                  """)
-            .AsListAsync<DbTag, Tag>();
+            .ToListAsync();
     }
 
     public async Task<Tag> AddTagAsync(string name)
@@ -89,24 +70,14 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
         await using var context = factory.Create();
-
-        // var tag = new Tag
-        // {
-        //     Name = name
-        // };
-        //
-        // var entity = await context.AddAsync(tag);
-        // await context.SaveChangesAsync();
-        // return entity.Entity;
-
         return await context.Database
-            .SqlQuery<DbTag>(
+            .SqlQuery<Tag>(
                 $"""
                  insert into Tags (Name)
                  output inserted.*
                  values ({name})
                  """)
-            .SingleOrDefaultAsync<DbTag, Tag>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task AddBookToTagAsync(Book book, Tag tag)
@@ -126,11 +97,6 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
         ArgumentNullException.ThrowIfNull(entity);
 
         await using var context = factory.Create();
-
-        // await context.Tags
-        //     .Where(m => m.Id == entity.Id)
-        //     .ExecuteUpdateAsync(o => o.SetProperty(m => m.Name, entity.Name));
-
         await context.Database.ExecuteSqlAsync(
             $"""
              update Tags

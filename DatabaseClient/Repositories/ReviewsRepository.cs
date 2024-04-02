@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
@@ -10,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
+public class ReviewsRepository(DbContextFactory factory, IMapper mapper) : IReviewsRepository
 {
     public async Task<ICollection<Review>> GetReviewForClientAsync(Client client)
     {
@@ -28,7 +30,8 @@ public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
                  join Books b on b.Id = r.BookId
                  where c.Id = {client.Id}
                  """)
-            .AsListAsync<DbReview, Review>();
+            .ProjectTo<Review>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task<ICollection<Review>> GetReviewForBooksAsync(Book book)
@@ -47,7 +50,8 @@ public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
                  join Books b on b.Id = r.BookId
                  where b.Id = {book.Id}
                  """)
-            .AsListAsync<DbReview, Review>();
+            .ProjectTo<Review>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task<Review> AddReviewAsync(Client client, Book book, int score, string text = null)
@@ -70,7 +74,8 @@ public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
                  join Books b on b.Id = r.BookId
                  where c.Id = {client.Id} and b.Id = {book.Id}
                  """)
-            .SingleOrDefaultAsync<DbReview, Review>();
+            .ProjectTo<Review>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<Review> GetByIdAsync(int bookId, int clientId)
@@ -87,7 +92,8 @@ public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
                  join Books b on b.Id = r.BookId
                  where c.Id = {clientId} and b.Id = {bookId}
                  """)
-            .SingleOrDefaultAsync<DbReview, Review>();
+            .ProjectTo<Review>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     public Task<Review> GetByIdAsync(int id)
@@ -108,7 +114,8 @@ public class ReviewsRepository(DbContextFactory factory) : IReviewsRepository
                  join Clients c on c.Id = r.ClientId
                  join Books b on b.Id = r.BookId
                  """)
-            .AsListAsync<DbReview, Review>();
+            .ProjectTo<Review>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task UpdateAsync(Review entity)

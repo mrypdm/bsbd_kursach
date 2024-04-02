@@ -13,6 +13,8 @@ public sealed class Principal : IPrincipalProvider, IDisposable
 {
     private SecureString _password;
 
+    public int Id { get; set; }
+
     public string Name { get; set; }
 
     public string RoleString
@@ -52,8 +54,6 @@ public sealed class Principal : IPrincipalProvider, IDisposable
     {
         _password?.Dispose();
     }
-
-    public int Id { get; set; }
 
     public Principal GetPrincipal()
     {

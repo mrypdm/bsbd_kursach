@@ -16,8 +16,6 @@ public class ClientDataViewModel : NotifyPropertyChanged
 
     public Gender Gender { get; set; }
 
-    public int OrdersCount { get; set; }
-
     public int? Revenue
     {
         get => _revenue;

@@ -59,7 +59,6 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
         window.AddText(nameof(ClientDataViewModel.LastName));
         window.AddText(nameof(ClientDataViewModel.Phone));
         window.AddText(nameof(ClientDataViewModel.Gender));
-        window.AddText(nameof(ClientDataViewModel.OrdersCount), true);
         window.AddButton(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true);
     }
 

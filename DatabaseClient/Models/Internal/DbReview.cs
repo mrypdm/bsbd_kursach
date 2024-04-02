@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models.Internal;
 
 [Serializable]
-public class DbReview : IDbEntity<Review>
+public class DbReview
 {
     public int BookId { get; set; }
 
@@ -34,34 +34,4 @@ public class DbReview : IDbEntity<Review>
     public int Score { get; set; }
 
     public string Text { get; set; }
-
-    public Review ToEntity()
-    {
-        return new Review
-        {
-            Score = Score,
-            Text = Text,
-            BookId = BookId,
-            Book = new Book
-            {
-                Id = BookId,
-                Title = Title,
-                Author = Author,
-                ReleaseDate = ReleaseDate,
-                Count = Count,
-                Price = Price,
-                IsDeleted = IsBookDeleted
-            },
-            ClientId = ClientId,
-            Client = new Client
-            {
-                Id = ClientId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Phone = Phone,
-                Gender = Gender,
-                IsDeleted = IsClientDeleted
-            }
-        };
-    }
 }

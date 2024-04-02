@@ -1,9 +1,10 @@
+using AutoMapper;
+using DatabaseClient;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleClient;
 
@@ -15,6 +16,11 @@ public static class Startup
         SecurePassword = "very_secret_Password_forOwner".AsSecure()
     };
 
+    public static IMapper Mapper { get; } = new Mapper(new MapperConfiguration(cfg =>
+    {
+        cfg.AddMaps(typeof(AutoMapperConfiguration));
+    }));
+
     public static async Task InitDatabaseAsync()
     {
         var factory = new DbContextFactory(Cred, new ServerOptions());
@@ -22,8 +28,8 @@ public static class Startup
         var clientsRepository = new ClientsRepository(factory);
         var tagsRepository = new TagsRepository(factory);
         var booksRepository = new BooksRepository(factory);
-        var reviewsRepository = new ReviewsRepository(factory);
-        var ordersRepository = new OrdersRepository(factory);
+        var reviewsRepository = new ReviewsRepository(factory, Mapper);
+        var ordersRepository = new OrdersRepository(factory, Mapper);
 
         var cl1 = await clientsRepository.AddClientAsync("FName1", "LName1", "0987654321", Gender.Male);
         var cl2 = await clientsRepository.AddClientAsync("FName2", "LName2", "8005553535", Gender.Male);

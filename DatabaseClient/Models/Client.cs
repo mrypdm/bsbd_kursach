@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DatabaseClient.Models;
@@ -19,10 +18,6 @@ public class Client
     public Gender Gender { get; set; }
 
     public bool IsDeleted { get; set; }
-
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     public override string ToString()
     {

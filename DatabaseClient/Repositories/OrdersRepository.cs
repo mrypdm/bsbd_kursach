@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DatabaseClient.Contexts;
-using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Models.Internal;
 using DatabaseClient.Repositories.Abstraction;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
+public class OrdersRepository(DbContextFactory factory, IMapper mapper) : IOrdersRepository
 {
     public async Task<ICollection<Order>> GetAllAsync()
     {
@@ -25,7 +26,8 @@ public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
                  from Orders o
                  join Clients c on c.Id = o.ClientId
                  """)
-            .AsListAsync<DbOrder, Order>();
+            .ProjectTo<Order>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task<Order> GetByIdAsync(int id)
@@ -40,7 +42,8 @@ public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
                  join Clients c on c.Id = o.ClientId
                  where o.Id == {id}
                  """)
-            .SingleOrDefaultAsync<DbOrder, Order>();
+            .ProjectTo<Order>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Order>> GetOrdersForClientAsync(Client client)
@@ -57,7 +60,8 @@ public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
                  join Clients c on c.Id = o.ClientId
                  where c.Id == {client.Id}
                  """)
-            .AsListAsync<DbOrder, Order>();
+            .ProjectTo<Order>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task<ICollection<Order>> GetOrdersForBookAsync(Book book)
@@ -75,7 +79,8 @@ public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
                  where exists(select 1 from OrdersToBooks otb
                                        where o.Id = otb.OrderId and otb.BookId = {book.Id})
                  """)
-            .AsListAsync<DbOrder, Order>();
+            .ProjectTo<Order>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     // bsbd_verify_order verifies that there are enough books for the order,
@@ -127,7 +132,8 @@ public class OrdersRepository(DbContextFactory factory) : IOrdersRepository
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
             .SqlQueryRaw<DbOrder>(query, args)
-            .SingleOrDefaultAsync<DbOrder, Order>();
+            .ProjectTo<Order>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<int> GetOrderTotalPrice(Order order)

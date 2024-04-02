@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
@@ -10,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseClient.Repositories;
 
-public class OrdersBookRepository(DbContextFactory factory) : IOrderBooksRepository
+public class OrdersBookRepository(DbContextFactory factory, IMapper mapper) : IOrderBooksRepository
 {
     public async Task<OrdersToBook> GetByIdAsync(int orderId, int bookId)
     {
@@ -26,7 +28,8 @@ public class OrdersBookRepository(DbContextFactory factory) : IOrderBooksReposit
                  join Books b on otb.BookId = b.Id
                  where OrderId = {orderId} and BookId = {bookId}
                  """)
-            .SingleOrDefaultAsync<DbOrderToBook, OrdersToBook>();
+            .ProjectTo<OrdersToBook>(mapper.ConfigurationProvider)
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<OrdersToBook>> GetBooksForOrderAsync(Order order)
@@ -45,7 +48,8 @@ public class OrdersBookRepository(DbContextFactory factory) : IOrderBooksReposit
                  join Books b on otb.BookId = b.Id
                  where OrderId = {order.Id}
                  """)
-            .AsListAsync<DbOrderToBook, OrdersToBook>();
+            .ProjectTo<OrdersToBook>(mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public Task<OrdersToBook> GetByIdAsync(int id)

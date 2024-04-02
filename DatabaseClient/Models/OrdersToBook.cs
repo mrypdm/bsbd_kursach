@@ -11,7 +11,5 @@ public class OrdersToBook
 
     public int Count { get; set; }
 
-    public virtual Book Book { get; set; }
-
-    public virtual Order Order { get; set; }
+    public Book Book { get; set; }
 }

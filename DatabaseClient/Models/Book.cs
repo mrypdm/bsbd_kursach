@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace DatabaseClient.Models;
 
@@ -19,12 +18,6 @@ public class Book
     public int Price { get; set; }
 
     public bool IsDeleted { get; set; }
-
-    public virtual ICollection<OrdersToBook> OrdersToBooks { get; set; } = new List<OrdersToBook>();
-
-    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-
-    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
     public override string ToString()
     {

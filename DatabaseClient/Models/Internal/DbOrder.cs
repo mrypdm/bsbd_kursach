@@ -3,7 +3,7 @@
 namespace DatabaseClient.Models.Internal;
 
 [Serializable]
-public class DbOrder : IDbEntity<Order>
+public class DbOrder
 {
     public int OrderId { get; set; }
 
@@ -20,23 +20,4 @@ public class DbOrder : IDbEntity<Order>
     public Gender Gender { get; set; }
 
     public bool IsClientDeleted { get; set; }
-
-    public Order ToEntity()
-    {
-        return new Order
-        {
-            Id = OrderId,
-            ClientId = ClientId,
-            CreatedAt = CreatedAt,
-            Client = new Client
-            {
-                Id = ClientId,
-                FirstName = FirstName,
-                LastName = LastName,
-                Phone = Phone,
-                Gender = Gender,
-                IsDeleted = IsClientDeleted
-            }
-        };
-    }
 }

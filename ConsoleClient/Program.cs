@@ -13,8 +13,8 @@ var factory = new DbContextFactory(Startup.Cred, new ServerOptions());
 var clientsRepository = new ClientsRepository(factory);
 var tagsRepository = new TagsRepository(factory);
 var booksRepository = new BooksRepository(factory);
-var reviewsRepository = new ReviewsRepository(factory);
-var ordersRepository = new OrdersRepository(factory);
+var reviewsRepository = new ReviewsRepository(factory, Startup.Mapper);
+var ordersRepository = new OrdersRepository(factory, Startup.Mapper);
 var principalsManager = new PrincipalRepository(factory);
 
 await Startup.InitDatabaseAsync();

@@ -19,8 +19,7 @@ public class AutoMapperConfiguration : Profile
             .ForMember(d => d.Price, m => m.MapFrom(s => s.Book.Price))
             .ForMember(d => d.Count, m => m.MapFrom(s => s.Count));
 
-        CreateMap<Client, ClientDataViewModel>()
-            .ForMember(d => d.OrdersCount, m => m.MapFrom(s => s.Orders.Count));
+        CreateMap<Client, ClientDataViewModel>();
 
         CreateMap<Review, ReviewDataViewModel>()
             .ForMember(d => d.Client, m => m.MapFrom(s => s.Client.ToString()))

@@ -18,28 +18,28 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbClient>(
+            .SqlQuery<Client>(
                 $"""
                  select c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0 and c.Id = {id}
                  order by c.Id
                  """)
-            .SingleOrDefaultAsync<DbClient, Client>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Client>> GetAllAsync()
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbClient>(
+            .SqlQuery<Client>(
                 $"""
                  select c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0
                  order by c.Id
                  """)
-            .AsListAsync<DbClient, Client>();
+            .ToListAsync();
     }
 
     public async Task<Client> GetClientsByPhoneAsync(string phone)
@@ -48,14 +48,14 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
 
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbClient>(
+            .SqlQuery<Client>(
                 $"""
                  select c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0 and c.Phone = {phone}
                  order by c.Id
                  """)
-            .SingleOrDefaultAsync<DbClient, Client>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task<ICollection<Client>> GetClientsByNameAsync(string firstName, string lastName)
@@ -92,22 +92,22 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
 
         // ReSharper disable once CoVariantArrayConversion
         return await context.Database
-            .SqlQueryRaw<DbClient>(builder.ToString(), sqlParams.ToArray())
-            .AsListAsync<DbClient, Client>();
+            .SqlQueryRaw<Client>(builder.ToString(), sqlParams.ToArray())
+            .ToListAsync();
     }
 
     public async Task<ICollection<Client>> GetClientsByGender(Gender gender)
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbClient>(
+            .SqlQuery<Client>(
                 $"""
                  select c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0 and c.Gender = {gender}
                  order by c.Id
                  """)
-            .AsListAsync<DbClient, Client>();
+            .ToListAsync();
     }
 
     public async Task<Client> AddClientAsync(string firstName, string lastName, string phone, Gender gender)
@@ -118,13 +118,13 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
 
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbClient>(
+            .SqlQuery<Client>(
                 $"""
                  insert into Clients (FirstName, LastName, Phone, Gender)
                  output inserted.*
                  values ({firstName}, {lastName}, {phone}, {gender})
                  """)
-            .SingleOrDefaultAsync<DbClient, Client>();
+            .SingleOrDefaultAsync();
     }
 
     public async Task UpdateAsync(Client entity)
@@ -175,7 +175,7 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<DbClient>(
+            .SqlQuery<Client>(
                 $"""
                  select top({topCount}) c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
@@ -192,6 +192,6 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
                      ) as orv on orv.OrderId = o.Id
                  ) desc, c.Id
                  """)
-            .AsListAsync<DbClient, Client>();
+            .ToListAsync();
     }
 }
