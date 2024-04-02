@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DatabaseClient.Contexts;
-using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Models.Internal;
 using DatabaseClient.Repositories.Abstraction;

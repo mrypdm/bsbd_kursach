@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using DatabaseClient.Contexts;
 using DatabaseClient.Extensions;
 using DatabaseClient.Models;
-using DatabaseClient.Models.Internal;
 using DatabaseClient.Repositories.Abstraction;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
