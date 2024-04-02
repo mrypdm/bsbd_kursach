@@ -28,10 +28,10 @@
     1. select таблиц и представления
     2. execute изменение пароля
 5. Создали роль **worker** с правами **readonly**:
-    1. u/i books
+    1. u/i books (update except Price and IsDeleted)
     2. u/i/d books-tags
     3. u/i tags
-    4. u/i clients
+    4. u/i clients (update except IsDeleted)
     5. i orders
     6. i orders-books
     7. i reviews

@@ -14,16 +14,9 @@ namespace DatabaseClient.Repositories;
 
 public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepository
 {
-    // Can only delete OrderToBooks entity when deleting whole order
-
     public async Task<ICollection<Order>> GetAllAsync()
     {
         await using var context = factory.Create();
-
-        // return await context.Orders
-        //     .Include(m => m.Client)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbOrder>(
                 $"""
@@ -38,12 +31,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
     public async Task<Order> GetByIdAsync(int id)
     {
         await using var context = factory.Create();
-
-        // return await context.Orders
-        //     .Where(m => m.Id == id)
-        //     .Include(m => m.Client)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
             .SqlQuery<DbOrder>(
                 $"""
@@ -61,12 +48,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
         ArgumentNullException.ThrowIfNull(client);
 
         await using var context = factory.Create();
-
-        // return await context.Orders
-        //     .Where(m => m.ClientId == client.Id)
-        //     .Include(m => m.Client)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbOrder>(
                 $"""
@@ -84,12 +65,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = factory.Create();
-
-        // return await context.Orders
-        //     .Where(m => m.OrdersToBooks.Any(otb => otb.BookId == book.Id))
-        //     .Include(m => m.Client)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbOrder>(
                 $"""
@@ -103,7 +78,7 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
             .AsListAsync<DbOrder, Order>();
     }
 
-    // After insert trigger bsbd_verify_order verifies, that there are enough books for the order,
+    // bsbd_verify_order verifies that there are enough books for the order,
     // and then subtracts the number of books in the order from the total number
     public async Task<Order> AddOrderAsync(Client client, IEnumerable<OrdersToBook> booksToOrder)
     {
@@ -117,16 +92,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
         }
 
         await using var context = factory.Create();
-
-        // var order = new Order
-        // {
-        //     ClientId = client.Id,
-        //     OrdersToBooks = books
-        // };
-        //
-        // var entity = await context.Orders.AddAsync(order);
-        // await context.SaveChangesAsync();
-        // return entity.Entity;
 
         var booksStr = string.Join(", ", books.Select((_, i) => $"(@orderId, @book{i}_id, @book{i}_count)"));
 
@@ -170,11 +135,6 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
         ArgumentNullException.ThrowIfNull(order);
 
         await using var context = factory.Create();
-
-        // return await context.OrdersToBooks
-        //     .Where(m => m.OrderId == order.Id)
-        //     .SumAsync(m => m.Count * m.Book.Price);
-
         return await context.Database
             .SqlQuery<int>(
                 $"""
@@ -186,7 +146,7 @@ public class OrdersRepository(DatabaseContextFactory factory) : IOrdersRepositor
             .SingleOrDefaultAsync();
     }
 
-    // Update are forbidden with trigger bsbd_prevent_update_orders
+    // bsbd_prevent_orders_change forbids update and delete
     public Task UpdateAsync(Order entity)
     {
         throw new NotSupportedException("Cannot update order");

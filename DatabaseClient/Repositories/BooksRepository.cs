@@ -14,17 +14,9 @@ namespace DatabaseClient.Repositories;
 
 public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
 {
-    // bsbd_mark_book_as_deleted prevents deletion and marks books as deleted and removes book from tags
-
     public async Task<Book> GetByIdAsync(int id)
     {
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => m.Id == id && !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -39,12 +31,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
     public async Task<ICollection<Book>> GetAllAsync()
     {
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -61,12 +47,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(title);
 
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => m.Title == title && !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -83,12 +63,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(author);
 
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => m.Author == author && !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -112,11 +86,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
 
         await using var context = factory.Create();
 
-        // var command = safeTags.Aggregate(context.Books.Where(m => !m.IsDeleted),
-        //     (current, tag) => current.Where(m => m.Tags.Select(t => t.Name).Contains(tag)));
-        //
-        // return await command.Include(m => m.Tags).ToListAsync();
-
         var condition = string.Join(" and ", safeTags.Select((_, i) =>
             $"@tag{i} in (select t.Name from BooksToTags btt join Tags t on btt.TagId = t.Id where b.Id = btt.BookId)"));
         var args = safeTags.Select((m, i) => new SqlParameter($"tag{i}", m)).ToArray();
@@ -137,12 +106,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
     public async Task<ICollection<Book>> GetBooksWithCountLessThanAsync(int count)
     {
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => m.Count < count && !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -160,20 +123,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentException.ThrowIfNullOrWhiteSpace(author);
 
         await using var context = factory.Create();
-
-        // var book = new Book
-        // {
-        //     Title = title,
-        //     Author = author,
-        //     ReleaseDate = releaseDate,
-        //     Price = price,
-        //     Count = count
-        // };
-        //
-        // var entity = await context.Books.AddAsync(book);
-        // await context.SaveChangesAsync();
-        // return entity.Entity;
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -189,16 +138,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentNullException.ThrowIfNull(entity);
 
         await using var context = factory.Create();
-
-        // await context.Books
-        //     .Where(m => m.Id == entity.Id)
-        //     .ExecuteUpdateAsync(o => o
-        //         .SetProperty(m => m.Title, entity.Title)
-        //         .SetProperty(m => m.Author, entity.Author)
-        //         .SetProperty(m => m.ReleaseDate, entity.ReleaseDate)
-        //         .SetProperty(m => m.Count, entity.Count)
-        //         .SetProperty(m => m.Price, entity.Price));
-
         await context.Database.ExecuteSqlAsync(
             $"""
              update Books
@@ -208,6 +147,7 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
              """);
     }
 
+    // bsbd_mark_book_as_deleted prevents deletion and marks book as deleted and removes book from tags
     public async Task RemoveAsync(Book entity)
     {
         if (entity == null)
@@ -236,11 +176,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = factory.Create();
-
-        // return await context.OrdersToBooks
-        //     .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
-        //     .SumAsync(m => m.Count);
-
         return await context.Database
             .SqlQuery<int>(
                 $"""
@@ -257,11 +192,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = factory.Create();
-
-        // return await context.OrdersToBooks
-        //     .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
-        //     .SumAsync(m => m.Count * m.Book.Price);
-
         return await context.Database
             .SqlQuery<int>(
                 $"""
@@ -278,11 +208,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
         ArgumentNullException.ThrowIfNull(book);
 
         await using var context = factory.Create();
-
-        // return await context.Reviews
-        //     .Where(m => m.BookId == book.Id && !m.Book.IsDeleted)
-        //     .AverageAsync(m => m.Score);
-
         return await context.Database
             .SqlQuery<double>(
                 $"""
@@ -297,20 +222,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
     public async Task<ICollection<Book>> MostScoredBooks(int topCount = 10)
     {
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .Select(m => new
-        //     {
-        //         Book = m,
-        //         Score = m.Reviews.Average(r => r.Score)
-        //     })
-        //     .OrderByDescending(m => m.Score)
-        //     .Take(topCount)
-        //     .Select(m => m.Book)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -328,20 +239,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
     public async Task<ICollection<Book>> MostSoldBooks(int topCount = 10)
     {
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => !m.IsDeleted)
-        //     .Include(m => m.Tags)
-        //     .Select(m => new
-        //     {
-        //         Book = m,
-        //         Sum = m.OrdersToBooks.Sum(o => o.Count)
-        //     })
-        //     .OrderByDescending(m => m.Sum)
-        //     .Take(topCount)
-        //     .Select(m => m.Book)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""
@@ -359,19 +256,6 @@ public class BooksRepository(DatabaseContextFactory factory) : IBooksRepository
     public async Task<ICollection<Book>> MostRevenueBooks(int topCount = 10)
     {
         await using var context = factory.Create();
-
-        // return await context.Books
-        //     .Where(m => !m.IsDeleted)
-        //     .Select(m => new
-        //     {
-        //         Book = m,
-        //         Sum = m.OrdersToBooks.Sum(o => o.Count) * m.Price
-        //     })
-        //     .OrderByDescending(m => m.Sum)
-        //     .Take(topCount)
-        //     .Select(m => m.Book)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbBook>(
                 $"""

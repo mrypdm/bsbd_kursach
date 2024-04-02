@@ -1,4 +1,4 @@
-create trigger bsbd_mark_user_as_deleted on Clients instead of delete as
+create trigger bsbd_mark_client_as_deleted on Clients instead of delete as
 begin
     update Clients
     set

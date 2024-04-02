@@ -15,11 +15,6 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
     public async Task<Principal> GetByIdAsync(int id)
     {
         await using var context = factory.Create();
-
-        // return await context.Principals
-        //     .Where(m => m.Id == id)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
             .SqlQuery<Principal>(
                 $"""
@@ -33,9 +28,6 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
     public async Task<ICollection<Principal>> GetAllAsync()
     {
         await using var context = factory.Create();
-
-        // return await context.Principals.ToArrayAsync();
-
         return await context.Database
             .SqlQuery<Principal>($"select Id, Name, Role as RoleString from bsbd_principals")
             .ToListAsync();
@@ -91,11 +83,6 @@ public class PrincipalRepository(DatabaseContextFactory factory) : IPrincipalRep
     public async Task<Principal> GetByName(string name)
     {
         await using var context = factory.Create();
-
-        // return await context.Principals
-        //     .Where(m => m.Name == name)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
             .SqlQuery<Principal>(
                 $"""

@@ -14,20 +14,9 @@ namespace DatabaseClient.Repositories;
 
 public class ClientsRepository(DatabaseContextFactory factory) : IClientsRepository
 {
-    // Instead of delete, the record is updated by trigger bsbd_mark_user_deleted with the parameters:
-    // FirstName = empty,
-    // LastName = empty,
-    // Phone = 0000000000,
-    // IsDeleted = true
-
     public async Task<Client> GetByIdAsync(int id)
     {
         await using var context = factory.Create();
-
-        // return await context.Clients
-        //     .Where(m => m.Id == id && !m.IsDeleted)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
             .SqlQuery<DbClient>(
                 $"""
@@ -42,11 +31,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
     public async Task<ICollection<Client>> GetAllAsync()
     {
         await using var context = factory.Create();
-
-        // return await context.Clients
-        //     .Where(m => !m.IsDeleted)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbClient>(
                 $"""
@@ -63,11 +47,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
         await using var context = factory.Create();
-
-        // return await context.Clients
-        //     .Where(m => m.Phone == phone && !m.IsDeleted)
-        //     .SingleOrDefaultAsync();
-
         return await context.Database
             .SqlQuery<DbClient>(
                 $"""
@@ -87,20 +66,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
         }
 
         await using var context = factory.Create();
-
-        // var command = context.Clients as IQueryable<Client>;
-        //
-        // if (!string.IsNullOrWhiteSpace(firstName))
-        // {
-        //     command = command.Where(m => m.FirstName == firstName);
-        // }
-        //
-        // if (!string.IsNullOrWhiteSpace(lastName))
-        // {
-        //     command = command.Where(m => m.LastName == lastName);
-        // }
-        //
-        // return await command.ToListAsync();
 
         var builder = new StringBuilder(
             """
@@ -134,11 +99,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
     public async Task<ICollection<Client>> GetClientsByGender(Gender gender)
     {
         await using var context = factory.Create();
-
-        // return await context.Clients
-        //     .Where(m => m.Gender == gender && !m.IsDeleted)
-        //     .ToArrayAsync();
-
         return await context.Database
             .SqlQuery<DbClient>(
                 $"""
@@ -157,19 +117,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
         ArgumentException.ThrowIfNullOrWhiteSpace(phone);
 
         await using var context = factory.Create();
-
-        // var client = new Client
-        // {
-        //     FirstName = firstName,
-        //     LastName = lastName,
-        //     Phone = phone,
-        //     Gender = gender
-        // };
-        //
-        // var entity = await context.Clients.AddAsync(client);
-        // await context.SaveChangesAsync();
-        // return entity.Entity;
-
         return await context.Database
             .SqlQuery<DbClient>(
                 $"""
@@ -185,15 +132,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
         ArgumentNullException.ThrowIfNull(entity);
 
         await using var context = factory.Create();
-
-        // await context.Clients
-        //     .Where(m => m.Id == entity.Id)
-        //     .ExecuteUpdateAsync(o => o
-        //         .SetProperty(m => m.FirstName, entity.FirstName)
-        //         .SetProperty(m => m.LastName, entity.LastName)
-        //         .SetProperty(m => m.Phone, entity.Phone)
-        //         .SetProperty(m => m.Gender, entity.Gender));
-
         await context.Database.ExecuteSqlAsync(
             $"""
              update Books
@@ -203,6 +141,7 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
              """);
     }
 
+    // bsbd_mark_client_as_deleted prevents deletion and marks client as deleted and clears all data
     public async Task RemoveAsync(Client entity)
     {
         if (entity == null)
@@ -219,12 +158,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
         ArgumentNullException.ThrowIfNull(client);
 
         await using var context = factory.Create();
-
-        // return await context.Orders
-        //     .Where(m => m.ClientId == client.Id && !m.Client.IsDeleted)
-        //     .SelectMany(m => m.OrdersToBooks)
-        //     .SumAsync(m => m.Count * m.Book.Price);
-
         return await context.Database
             .SqlQuery<int>(
                 $"""
@@ -241,21 +174,6 @@ public class ClientsRepository(DatabaseContextFactory factory) : IClientsReposit
     public async Task<ICollection<Client>> MostRevenueClients(int topCount = 10)
     {
         await using var context = factory.Create();
-
-        // return await context.Clients
-        //     .Where(m => !m.IsDeleted)
-        //     .Select(m => new
-        //     {
-        //         Client = m,
-        //         Sum = m.Orders.SelectMany(order
-        //                 => order.OrdersToBooks.Select(orb => orb.Count * orb.Book.Price))
-        //             .Sum()
-        //     })
-        //     .OrderByDescending(m => m.Sum)
-        //     .Take(topCount)
-        //     .Select(m => m.Client)
-        //     .ToListAsync();
-
         return await context.Database
             .SqlQuery<DbClient>(
                 $"""

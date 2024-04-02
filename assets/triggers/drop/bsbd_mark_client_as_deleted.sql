@@ -1,0 +1,1 @@
+drop trigger bsbd_mark_client_as_deleted
