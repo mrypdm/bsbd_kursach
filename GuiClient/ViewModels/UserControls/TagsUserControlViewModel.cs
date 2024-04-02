@@ -7,7 +7,7 @@ using GuiClient.ViewModels.Abstraction;
 namespace GuiClient.ViewModels.UserControls;
 
 public class TagsUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<Tag, Tag>(securityContext)
+    : EntityUserControlViewModel<Tag>(securityContext)
 {
     protected override IDtoProvider<Tag> GetProvider(string filterName)
     {

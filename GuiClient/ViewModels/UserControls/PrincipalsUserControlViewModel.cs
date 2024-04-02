@@ -7,7 +7,7 @@ using GuiClient.ViewModels.Abstraction;
 namespace GuiClient.ViewModels.UserControls;
 
 public class PrincipalsUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<Principal, Principal>(securityContext)
+    : EntityUserControlViewModel<Principal>(securityContext)
 {
     protected override IDtoProvider<Principal> GetProvider(string filterName)
     {

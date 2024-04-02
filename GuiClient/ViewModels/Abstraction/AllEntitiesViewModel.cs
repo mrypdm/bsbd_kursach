@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AutoMapper;
 using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
@@ -38,6 +41,8 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
         get => _entities;
         private set => SetField(ref _entities, value);
     }
+    
+    public ObservableCollection<DataGridColumn> Columns { get; }
 
     public TDto SelectedItem
     {
@@ -52,12 +57,6 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
     public ICommand Update { get; protected init; }
 
     public ICommand Delete { get; protected init; }
-
-    // TODO set from ctor => use factory
-    public void SetProvider(IDtoProvider<TDto> provider)
-    {
-        Provider = provider;
-    }
 
     public async Task RefreshAsync()
     {
@@ -87,5 +86,13 @@ public abstract class AllEntitiesViewModel<TDto> : AuthenticatedViewModel, IAllE
     protected virtual Task DeleteAsync(TDto item)
     {
         throw new NotSupportedException();
+    }
+
+    [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
+    public static IAllEntitiesViewModel<TDto> Create(IDtoProvider<TDto> provider)
+    {
+        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TDto>>();
+        (viewModel as AllEntitiesViewModel<TDto>)!.Provider = provider;
+        return viewModel;
     }
 }

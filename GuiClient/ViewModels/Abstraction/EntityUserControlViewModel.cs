@@ -5,11 +5,10 @@ using GuiClient.Commands;
 using GuiClient.Contexts;
 using GuiClient.DtoProviders;
 using GuiClient.Views.Windows;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GuiClient.ViewModels.Abstraction;
 
-public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedViewModel,
+public abstract class EntityUserControlViewModel<TDto> : AuthenticatedViewModel,
     IEntityViewModel<TDto> where TDto : new()
 {
     protected EntityUserControlViewModel(ISecurityContext securityContext)
@@ -24,13 +23,8 @@ public abstract class EntityUserControlViewModel<TEntity, TDto> : AuthenticatedV
     {
         ArgumentNullException.ThrowIfNull(provider);
 
-        var viewModel = App.ServiceProvider.GetRequiredService<IAllEntitiesViewModel<TDto>>();
-        viewModel.SetProvider(provider);
-
-        var view = new AllEntitiesWindow(viewModel);
-
-        viewModel.EnrichDataGrid(view);
-        await viewModel.RefreshAsync();
+        var viewModel = AllEntitiesViewModel<TDto>.Create(provider);
+        var view = await AllEntitiesWindow.Create(viewModel);
 
         if (showDialog)
         {

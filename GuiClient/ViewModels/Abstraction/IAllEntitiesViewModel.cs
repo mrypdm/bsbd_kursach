@@ -22,8 +22,6 @@ public interface IAllEntitiesViewModel<TDto>
 
     ICommand Delete { get; }
 
-    void SetProvider(IDtoProvider<TDto> provider);
-
     Task RefreshAsync();
 
     void EnrichDataGrid(AllEntitiesWindow window);

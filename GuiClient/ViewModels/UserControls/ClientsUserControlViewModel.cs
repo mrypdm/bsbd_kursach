@@ -1,5 +1,4 @@
-﻿using DatabaseClient.Models;
-using GuiClient.Contexts;
+﻿using GuiClient.Contexts;
 using GuiClient.Dto;
 using GuiClient.DtoProviders;
 using GuiClient.DtoProviders.Clients;
@@ -8,7 +7,7 @@ using GuiClient.ViewModels.Abstraction;
 namespace GuiClient.ViewModels.UserControls;
 
 public class ClientsUserControlViewModel(ISecurityContext securityContext)
-    : EntityUserControlViewModel<Client, ClientDto>(securityContext)
+    : EntityUserControlViewModel<ClientDto>(securityContext)
 {
     protected override IDtoProvider<ClientDto> GetProvider(string filterName)
     {

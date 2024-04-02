@@ -1,19 +1,22 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using GuiClient.Converters;
+using GuiClient.ViewModels.Abstraction;
 
 namespace GuiClient.Views.Windows;
 
 public partial class AllEntitiesWindow : Window
 {
-    public AllEntitiesWindow()
+    private AllEntitiesWindow()
     {
         InitializeComponent();
     }
 
-    public AllEntitiesWindow(object viewModel)
+    private AllEntitiesWindow(object viewModel)
         : this()
     {
         DataContext = viewModel;
@@ -75,5 +78,15 @@ public partial class AllEntitiesWindow : Window
                 VisualTree = button
             }
         });
+    }
+
+    public static async Task<AllEntitiesWindow> Create<TDto>(IAllEntitiesViewModel<TDto> viewModel)
+    {
+        ArgumentNullException.ThrowIfNull(viewModel);
+
+        var window = new AllEntitiesWindow(viewModel);
+        viewModel.EnrichDataGrid(window);
+        await viewModel.RefreshAsync();
+        return window;
     }
 }
