@@ -51,8 +51,10 @@ public class AuthControlViewModel : AuthenticatedViewModel
             return;
         }
 
-        await SecurityContext.LogInAsync(userName, password);
-        password.Dispose();
+        using (password)
+        {
+            await SecurityContext.LogInAsync(userName, password);
+        }
     }
 
     private async Task ChangePasswordInternal()
@@ -67,11 +69,12 @@ public class AuthControlViewModel : AuthenticatedViewModel
             return;
         }
 
-        await SecurityContext.ChangePasswordAsync(password, newPassword);
-        password.Dispose();
-        newPassword.Dispose();
-
-        MessageBox.Show("Password changed. Please authenticate with new password", "Info",
-            MessageBoxButtons.OK, MessageBoxIcon.Information);
+        using (password)
+        using (newPassword)
+        {
+            await SecurityContext.ChangePasswordAsync(password, newPassword);
+            MessageBox.Show("Password changed. Please authenticate with new password", "Info",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
