@@ -11,6 +11,10 @@ public class OrderControlViewModel(ISecurityContext securityContext)
 {
     protected override IDataViewModelProvider<OrderDataViewModel> GetProvider(string filterName)
     {
-        return AllOrdersProvider.Create();
+        return filterName switch
+        {
+            null => AllOrdersProvider.Create(),
+            _ => throw InvalidFilter(filterName)
+        };
     }
 }

@@ -1,4 +1,5 @@
-﻿using GuiClient.Contexts;
+﻿using System;
+using GuiClient.Contexts;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers;
@@ -10,6 +11,6 @@ public class OrderBookControlViewModel(ISecurityContext securityContext)
 {
     protected override IDataViewModelProvider<OrderBookDataViewModel> GetProvider(string filterName)
     {
-        return null;
+        throw new NotSupportedException();
     }
 }
