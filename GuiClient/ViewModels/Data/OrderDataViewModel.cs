@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace GuiClient.ViewModels.Data;
 
+[Serializable]
 public sealed class OrderDataViewModel : NotifyPropertyChanged
 {
     private ICollection<OrderBookDataViewModel> _books = [];

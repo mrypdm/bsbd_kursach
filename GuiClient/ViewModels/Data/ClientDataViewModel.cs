@@ -1,7 +1,9 @@
-﻿using DatabaseClient.Models;
+﻿using System;
+using DatabaseClient.Models;
 
 namespace GuiClient.ViewModels.Data;
 
+[Serializable]
 public class ClientDataViewModel : NotifyPropertyChanged
 {
     private int? _revenue;

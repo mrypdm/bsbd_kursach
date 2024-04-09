@@ -1,5 +1,8 @@
-﻿namespace GuiClient.ViewModels.Data;
+﻿using System;
 
+namespace GuiClient.ViewModels.Data;
+
+[Serializable]
 public sealed class OrderBookDataViewModel : NotifyPropertyChanged
 {
     private int _count;
