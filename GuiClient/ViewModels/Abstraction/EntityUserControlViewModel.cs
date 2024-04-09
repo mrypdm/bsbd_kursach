@@ -9,7 +9,7 @@ using GuiClient.Views.Windows;
 namespace GuiClient.ViewModels.Abstraction;
 
 public abstract class EntityUserControlViewModel<TDataViewModel> : AuthenticatedViewModel,
-    IEntityViewModel<TDataViewModel> where TDataViewModel : new()
+    IEntityViewModel<TDataViewModel>
 {
     protected EntityUserControlViewModel(ISecurityContext securityContext)
         : base(securityContext)
