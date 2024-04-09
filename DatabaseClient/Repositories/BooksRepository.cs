@@ -22,7 +22,6 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
                  select b.Id, b.Title, b.Author, b.ReleaseDate, b.IsDeleted, b.Count, b.Price
                  from Books b
                  where b.IsDeleted = 0 and b.Id = {id}
-                 order by b.Id
                  """)
             .SingleOrDefaultAsync();
     }
@@ -157,7 +156,7 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
         }
 
         await using var context = factory.Create();
-        await context.Database.ExecuteSqlAsync($"delete from Books where Id == {entity.Id}");
+        await context.Database.ExecuteSqlAsync($"delete from Books where Id = {entity.Id}");
     }
 
     public async Task AddTagToBookAsync(Book book, Tag tag)

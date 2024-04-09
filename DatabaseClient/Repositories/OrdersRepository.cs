@@ -40,7 +40,7 @@ public class OrdersRepository(DbContextFactory factory, IMapper mapper) : IOrder
                         c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted as IsClientDeleted
                  from Orders o
                  join Clients c on c.Id = o.ClientId
-                 where o.Id == {id}
+                 where o.Id = {id}
                  """)
             .ProjectTo<Order>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
@@ -58,7 +58,7 @@ public class OrdersRepository(DbContextFactory factory, IMapper mapper) : IOrder
                         c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted as IsClientDeleted
                  from Orders o
                  join Clients c on c.Id = o.ClientId
-                 where c.Id == {client.Id}
+                 where c.Id = {client.Id}
                  """)
             .ProjectTo<Order>(mapper.ConfigurationProvider)
             .ToListAsync();

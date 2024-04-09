@@ -115,6 +115,6 @@ public class TagsRepository(DbContextFactory factory) : ITagsRepository
         }
 
         await using var context = factory.Create();
-        await context.Database.ExecuteSqlAsync($"delete from Tags where Id == {entity.Id}");
+        await context.Database.ExecuteSqlAsync($"delete from Tags where Id = {entity.Id}");
     }
 }

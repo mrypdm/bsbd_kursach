@@ -22,7 +22,6 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
                  select c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0 and c.Id = {id}
-                 order by c.Id
                  """)
             .SingleOrDefaultAsync();
     }
@@ -52,7 +51,6 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
                  select c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0 and c.Phone = {phone}
-                 order by c.Id
                  """)
             .SingleOrDefaultAsync();
     }
@@ -151,7 +149,7 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
         }
 
         await using var context = factory.Create();
-        await context.Database.ExecuteSqlAsync($"delete from Clients where Id == {entity.Id}");
+        await context.Database.ExecuteSqlAsync($"delete from Clients where Id = {entity.Id}");
     }
 
     public async Task<int> RevenueOfClient(Client client)
