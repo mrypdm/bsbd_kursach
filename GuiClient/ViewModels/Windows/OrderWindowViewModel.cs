@@ -8,6 +8,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Extensions;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.OrderBook;
@@ -64,7 +65,7 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
         var order = await _ordersRepository.AddOrderAsync(new Client { Id = item.ClientId }, books);
         MessageBox.Show($"Order created with ID={order.Id}");
 
-        await RefreshAsync();
+        Entities.Replace(item, Mapper.Map<OrderDataViewModel>(order));
     }
 
     protected override Task DeleteAsync(OrderDataViewModel item)

@@ -52,8 +52,6 @@ public class TagWindowViewModel : AllEntitiesViewModel<Tag>
         {
             await _tagsRepository.UpdateAsync(item);
         }
-
-        await RefreshAsync();
     }
 
     protected override async Task DeleteAsync([NotNull] Tag item)

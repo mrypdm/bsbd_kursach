@@ -7,6 +7,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Extensions;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 
@@ -62,9 +63,11 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
 
     protected override async Task UpdateAsync([NotNull] ReviewDataViewModel item)
     {
+        Review review;
+
         if (item.IsNew)
         {
-            var review = await _repository.AddReviewAsync(
+            review = await _repository.AddReviewAsync(
                 new Client { Id = item.ClientId },
                 new Book { Id = item.BookId },
                 item.Score,
@@ -73,16 +76,14 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
         }
         else
         {
-            await _repository.UpdateAsync(new Review
-            {
-                BookId = item.BookId,
-                ClientId = item.ClientId,
-                Score = item.Score,
-                Text = item.Text
-            });
+            review = await _repository.GetByIdAsync(item.BookId, item.ClientId);
+            review.Score = item.Score;
+            review.Text = item.Text;
+
+            await _repository.UpdateAsync(review);
         }
 
-        await RefreshAsync();
+        Entities.Replace(item, Mapper.Map<ReviewDataViewModel>(review));
     }
 
     protected override async Task DeleteAsync([NotNull] ReviewDataViewModel item)

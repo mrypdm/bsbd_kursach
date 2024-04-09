@@ -7,6 +7,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Extensions;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Orders;
@@ -58,22 +59,23 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
 
     protected override async Task UpdateAsync([NotNull] ClientDataViewModel item)
     {
+        Client client;
+
         if (item.Id == -1)
         {
-            var client =
-                await _clientsRepository.AddClientAsync(item.FirstName, item.LastName, item.Phone, item.Gender);
+            client = await _clientsRepository.AddClientAsync(item.FirstName, item.LastName, item.Phone, item.Gender);
             MessageBox.Show($"Client created with ID={client.Id}");
         }
         else
         {
-            var client = await _clientsRepository.GetByIdAsync(item.Id);
+            client = await _clientsRepository.GetByIdAsync(item.Id);
             client.FirstName = item.FirstName;
             client.LastName = item.LastName;
             client.Phone = item.Phone;
             await _clientsRepository.UpdateAsync(client);
         }
 
-        await RefreshAsync();
+        Entities.Replace(item, Mapper.Map<ClientDataViewModel>(client));
     }
 
     protected override async Task DeleteAsync([NotNull] ClientDataViewModel item)

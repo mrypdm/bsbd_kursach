@@ -66,9 +66,11 @@ public class PrincipalWindowViewModel : AllEntitiesViewModel<Principal>
     {
         if (CredAsker.AskForNewPrincipal(out var userName, out var password, out var role))
         {
-            await _repository.CreatePrincipalAsync(userName, password, role);
-            password.Dispose();
-            await RefreshAsync();
+            using (password)
+            {
+                var principal = await _repository.CreatePrincipalAsync(userName, password, role);
+                Entities.Add(principal);
+            }
         }
     }
 }

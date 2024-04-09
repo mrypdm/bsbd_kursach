@@ -10,6 +10,7 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
+using GuiClient.Extensions;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Orders;
@@ -82,15 +83,17 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
 
     protected override async Task UpdateAsync([NotNull] BookDataViewModel item)
     {
+        Book book;
+
         if (item.Id == -1)
         {
-            var book = await _booksRepository.AddBookAsync(item.Title, item.Author, item.ReleaseDate, item.Price,
+            book = await _booksRepository.AddBookAsync(item.Title, item.Author, item.ReleaseDate, item.Price,
                 item.Count);
             MessageBox.Show($"Book created with ID={book.Id}");
         }
         else
         {
-            var book = await _booksRepository.GetByIdAsync(item.Id);
+            book = await _booksRepository.GetByIdAsync(item.Id);
             book.Title = item.Title;
             book.Author = item.Author;
             book.ReleaseDate = item.ReleaseDate;
@@ -113,7 +116,7 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
             }
         }
 
-        await RefreshAsync();
+        Entities.Replace(item, Mapper.Map<BookDataViewModel>(book));
     }
 
     protected override async Task DeleteAsync([NotNull] BookDataViewModel item)
