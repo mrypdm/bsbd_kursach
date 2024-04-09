@@ -6,7 +6,6 @@ using AutoMapper;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 
@@ -24,13 +23,13 @@ public class OrderBookWindowViewModel : AllEntitiesViewModel<OrderBookDataViewMo
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Text(nameof(OrderBookDataViewModel.OrderId), true),
-            DataGridColumns.Text(nameof(OrderBookDataViewModel.BookId), true),
-            DataGridColumns.Text(nameof(OrderBookDataViewModel.Book), true),
-            DataGridColumns.Text(nameof(OrderBookDataViewModel.Count), !Add.CanExecute(null)),
-            DataGridColumns.Text(nameof(OrderBookDataViewModel.Price), true),
-            DataGridColumns.Text(nameof(OrderBookDataViewModel.TotalPrice), true)
+            Button("Delete", nameof(Delete)),
+            Text(nameof(OrderBookDataViewModel.OrderId), true),
+            Text(nameof(OrderBookDataViewModel.BookId), true),
+            Text(nameof(OrderBookDataViewModel.Book), true),
+            Text(nameof(OrderBookDataViewModel.Count), !Add.CanExecute(null)),
+            Text(nameof(OrderBookDataViewModel.Price), true),
+            Text(nameof(OrderBookDataViewModel.TotalPrice), true)
         ];
     }
 

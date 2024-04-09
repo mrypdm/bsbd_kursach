@@ -7,7 +7,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Orders;
@@ -38,16 +37,16 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Button("Update", nameof(Update)),
-            DataGridColumns.Button("Show reviews", nameof(ShowReviews)),
-            DataGridColumns.Button("Show orders", nameof(ShowOrders)),
-            DataGridColumns.Text(nameof(ClientDataViewModel.Id), true),
-            DataGridColumns.Text(nameof(ClientDataViewModel.FirstName)),
-            DataGridColumns.Text(nameof(ClientDataViewModel.LastName)),
-            DataGridColumns.Text(nameof(ClientDataViewModel.Phone)),
-            DataGridColumns.Text(nameof(ClientDataViewModel.Gender)),
-            DataGridColumns.Button(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true)
+            Button("Delete", nameof(Delete)),
+            Button("Update", nameof(Update)),
+            Button("Show reviews", nameof(ShowReviews)),
+            Button("Show orders", nameof(ShowOrders)),
+            Text(nameof(ClientDataViewModel.Id), true),
+            Text(nameof(ClientDataViewModel.FirstName)),
+            Text(nameof(ClientDataViewModel.LastName)),
+            Text(nameof(ClientDataViewModel.Phone)),
+            Text(nameof(ClientDataViewModel.Gender)),
+            Button(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true)
         ];
     }
 

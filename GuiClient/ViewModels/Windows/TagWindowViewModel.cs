@@ -7,7 +7,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Books;
@@ -32,11 +31,11 @@ public class TagWindowViewModel : AllEntitiesViewModel<Tag>
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Button("Update", nameof(Update)),
-            DataGridColumns.Button("Show books", nameof(ShowBooks)),
-            DataGridColumns.Text(nameof(Tag.Id), true),
-            DataGridColumns.Text(nameof(Tag.Name))
+            Button("Delete", nameof(Delete)),
+            Button("Update", nameof(Update)),
+            Button("Show books", nameof(ShowBooks)),
+            Text(nameof(Tag.Id), true),
+            Text(nameof(Tag.Name))
         ];
     }
 

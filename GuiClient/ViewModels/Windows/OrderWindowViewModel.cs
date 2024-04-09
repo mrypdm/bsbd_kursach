@@ -8,7 +8,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.OrderBook;
@@ -41,14 +40,14 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Button("Update", nameof(Update)),
-            DataGridColumns.Button("Show books", nameof(ShowBooks)),
-            DataGridColumns.Text(nameof(OrderDataViewModel.Id), true),
-            DataGridColumns.Text(nameof(OrderDataViewModel.ClientId), true),
-            DataGridColumns.Text(nameof(OrderDataViewModel.Client), true),
-            DataGridColumns.Text(nameof(OrderDataViewModel.CreatedAt), true),
-            DataGridColumns.Button(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true)
+            Button("Delete", nameof(Delete)),
+            Button("Update", nameof(Update)),
+            Button("Show books", nameof(ShowBooks)),
+            Text(nameof(OrderDataViewModel.Id), true),
+            Text(nameof(OrderDataViewModel.ClientId), true),
+            Text(nameof(OrderDataViewModel.Client), true),
+            Text(nameof(OrderDataViewModel.CreatedAt), true),
+            Button(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true)
         ];
     }
 

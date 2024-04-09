@@ -7,7 +7,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 
@@ -28,14 +27,14 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Button("Update", nameof(Update)),
-            DataGridColumns.Text(nameof(ReviewDataViewModel.BookId), true),
-            DataGridColumns.Text(nameof(ReviewDataViewModel.Book), true),
-            DataGridColumns.Text(nameof(ReviewDataViewModel.ClientId), true),
-            DataGridColumns.Text(nameof(ReviewDataViewModel.Client), true),
-            DataGridColumns.Text(nameof(ReviewDataViewModel.Score)),
-            DataGridColumns.Text(nameof(ReviewDataViewModel.Text))
+            Button("Delete", nameof(Delete)),
+            Button("Update", nameof(Update)),
+            Text(nameof(ReviewDataViewModel.BookId), true),
+            Text(nameof(ReviewDataViewModel.Book), true),
+            Text(nameof(ReviewDataViewModel.ClientId), true),
+            Text(nameof(ReviewDataViewModel.Client), true),
+            Text(nameof(ReviewDataViewModel.Score)),
+            Text(nameof(ReviewDataViewModel.Text))
         ];
     }
 

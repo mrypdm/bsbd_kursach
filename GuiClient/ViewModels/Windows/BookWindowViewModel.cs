@@ -10,7 +10,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.ViewModels.Data;
 using GuiClient.ViewModels.Data.Providers.Orders;
@@ -52,20 +51,20 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Button("Update", nameof(Update)),
-            DataGridColumns.Button("Show reviews", nameof(ShowReviews)),
-            DataGridColumns.Button("Show orders", nameof(ShowOrders)),
-            DataGridColumns.Text(nameof(BookDataViewModel.Id), true),
-            DataGridColumns.Text(nameof(BookDataViewModel.Title)),
-            DataGridColumns.Text(nameof(BookDataViewModel.Author)),
-            DataGridColumns.Text(nameof(BookDataViewModel.ReleaseDate)),
-            DataGridColumns.Text(nameof(BookDataViewModel.Count)),
-            DataGridColumns.Text(nameof(BookDataViewModel.Price)),
-            DataGridColumns.Button(nameof(BookDataViewModel.Sales), nameof(ShowSales), true),
-            DataGridColumns.Button(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true),
-            DataGridColumns.Button(nameof(BookDataViewModel.Score), nameof(ShowScore), true),
-            DataGridColumns.Button(nameof(BookDataViewModel.Tags), nameof(ShowTags), true)
+            Button("Delete", nameof(Delete)),
+            Button("Update", nameof(Update)),
+            Button("Show reviews", nameof(ShowReviews)),
+            Button("Show orders", nameof(ShowOrders)),
+            Text(nameof(BookDataViewModel.Id), true),
+            Text(nameof(BookDataViewModel.Title)),
+            Text(nameof(BookDataViewModel.Author)),
+            Text(nameof(BookDataViewModel.ReleaseDate)),
+            Text(nameof(BookDataViewModel.Count)),
+            Text(nameof(BookDataViewModel.Price)),
+            Button(nameof(BookDataViewModel.Sales), nameof(ShowSales), true),
+            Button(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true),
+            Button(nameof(BookDataViewModel.Score), nameof(ShowScore), true),
+            Button(nameof(BookDataViewModel.Tags), nameof(ShowTags), true)
         ];
     }
 

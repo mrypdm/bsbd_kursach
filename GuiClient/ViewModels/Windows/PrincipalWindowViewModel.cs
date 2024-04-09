@@ -6,7 +6,6 @@ using DatabaseClient.Models;
 using DatabaseClient.Repositories.Abstraction;
 using GuiClient.Commands;
 using GuiClient.Contexts;
-using GuiClient.Helpers;
 using GuiClient.ViewModels.Abstraction;
 using GuiClient.Views.Windows;
 
@@ -31,11 +30,11 @@ public class PrincipalWindowViewModel : AllEntitiesViewModel<Principal>
 
         Columns =
         [
-            DataGridColumns.Button("Delete", nameof(Delete)),
-            DataGridColumns.Button("Change password (force)", nameof(ChangePasswordForce)),
-            DataGridColumns.Text(nameof(Principal.Id), true),
-            DataGridColumns.Text(nameof(Principal.Name), true),
-            DataGridColumns.Text(nameof(Principal.Role), true)
+            Button("Delete", nameof(Delete)),
+            Button("Change password (force)", nameof(ChangePasswordForce)),
+            Text(nameof(Principal.Id), true),
+            Text(nameof(Principal.Name), true),
+            Text(nameof(Principal.Role), true)
         ];
     }
 
