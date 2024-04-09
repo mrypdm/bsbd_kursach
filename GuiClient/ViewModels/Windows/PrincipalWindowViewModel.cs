@@ -48,7 +48,7 @@ public class PrincipalWindowViewModel : AllEntitiesViewModel<Principal>
     protected override async Task DeleteAsync(Principal item)
     {
         await _repository.RemoveAsync(item);
-        await RefreshAsync();
+        Entities.Remove(item);
     }
 
     private async Task ChangePasswordForceAsync(Principal item)

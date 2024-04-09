@@ -87,13 +87,11 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
 
     protected override async Task DeleteAsync([NotNull] ReviewDataViewModel item)
     {
-        if (item.IsNew)
+        if (!item.IsNew)
         {
-            Entities.Remove(item);
-            return;
+            await _repository.RemoveAsync(new Review { BookId = item.BookId, ClientId = item.ClientId });
         }
 
-        await _repository.RemoveAsync(new Review { BookId = item.BookId, ClientId = item.ClientId });
-        await RefreshAsync();
+        Entities.Remove(item);
     }
 }

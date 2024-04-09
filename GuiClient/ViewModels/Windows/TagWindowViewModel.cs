@@ -58,14 +58,12 @@ public class TagWindowViewModel : AllEntitiesViewModel<Tag>
 
     protected override async Task DeleteAsync([NotNull] Tag item)
     {
-        if (item.Id == -1)
+        if (item.Id != -1)
         {
-            Entities.Remove(item);
-            return;
+            await _tagsRepository.RemoveAsync(new Tag { Id = item.Id });
         }
 
-        await _tagsRepository.RemoveAsync(new Tag { Id = item.Id });
-        await RefreshAsync();
+        Entities.Remove(item);
     }
 
     private async Task ShowBooksAsync(Tag item)

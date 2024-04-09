@@ -118,14 +118,12 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
 
     protected override async Task DeleteAsync([NotNull] BookDataViewModel item)
     {
-        if (item.Id == -1)
+        if (item.Id != -1)
         {
-            Entities.Remove(item);
-            return;
+            await _booksRepository.RemoveAsync(new Book { Id = item.Id });
         }
 
-        await _booksRepository.RemoveAsync(new Book { Id = item.Id });
-        await RefreshAsync();
+        Entities.Remove(item);
     }
 
     private async Task ShowReviewsAsync(BookDataViewModel book)

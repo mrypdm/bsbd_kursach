@@ -78,14 +78,12 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
 
     protected override async Task DeleteAsync([NotNull] ClientDataViewModel item)
     {
-        if (item.Id == -1)
+        if (item.Id != -1)
         {
-            Entities.Remove(item);
-            return;
+            await _clientsRepository.RemoveAsync(new Client { Id = item.Id });
         }
 
-        await _clientsRepository.RemoveAsync(new Client { Id = item.Id });
-        await RefreshAsync();
+        Entities.Remove(item);
     }
 
     private async Task ShowReviewsAsync(ClientDataViewModel client)
