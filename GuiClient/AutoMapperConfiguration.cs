@@ -16,7 +16,6 @@ public class AutoMapperConfiguration : Profile
 
         CreateMap<OrderBook, OrderBookDataViewModel>()
             .ForMember(d => d.Book, m => m.MapFrom(s => s.Book.ToString()))
-            .ForMember(d => d.Price, m => m.MapFrom(s => s.Book.Price))
             .ForMember(d => d.Count, m => m.MapFrom(s => s.Count));
 
         CreateMap<Client, ClientDataViewModel>();

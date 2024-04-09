@@ -1,4 +1,4 @@
-create trigger bsbd_verify_order on OrdersToBooks after insert as
+create trigger bsbd_verify_order on OrdersToBooks instead of insert as
 begin
     if exists((select OrderId from (select * from OrdersToBooks except select * from inserted) as c)
               intersect
@@ -17,4 +17,8 @@ begin
     update Books
     set Count = b.Count - i.Count
     from Books b join inserted i on b.Id = i.BookId
+    
+    insert into OrdersToBooks (OrderId, BookId, Count, Price)
+    select i.OrderId, i.BookId, i.Count, b.Price
+    from inserted i join Books b on i.BookId = b.Id
 end

@@ -195,10 +195,9 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
         return await context.Database
             .SqlQuery<int>(
                 $"""
-                 select coalesce(sum(o.Count * b.Price), 0) as Value
-                 from OrdersToBooks o
-                 join Books b on o.BookId = b.Id
-                 where o.BookId = {book.Id} and b.IsDeleted = 0
+                 select coalesce(sum(Count * Price), 0) as Value
+                 from OrdersToBooks
+                 where BookId = {book.Id}
                  """)
             .SingleOrDefaultAsync();
     }
@@ -264,7 +263,7 @@ public class BooksRepository(DbContextFactory factory) : IBooksRepository
                  where b.IsDeleted = 0
                  order by
                  (
-                    coalesce((select coalesce(sum(o.Count), 0) from OrdersToBooks o where b.Id = o.BookId), 0) * b.Price
+                    coalesce((select coalesce(sum(o.Count * o.Price), 0) from OrdersToBooks o where b.Id = o.BookId), 0)
                  ) desc, b.Id
                  """)
             .ToListAsync();

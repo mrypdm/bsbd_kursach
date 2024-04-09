@@ -9,6 +9,7 @@ CREATE TABLE [dbo].[OrdersToBooks](
     [OrderId] [int] NOT NULL,
     [BookId] [int] NOT NULL,
     [Count] [int] NOT NULL,
+    [Price] [int] NOT NULL,
  CONSTRAINT [PK_OrdersToBooks] PRIMARY KEY CLUSTERED 
 (
     [OrderId] ASC,

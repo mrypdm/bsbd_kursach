@@ -22,6 +22,7 @@ public class AutoMapperConfiguration : Profile
 
         CreateMap<DbOrderBook, OrderBook>()
             .ForMember(d => d.Count, m => m.MapFrom(s => s.OrderedCount))
+            .ForMember(d => d.Price, m => m.MapFrom(s => s.OrderedPrice))
             .ForMember(d => d.Book, m => m.MapFrom(s => new Book
             {
                 Id = s.BookId,

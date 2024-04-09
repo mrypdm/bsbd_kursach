@@ -20,7 +20,7 @@ public class OrderBooksRepository(DbContextFactory factory, IMapper mapper) : IO
         return await context.Database
             .SqlQuery<DbOrderBook>(
                 $"""
-                 select otb.BookId, otb.OrderId, otb.Count as OrderedCount,
+                 select otb.BookId, otb.OrderId, otb.Count as OrderedCount, otb.Price as OrderedPrice,
                         b.Title as BookTitle, b.Author as BookAuthor, b.ReleaseDate as BookReleaseDate,
                         b.IsDeleted as IsBookDeleted, b.Count as TotalCount, b.Price as BookPrice
                  from OrdersToBooks otb
@@ -40,7 +40,7 @@ public class OrderBooksRepository(DbContextFactory factory, IMapper mapper) : IO
         return await context.Database
             .SqlQuery<DbOrderBook>(
                 $"""
-                 select otb.BookId, otb.OrderId, otb.Count as OrderedCount,
+                 select otb.BookId, otb.OrderId, otb.Count as OrderedCount, otb.Price as OrderedPrice,
                         b.Title as BookTitle, b.Author as BookAuthor, b.ReleaseDate as BookReleaseDate,
                         b.IsDeleted as IsBookDeleted, b.Count as TotalCount, b.Price as BookPrice
                  from OrdersToBooks otb

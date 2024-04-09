@@ -160,11 +160,10 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
         return await context.Database
             .SqlQuery<int>(
                 $"""
-                 select coalesce(sum(otb.Count * b.Price), 0) as Value
+                 select coalesce(sum(otb.Count * otb.Price), 0) as Value
                  from Orders o
                  join Clients c on o.ClientId = c.Id
                  join OrdersToBooks otb on o.Id = otb.OrderId
-                 join Books b on otb.BookId = b.Id
                  where c.IsDeleted = 0 and o.ClientId = {client.Id}
                  """)
             .SingleOrDefaultAsync();
@@ -179,16 +178,11 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
                  select top({topCount}) c.Id, c.FirstName, c.LastName, c.Phone, c.Gender, c.IsDeleted
                  from Clients c
                  where c.IsDeleted = 0
-                 order by
-                 (
-                     select coalesce(sum(orv.Revenue), 0)
-                     from Orders o
-                     join
-                     (
-                         select otb.OrderId, otb.Count * b.Price as Revenue
-                         from OrdersToBooks otb
-                         join Books b on otb.BookId = b.Id
-                     ) as orv on orv.OrderId = o.Id
+                 order by (coalesce((select coalesce(sum(otb.Count * otb.Price), 0)
+                                     from OrdersToBooks otb
+                                     join Orders o on otb.OrderId = o.Id
+                                     join Clients cc on cc.Id = o.ClientId
+                                     where cc.Id = c.Id), 0)
                  ) desc, c.Id
                  """)
             .ToListAsync();

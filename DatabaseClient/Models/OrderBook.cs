@@ -11,5 +11,7 @@ public sealed class OrderBook
 
     public int Count { get; set; }
 
+    public int Price { get; set; }
+
     public Book Book { get; set; }
 }
