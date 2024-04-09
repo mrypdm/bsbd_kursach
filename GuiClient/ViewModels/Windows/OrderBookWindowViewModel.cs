@@ -24,13 +24,13 @@ public class OrderBookWindowViewModel : AllEntitiesViewModel<OrderBookDataViewMo
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateText(nameof(OrderBookDataViewModel.OrderId), true),
-            ColumnHelper.CreateText(nameof(OrderBookDataViewModel.BookId), true),
-            ColumnHelper.CreateText(nameof(OrderBookDataViewModel.Book), true),
-            ColumnHelper.CreateText(nameof(OrderBookDataViewModel.Count), !Add.CanExecute(null)),
-            ColumnHelper.CreateText(nameof(OrderBookDataViewModel.Price), true),
-            ColumnHelper.CreateText(nameof(OrderBookDataViewModel.TotalPrice), true)
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Text(nameof(OrderBookDataViewModel.OrderId), true),
+            DataGridColumns.Text(nameof(OrderBookDataViewModel.BookId), true),
+            DataGridColumns.Text(nameof(OrderBookDataViewModel.Book), true),
+            DataGridColumns.Text(nameof(OrderBookDataViewModel.Count), !Add.CanExecute(null)),
+            DataGridColumns.Text(nameof(OrderBookDataViewModel.Price), true),
+            DataGridColumns.Text(nameof(OrderBookDataViewModel.TotalPrice), true)
         ];
     }
 

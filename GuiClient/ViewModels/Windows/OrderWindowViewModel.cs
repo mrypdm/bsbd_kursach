@@ -41,14 +41,14 @@ public class OrderWindowViewModel : AllEntitiesViewModel<OrderDataViewModel>
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateButton("Update", nameof(Update)),
-            ColumnHelper.CreateButton("Show books", nameof(ShowBooks)),
-            ColumnHelper.CreateText(nameof(OrderDataViewModel.Id), true),
-            ColumnHelper.CreateText(nameof(OrderDataViewModel.ClientId), true),
-            ColumnHelper.CreateText(nameof(OrderDataViewModel.Client), true),
-            ColumnHelper.CreateText(nameof(OrderDataViewModel.CreatedAt), true),
-            ColumnHelper.CreateButton(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true)
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Button("Update", nameof(Update)),
+            DataGridColumns.Button("Show books", nameof(ShowBooks)),
+            DataGridColumns.Text(nameof(OrderDataViewModel.Id), true),
+            DataGridColumns.Text(nameof(OrderDataViewModel.ClientId), true),
+            DataGridColumns.Text(nameof(OrderDataViewModel.Client), true),
+            DataGridColumns.Text(nameof(OrderDataViewModel.CreatedAt), true),
+            DataGridColumns.Button(nameof(OrderDataViewModel.TotalSum), nameof(ShowTotalSum), true)
         ];
     }
 

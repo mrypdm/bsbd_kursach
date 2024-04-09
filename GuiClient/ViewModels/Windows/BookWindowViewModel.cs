@@ -52,20 +52,20 @@ public class BookWindowViewModel : AllEntitiesViewModel<BookDataViewModel>
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateButton("Update", nameof(Update)),
-            ColumnHelper.CreateButton("Show reviews", nameof(ShowReviews)),
-            ColumnHelper.CreateButton("Show orders", nameof(ShowOrders)),
-            ColumnHelper.CreateText(nameof(BookDataViewModel.Id), true),
-            ColumnHelper.CreateText(nameof(BookDataViewModel.Title)),
-            ColumnHelper.CreateText(nameof(BookDataViewModel.Author)),
-            ColumnHelper.CreateText(nameof(BookDataViewModel.ReleaseDate)),
-            ColumnHelper.CreateText(nameof(BookDataViewModel.Count)),
-            ColumnHelper.CreateText(nameof(BookDataViewModel.Price)),
-            ColumnHelper.CreateButton(nameof(BookDataViewModel.Sales), nameof(ShowSales), true),
-            ColumnHelper.CreateButton(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true),
-            ColumnHelper.CreateButton(nameof(BookDataViewModel.Score), nameof(ShowScore), true),
-            ColumnHelper.CreateButton(nameof(BookDataViewModel.Tags), nameof(ShowTags), true)
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Button("Update", nameof(Update)),
+            DataGridColumns.Button("Show reviews", nameof(ShowReviews)),
+            DataGridColumns.Button("Show orders", nameof(ShowOrders)),
+            DataGridColumns.Text(nameof(BookDataViewModel.Id), true),
+            DataGridColumns.Text(nameof(BookDataViewModel.Title)),
+            DataGridColumns.Text(nameof(BookDataViewModel.Author)),
+            DataGridColumns.Text(nameof(BookDataViewModel.ReleaseDate)),
+            DataGridColumns.Text(nameof(BookDataViewModel.Count)),
+            DataGridColumns.Text(nameof(BookDataViewModel.Price)),
+            DataGridColumns.Button(nameof(BookDataViewModel.Sales), nameof(ShowSales), true),
+            DataGridColumns.Button(nameof(BookDataViewModel.Revenue), nameof(ShowRevenue), true),
+            DataGridColumns.Button(nameof(BookDataViewModel.Score), nameof(ShowScore), true),
+            DataGridColumns.Button(nameof(BookDataViewModel.Tags), nameof(ShowTags), true)
         ];
     }
 

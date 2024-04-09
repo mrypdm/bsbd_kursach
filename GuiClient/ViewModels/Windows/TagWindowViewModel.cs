@@ -32,11 +32,11 @@ public class TagWindowViewModel : AllEntitiesViewModel<Tag>
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateButton("Update", nameof(Update)),
-            ColumnHelper.CreateButton("Show books", nameof(ShowBooks)),
-            ColumnHelper.CreateText(nameof(Tag.Id), true),
-            ColumnHelper.CreateText(nameof(Tag.Name))
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Button("Update", nameof(Update)),
+            DataGridColumns.Button("Show books", nameof(ShowBooks)),
+            DataGridColumns.Text(nameof(Tag.Id), true),
+            DataGridColumns.Text(nameof(Tag.Name))
         ];
     }
 

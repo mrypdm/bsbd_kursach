@@ -38,16 +38,16 @@ public class ClientWindowViewModel : AllEntitiesViewModel<ClientDataViewModel>
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateButton("Update", nameof(Update)),
-            ColumnHelper.CreateButton("Show reviews", nameof(ShowReviews)),
-            ColumnHelper.CreateButton("Show orders", nameof(ShowOrders)),
-            ColumnHelper.CreateText(nameof(ClientDataViewModel.Id), true),
-            ColumnHelper.CreateText(nameof(ClientDataViewModel.FirstName)),
-            ColumnHelper.CreateText(nameof(ClientDataViewModel.LastName)),
-            ColumnHelper.CreateText(nameof(ClientDataViewModel.Phone)),
-            ColumnHelper.CreateText(nameof(ClientDataViewModel.Gender)),
-            ColumnHelper.CreateButton(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true)
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Button("Update", nameof(Update)),
+            DataGridColumns.Button("Show reviews", nameof(ShowReviews)),
+            DataGridColumns.Button("Show orders", nameof(ShowOrders)),
+            DataGridColumns.Text(nameof(ClientDataViewModel.Id), true),
+            DataGridColumns.Text(nameof(ClientDataViewModel.FirstName)),
+            DataGridColumns.Text(nameof(ClientDataViewModel.LastName)),
+            DataGridColumns.Text(nameof(ClientDataViewModel.Phone)),
+            DataGridColumns.Text(nameof(ClientDataViewModel.Gender)),
+            DataGridColumns.Button(nameof(ClientDataViewModel.Revenue), nameof(ShowRevenue), true)
         ];
     }
 

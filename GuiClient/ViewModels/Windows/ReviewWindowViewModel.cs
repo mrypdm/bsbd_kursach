@@ -28,14 +28,14 @@ public class ReviewWindowViewModel : AllEntitiesViewModel<ReviewDataViewModel>
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateButton("Update", nameof(Update)),
-            ColumnHelper.CreateText(nameof(ReviewDataViewModel.BookId), true),
-            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Book), true),
-            ColumnHelper.CreateText(nameof(ReviewDataViewModel.ClientId), true),
-            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Client), true),
-            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Score)),
-            ColumnHelper.CreateText(nameof(ReviewDataViewModel.Text))
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Button("Update", nameof(Update)),
+            DataGridColumns.Text(nameof(ReviewDataViewModel.BookId), true),
+            DataGridColumns.Text(nameof(ReviewDataViewModel.Book), true),
+            DataGridColumns.Text(nameof(ReviewDataViewModel.ClientId), true),
+            DataGridColumns.Text(nameof(ReviewDataViewModel.Client), true),
+            DataGridColumns.Text(nameof(ReviewDataViewModel.Score)),
+            DataGridColumns.Text(nameof(ReviewDataViewModel.Text))
         ];
     }
 

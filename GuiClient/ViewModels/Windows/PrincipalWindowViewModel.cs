@@ -31,11 +31,11 @@ public class PrincipalWindowViewModel : AllEntitiesViewModel<Principal>
 
         Columns =
         [
-            ColumnHelper.CreateButton("Delete", nameof(Delete)),
-            ColumnHelper.CreateButton("Change password (force)", nameof(ChangePasswordForce)),
-            ColumnHelper.CreateText(nameof(Principal.Id), true),
-            ColumnHelper.CreateText(nameof(Principal.Name), true),
-            ColumnHelper.CreateText(nameof(Principal.Role), true)
+            DataGridColumns.Button("Delete", nameof(Delete)),
+            DataGridColumns.Button("Change password (force)", nameof(ChangePasswordForce)),
+            DataGridColumns.Text(nameof(Principal.Id), true),
+            DataGridColumns.Text(nameof(Principal.Name), true),
+            DataGridColumns.Text(nameof(Principal.Role), true)
         ];
     }
 

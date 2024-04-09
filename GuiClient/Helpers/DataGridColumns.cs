@@ -6,9 +6,9 @@ using GuiClient.Converters;
 
 namespace GuiClient.Helpers;
 
-public static class ColumnHelper
+public static class DataGridColumns
 {
-    public static DataGridColumn CreateText(string value, bool readOnly = false, bool allowWrap = false,
+    public static DataGridColumn Text(string value, bool readOnly = false, bool allowWrap = false,
         string header = null)
     {
         return new DataGridTextColumn
@@ -27,7 +27,7 @@ public static class ColumnHelper
         };
     }
 
-    public static DataGridColumn CreateButton(string content, string commandPath, bool contentIsPath = false)
+    public static DataGridColumn Button(string content, string commandPath, bool contentIsPath = false)
     {
         var header = string.Empty;
 
