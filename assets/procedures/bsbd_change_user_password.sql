@@ -1,4 +1,4 @@
-﻿CREATE proc bsbd_change_user_password @userName nvarchar(50),
+﻿create proc bsbd_change_user_password @userName nvarchar(50),
                                       @newPassword nvarchar(50),
                                       @oldPassword nvarchar(50) = null as
     if dbo.bsbd_validate_injection(@userName) = 1

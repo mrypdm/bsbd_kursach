@@ -1,4 +1,4 @@
-﻿CREATE function bsbd_int_to_role(@roleNumber int)
+﻿create function bsbd_int_to_role(@roleNumber int)
     returns nvarchar(max) as
 begin
     if @roleNumber = 0

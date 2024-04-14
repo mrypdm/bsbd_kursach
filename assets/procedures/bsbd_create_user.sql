@@ -1,4 +1,4 @@
-﻿CREATE proc bsbd_create_user @userName nvarchar(50), @password nvarchar(50), @role int as
+﻿create proc bsbd_create_user @userName nvarchar(50), @password nvarchar(50), @role int as
     if dbo.bsbd_validate_injection(@userName) = 1
        or dbo.bsbd_validate_injection(@password) = 1
     begin

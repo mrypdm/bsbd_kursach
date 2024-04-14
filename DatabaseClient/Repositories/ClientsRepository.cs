@@ -133,7 +133,7 @@ public class ClientsRepository(DbContextFactory factory) : IClientsRepository
         await using var context = factory.Create();
         await context.Database.ExecuteSqlAsync(
             $"""
-             update Books
+             update Clients
              set FirstName = {entity.FirstName}, LastName = {entity.LastName},
                  Phone = {entity.Phone}, Gender = {entity.Gender}
              where Id = {entity.Id}

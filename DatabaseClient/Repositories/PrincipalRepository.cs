@@ -44,7 +44,7 @@ public class PrincipalRepository(DbContextFactory factory) : IPrincipalRepositor
 
         await using var context = factory.Create();
         await context.Database
-            .ExecuteSqlAsync($"bsbd_delete_user {entity.Name}");
+            .ExecuteSqlAsync($"exec bsbd_delete_user {entity.Name}");
     }
 
     public async Task<Principal> CreatePrincipalAsync(string name, SecureString password, Role role)

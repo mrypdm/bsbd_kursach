@@ -27,10 +27,10 @@ public class DbContextFactory(IPrincipalProvider principalProvider, ServerOption
         if (Logging.IsInit)
         {
             optionsBuilder = optionsBuilder
-                .UseLoggerFactory(Logging.LoggerFactory)
 #if DEBUG
-                .EnableSensitiveDataLogging();
+                .EnableSensitiveDataLogging()
 #endif
+                .UseLoggerFactory(Logging.LoggerFactory);
         }
 
         return new DbContext(optionsBuilder.Options);

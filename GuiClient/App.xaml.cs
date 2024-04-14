@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using DatabaseClient.Contexts;
-using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Providers;
@@ -30,6 +29,7 @@ public partial class App : Application
 
     public static IServiceProvider ServiceProvider { get; private set; }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     protected override async void OnStartup(StartupEventArgs e)
     {
         ArgumentNullException.ThrowIfNull(e);
@@ -54,6 +54,7 @@ public partial class App : Application
         var window = ServiceProvider.GetRequiredService<MainWindow>();
         window.Show();
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
     protected override void OnExit(ExitEventArgs e)
     {
