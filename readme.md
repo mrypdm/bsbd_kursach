@@ -47,7 +47,7 @@
     1. execute на добавления пользователя
     2. execute на удаления пользователя
 8. Настроено защищенное подключение к БД (с помощью Self-Signed
-   сертификата [см. скрипт](./assets/create-mssql-cert.ps1))
+   сертификата [см. скрипт](./scripts/create-mssql-cert.ps1))
 
 ![](./pictures/db-diagram.png "Диаграмма БД")
 
