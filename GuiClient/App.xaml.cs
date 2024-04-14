@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using DatabaseClient.Contexts;
+using DatabaseClient.Extensions;
 using DatabaseClient.Models;
 using DatabaseClient.Options;
 using DatabaseClient.Providers;

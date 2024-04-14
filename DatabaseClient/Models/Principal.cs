@@ -17,23 +17,6 @@ public sealed class Principal : IPrincipalProvider, IDisposable
 
     public string Name { get; set; }
 
-    public string RoleString
-    {
-        get => $"bsbd_{Role.ToString().ToLowerInvariant()}_role";
-        set
-        {
-            var role = Role.Unknown;
-
-            if (Enum.TryParse(typeof(Role), value?.Split("_")[1], true, out var parsedRole))
-            {
-                role = (Role)parsedRole;
-            }
-
-            Role = role;
-        }
-    }
-
-    [NotMapped]
     public Role Role { get; set; }
 
     [NotMapped]

@@ -18,7 +18,7 @@ public class PrincipalRepository(DbContextFactory factory) : IPrincipalRepositor
         return await context.Database
             .SqlQuery<Principal>(
                 $"""
-                 select Id, Name, Role as RoleString
+                 select Id, Name, Role
                  from bsbd_principals
                  where Id = {id}
                  """)
@@ -29,7 +29,7 @@ public class PrincipalRepository(DbContextFactory factory) : IPrincipalRepositor
     {
         await using var context = factory.Create();
         return await context.Database
-            .SqlQuery<Principal>($"select Id, Name, Role as RoleString from bsbd_principals")
+            .SqlQuery<Principal>($"select Id, Name, Role from bsbd_principals")
             .ToListAsync();
     }
 
@@ -86,7 +86,7 @@ public class PrincipalRepository(DbContextFactory factory) : IPrincipalRepositor
         return await context.Database
             .SqlQuery<Principal>(
                 $"""
-                 select Id, Name, Role as RoleString
+                 select Id, Name, Role
                  from bsbd_principals
                  where Name = {name}
                  """)
