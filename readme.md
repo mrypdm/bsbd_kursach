@@ -49,7 +49,7 @@
 8. Настроено защищенное подключение к БД (с помощью Self-Signed
    сертификата [см. скрипт](./assets/create-mssql-cert.ps1))
 
-![](./assets/db-diagram.png "Диаграмма БД")
+![](./pictures/db-diagram.png "Диаграмма БД")
 
 # Создание приложения
 
